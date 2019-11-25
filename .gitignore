@@ -28,3 +28,10 @@ hs_err_pid*
 *.ipr
 *.iws
 out
+/bin/
+
+# Eclipse Project files
+.classpath
+.project
+.DS_Store
+.settings
