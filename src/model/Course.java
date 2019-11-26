@@ -10,6 +10,7 @@ public class Course {
     private String description;
     private Breakdown breakdown;
     private String courseID;
+    //buid, student
     Map<String, Student> students;
 
     public Course() {

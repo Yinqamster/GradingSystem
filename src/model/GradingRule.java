@@ -12,9 +12,8 @@ public class GradingRule {
 
     }
 
-    public GradingRule(int parentID, int depth, String name, double fullScore, double proportion) {
+    public GradingRule(int parentID, String name, double fullScore, double proportion) {
         this.parentID = parentID;
-        this.depth = depth;
         this.name = name;
         this.fullScore = fullScore;
         this.proportion = proportion;
