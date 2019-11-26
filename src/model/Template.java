@@ -1,0 +1,30 @@
+package model;
+
+import java.util.List;
+import java.util.Map;
+
+public class Template extends Breakdown {
+    private String name;
+
+    public Template() {
+        super();
+    }
+
+    public Template(String name) {
+        this();
+        this.name = name;
+    }
+
+    public Template(String name, List<GradingRule> gradingRules, Map<String, double[]> letterRule) {
+        super(gradingRules, letterRule);
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
