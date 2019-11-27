@@ -35,3 +35,7 @@ out
 .project
 .DS_Store
 .settings
+*.jfd
+
+# JFormDesigner files
+.jfd
