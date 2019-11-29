@@ -37,4 +37,4 @@ out
 .settings
 
 # JFormDesigner files
-.jfd
+*.jfd
