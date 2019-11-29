@@ -11,7 +11,7 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
+# *.jar
 *.war
 *.nar
 *.ear
@@ -35,7 +35,6 @@ out
 .project
 .DS_Store
 .settings
-*.jfd
 
 # JFormDesigner files
 .jfd
