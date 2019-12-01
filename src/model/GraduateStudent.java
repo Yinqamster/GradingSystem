@@ -8,4 +8,8 @@ public class GraduateStudent extends Student {
     public GraduateStudent(Name name, String buid) {
         super(name, buid);
     }
+
+    public GraduateStudent(Name name, String buid, String comment) {
+        super(name, buid, comment);
+    }
 }
