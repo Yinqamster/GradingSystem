@@ -16,6 +16,12 @@ public class FinalGrade extends Grade {
         this.letterGrade = letterGrade;
     }
 
+    public FinalGrade(String ruleName, double absolute, double percentage,
+                      double deduction, String comment, String letterGrade) {
+        super(ruleName, absolute, percentage, deduction, comment);
+        this.letterGrade = letterGrade;
+    }
+
     public String getLetterGrade() {
         return letterGrade;
     }

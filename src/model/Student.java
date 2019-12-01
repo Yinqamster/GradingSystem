@@ -2,8 +2,8 @@ package model;
 
 import utils.Config;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class Student {
     private Name name;
@@ -11,16 +11,31 @@ public abstract class Student {
     private int status;
     private double bonus;
     private String comment;
-    private List<Grade> grades;
+    private Map<String, Grade> grades;
 
     public Student(){
-        grades = new ArrayList<>();
+        grades = new HashMap<>();
         status = Config.ACTIVE;
     }
 
     public Student(Name name, String buid) {
         this.name = name;
         this.buid = buid;
+    }
+
+    public Student(Name name, String buid, int status, double bonus,
+                   String comment, Map<String, Grade> grades) {
+        this.name = name;
+        this.buid = buid;
+        this.status = status;
+        this.bonus = bonus;
+        this.comment = comment;
+        this.grades = grades;
+    }
+    public Student(Name name, String buid, String comment) {
+        this.name = name;
+        this.buid = buid;
+        this.comment = comment;
     }
 
     public Name getName() {
@@ -63,11 +78,11 @@ public abstract class Student {
         this.comment = comment;
     }
 
-    public List<Grade> getGrades() {
+    public Map<String, Grade> getGrades() {
         return grades;
     }
 
-    public void setGrades(List<Grade> grades) {
+    public void setGrades(Map<String, Grade> grades) {
         this.grades = grades;
     }
 }

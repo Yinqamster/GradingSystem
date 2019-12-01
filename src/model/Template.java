@@ -1,6 +1,5 @@
 package model;
 
-import java.util.List;
 import java.util.Map;
 
 public class Template extends Breakdown {
@@ -15,8 +14,8 @@ public class Template extends Breakdown {
         this.name = name;
     }
 
-    public Template(String name, List<GradingRule> gradingRules, Map<String, double[]> letterRule) {
-        super(gradingRules, letterRule);
+    public Template(String templateID, String name, Map<String, GradingRule> gradingRules, Map<String, double[]> letterRule) {
+        super(gradingRules, letterRule, templateID);
         this.name = name;
     }
 
