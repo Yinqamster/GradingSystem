@@ -6,16 +6,32 @@ package view;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Vector;
 import javax.swing.*;
-import javax.swing.plaf.*;
+import javax.swing.event.ListDataListener;
+
+import service.CourseService;
+
+import model.Course;
 import net.miginfocom.swing.*;
+import utils.Config;
 
 /**
- * @author unknown
+ * @author Jun Li
  */
 public class CourseList extends JFrame{
+    private Vector<Course> courses = new Vector<>();
+    private String currentSemester = Config.CURRENT_SEMETER;
+
     public CourseList() {
         initComponents();
+
+        // initialize semester label
+        this.label_which_semester.setText(currentSemester);
+
+        // add courses to list_courseList
+        refreshList();
     }
 
     private void button_addMouseReleased(MouseEvent e) {
@@ -24,12 +40,49 @@ public class CourseList extends JFrame{
         addCourse.setVisible(true);
     }
 
+    private void button_openMouseReleased(MouseEvent e) {
+        if(list_courseList.getSelectedIndex() == -1){
+            // select nothing
+            return;
+        }
+        // todo 1. get selected course's courseID 2. open a new MainFrame with this courseID 3. make this frame invisible
+        this.setVisible(false);
+    }
+
+    private void button_deleteMouseReleased(MouseEvent e) {
+        if(list_courseList.getSelectedIndex() == -1){
+            // select nothing
+            return;
+        }
+        // alert window
+        int n = JOptionPane.showConfirmDialog(null, "Delete this course?", "Warning",JOptionPane.YES_NO_OPTION);//n=0/1
+        if(n == 0){
+            // delete this course
+            int selectedIndex = list_courseList.getSelectedIndex();
+            Course selectedCourse = courses.get(selectedIndex);
+            CourseService.deleteCourse(selectedCourse.getCourseID());
+            refreshList();
+        }
+    }
+
+    private void refreshList(){
+        courses.clear();
+        ArrayList<Course> courses_this_semester = new ArrayList<Course>(CourseService.getCourseListBySemester(currentSemester));
+        Vector<String> items = new Vector<>();
+        for(Course course : courses_this_semester){
+            this.courses.add(course);
+            String item = course.getName() + " Section: " + course.getSection();
+            items.add(item);
+        }
+        this.list_courseList = new JList<>(items);
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - unknown
         label_title = new JLabel();
         scrollPane_courses = new JScrollPane();
-        list_courseList = new JList();
+        list_courseList = new JList<>();
         panel_buttons = new JPanel();
         button_open = new JButton();
         button_delete = new JButton();
@@ -40,6 +93,7 @@ public class CourseList extends JFrame{
 
         //======== this ========
         setTitle("Course List");
+        setIconImage(new ImageIcon(getClass().getResource("/images/icon.png")).getImage());
         Container contentPane = getContentPane();
         contentPane.setLayout(null);
 
@@ -56,6 +110,18 @@ public class CourseList extends JFrame{
             //---- list_courseList ----
             list_courseList.setBackground(Color.white);
             list_courseList.setForeground(Color.black);
+            list_courseList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            list_courseList.setModel(new AbstractListModel<String>() {
+                String[] values = {
+                    "CS591 P1 Section A",
+                    "CS112 Section A",
+                    "CS112 Section B"
+                };
+                @Override
+                public int getSize() { return values.length; }
+                @Override
+                public String getElementAt(int i) { return values[i]; }
+            });
             scrollPane_courses.setViewportView(list_courseList);
         }
         contentPane.add(scrollPane_courses);
@@ -64,13 +130,13 @@ public class CourseList extends JFrame{
         //======== panel_buttons ========
         {
             panel_buttons.setBackground(new Color(238, 238, 238));
-            panel_buttons.setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new javax.
-            swing. border. EmptyBorder( 0, 0, 0, 0) , "JF\u006frmDes\u0069gner \u0045valua\u0074ion", javax. swing. border
-            . TitledBorder. CENTER, javax. swing. border. TitledBorder. BOTTOM, new java .awt .Font ("D\u0069alog"
-            ,java .awt .Font .BOLD ,12 ), java. awt. Color. red) ,panel_buttons. getBorder
-            ( )) ); panel_buttons. addPropertyChangeListener (new java. beans. PropertyChangeListener( ){ @Override public void propertyChange (java
-            .beans .PropertyChangeEvent e) {if ("\u0062order" .equals (e .getPropertyName () )) throw new RuntimeException
-            ( ); }} );
+            panel_buttons.setBorder ( new javax . swing. border .CompoundBorder ( new javax . swing. border .TitledBorder ( new
+            javax . swing. border .EmptyBorder ( 0, 0 ,0 , 0) ,  "JF\u006frmDes\u0069gner \u0045valua\u0074ion" , javax
+            . swing .border . TitledBorder. CENTER ,javax . swing. border .TitledBorder . BOTTOM, new java
+            . awt .Font ( "D\u0069alog", java .awt . Font. BOLD ,12 ) ,java . awt
+            . Color .red ) ,panel_buttons. getBorder () ) ); panel_buttons. addPropertyChangeListener( new java. beans .
+            PropertyChangeListener ( ){ @Override public void propertyChange (java . beans. PropertyChangeEvent e) { if( "\u0062order" .
+            equals ( e. getPropertyName () ) )throw new RuntimeException( ) ;} } );
             panel_buttons.setLayout(new MigLayout(
                 "hidemode 3",
                 // columns
@@ -85,12 +151,24 @@ public class CourseList extends JFrame{
             button_open.setText("open");
             button_open.setForeground(Color.black);
             button_open.setBackground(new Color(204, 204, 204));
+            button_open.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    button_openMouseReleased(e);
+                }
+            });
             panel_buttons.add(button_open, "cell 0 0");
 
             //---- button_delete ----
             button_delete.setText("delete");
             button_delete.setBackground(new Color(204, 204, 204));
             button_delete.setForeground(Color.black);
+            button_delete.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    button_deleteMouseReleased(e);
+                }
+            });
             panel_buttons.add(button_delete, "cell 0 1");
 
             //---- button_add ----
@@ -145,7 +223,7 @@ public class CourseList extends JFrame{
     // Generated using JFormDesigner Evaluation license - unknown
     private JLabel label_title;
     private JScrollPane scrollPane_courses;
-    private JList list_courseList;
+    private JList<String> list_courseList;
     private JPanel panel_buttons;
     private JButton button_open;
     private JButton button_delete;
