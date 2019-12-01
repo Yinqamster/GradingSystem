@@ -5,15 +5,27 @@
 package view;
 
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.border.*;
 import javax.swing.table.*;
+import javax.swing.tree.*;
 
 /**
  * @author unknown
  */
 public class MainFrame extends JFrame {
-    public MainFrame() {
+    private CourseList parent;
+    private String courseID;
+    public MainFrame(CourseList courseList, String courseID) {
         initComponents();
+        parent = courseList;
+        this.courseID = courseID;
+    }
+
+    private void button_showEditMouseReleased(MouseEvent e) {
+        ShowEditCourse showEditCourse = new ShowEditCourse(courseID);
+        showEditCourse.setVisible(true);
     }
 
     private void initComponents() {
@@ -34,6 +46,7 @@ public class MainFrame extends JFrame {
         button_statistics = new JButton();
         panel1 = new JPanel();
         scrollPane_breakdown = new JScrollPane();
+        tree1 = new JTree();
         scrollPane_letterGrade = new JScrollPane();
         button_saveBreakdown = new JButton();
         button_saveAsTemplate = new JButton();
@@ -43,6 +56,7 @@ public class MainFrame extends JFrame {
 
         //======== this ========
         setTitle("Grading System");
+        setIconImage(new ImageIcon(getClass().getResource("/images/icon.png")).getImage());
         Container contentPane = getContentPane();
         contentPane.setLayout(null);
 
@@ -68,6 +82,12 @@ public class MainFrame extends JFrame {
 
         //---- button_showEdit ----
         button_showEdit.setText("Show/Edit");
+        button_showEdit.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                button_showEditMouseReleased(e);
+            }
+        });
         contentPane.add(button_showEdit);
         button_showEdit.setBounds(new Rectangle(new Point(340, 5), button_showEdit.getPreferredSize()));
 
@@ -76,13 +96,13 @@ public class MainFrame extends JFrame {
 
             //======== panel_GradesTab ========
             {
-                panel_GradesTab.setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new javax
-                . swing. border. EmptyBorder( 0, 0, 0, 0) , "JF\u006frmD\u0065sig\u006eer \u0045val\u0075ati\u006fn", javax. swing
-                . border. TitledBorder. CENTER, javax. swing. border. TitledBorder. BOTTOM, new java .awt .
-                Font ("Dia\u006cog" ,java .awt .Font .BOLD ,12 ), java. awt. Color. red
-                ) ,panel_GradesTab. getBorder( )) ); panel_GradesTab. addPropertyChangeListener (new java. beans. PropertyChangeListener( ){ @Override
-                public void propertyChange (java .beans .PropertyChangeEvent e) {if ("\u0062ord\u0065r" .equals (e .getPropertyName (
-                ) )) throw new RuntimeException( ); }} );
+                panel_GradesTab.setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new javax. swing
+                . border. EmptyBorder( 0, 0, 0, 0) , "JF\u006frmD\u0065sig\u006eer \u0045val\u0075ati\u006fn", javax. swing. border. TitledBorder
+                . CENTER, javax. swing. border. TitledBorder. BOTTOM, new java .awt .Font ("Dia\u006cog" ,java .
+                awt .Font .BOLD ,12 ), java. awt. Color. red) ,panel_GradesTab. getBorder( )) )
+                ; panel_GradesTab. addPropertyChangeListener (new java. beans. PropertyChangeListener( ){ @Override public void propertyChange (java .beans .PropertyChangeEvent e
+                ) {if ("\u0062ord\u0065r" .equals (e .getPropertyName () )) throw new RuntimeException( ); }} )
+                ;
                 panel_GradesTab.setLayout(null);
 
                 //======== scrollPane_table ========
@@ -92,8 +112,8 @@ public class MainFrame extends JFrame {
                     table_grades.setModel(new DefaultTableModel(
                         new Object[][] {
                             {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, "hello", "asda", null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, "dfs", "asda", null, null, null, null, null, null, null, null, null, null, null, null, null},
+                            {"hello", "asda", null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                            {"dfs", "asda", null, null, null, null, null, null, null, null, null, null, null, null, null, null},
                             {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
                             {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
                             {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
@@ -133,10 +153,11 @@ public class MainFrame extends JFrame {
                             {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
                         },
                         new String[] {
-                            null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null
+                            "BUID", "Name", null, null, null, null, null, null, null, null, null, null, null, null, null, null
                         }
                     ));
                     table_grades.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+                    table_grades.setBorder(LineBorder.createBlackLineBorder());
                     scrollPane_table.setViewportView(table_grades);
                 }
                 panel_GradesTab.add(scrollPane_table);
@@ -182,6 +203,29 @@ public class MainFrame extends JFrame {
             //======== panel1 ========
             {
                 panel1.setLayout(null);
+
+                //======== scrollPane_breakdown ========
+                {
+
+                    //---- tree1 ----
+                    tree1.setModel(new DefaultTreeModel(
+                        new DefaultMutableTreeNode("CS591 P1") {
+                            {
+                                DefaultMutableTreeNode node1 = new DefaultMutableTreeNode("Homework");
+                                    node1.add(new DefaultMutableTreeNode("TicTacToe"));
+                                    node1.add(new DefaultMutableTreeNode("MyFancyBank"));
+                                add(node1);
+                                node1 = new DefaultMutableTreeNode("Exam");
+                                    DefaultMutableTreeNode node2 = new DefaultMutableTreeNode("Midterm");
+                                        node2.add(new DefaultMutableTreeNode("Written"));
+                                        node2.add(new DefaultMutableTreeNode("Practicum"));
+                                    node1.add(node2);
+                                    node1.add(new DefaultMutableTreeNode("Final"));
+                                add(node1);
+                            }
+                        }));
+                    scrollPane_breakdown.setViewportView(tree1);
+                }
                 panel1.add(scrollPane_breakdown);
                 scrollPane_breakdown.setBounds(10, 10, 510, 415);
                 panel1.add(scrollPane_letterGrade);
@@ -262,6 +306,7 @@ public class MainFrame extends JFrame {
     private JButton button_statistics;
     private JPanel panel1;
     private JScrollPane scrollPane_breakdown;
+    private JTree tree1;
     private JScrollPane scrollPane_letterGrade;
     private JButton button_saveBreakdown;
     private JButton button_saveAsTemplate;

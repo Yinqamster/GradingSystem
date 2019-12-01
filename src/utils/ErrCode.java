@@ -3,7 +3,10 @@ package utils;
 public enum ErrCode {
     OK("OK", 0),
     //course service
-    COURSEEXIST("Course exists.", 1)
+    COURSEEXIST("Course exists.", 1),
+
+    // views
+    TEXTFIELDEMPTY("Please fill in all textfields with *.", 201)
 
 
 
