@@ -11,11 +11,12 @@ public class Grade {
 
     }
 
-    public Grade(String ruleName, double absolute, double percentage, double deduction) {
+    public Grade(String ruleName, double absolute, double percentage, double deduction, String comment) {
         this.ruleName = ruleName;
         this.absolute = absolute;
         this.percentage = percentage;
         this.deduction = deduction;
+        this.comment = comment;
     }
 
     public String getRuleName() {

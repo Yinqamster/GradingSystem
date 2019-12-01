@@ -11,7 +11,7 @@ public class CourseService {
 
     private static CourseService instance;
     public TemplateService templateService = TemplateService.getInstance();
-    public StudentService studentService = StudentService.getInstance();
+//    public StudentService studentService = StudentService.getInstance();
 
     public static CourseService getInstance() {
         if (instance == null) {
@@ -27,7 +27,7 @@ public class CourseService {
             course.setBreakdown(breakdown);
         }
         if(filename != null && !filename.isEmpty()){
-            course.setStudents(studentService.importStudent(filename));
+//            course.setStudents(studentService.importStudent(filename));
         }
 
         //TODO insert course to database

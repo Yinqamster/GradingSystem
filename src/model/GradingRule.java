@@ -1,8 +1,8 @@
 package model;
 
 public class GradingRule {
-    private int id;
-    private int parentID;
+    private String id;
+    private String parentID;
     private int depth;
     private String name;
     private double fullScore;
@@ -12,26 +12,27 @@ public class GradingRule {
 
     }
 
-    public GradingRule(int parentID, String name, double fullScore, double proportion) {
+    public GradingRule(String ID, String parentID, String name, double fullScore, double proportion) {
         this.parentID = parentID;
+        this.id = ID;
         this.name = name;
         this.fullScore = fullScore;
         this.proportion = proportion;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getParentID() {
+    public String getParentID() {
         return parentID;
     }
 
-    public void setParentID(int parentID) {
+    public void setParentID(String parentID) {
         this.parentID = parentID;
     }
 

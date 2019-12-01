@@ -1,12 +1,10 @@
 package db;
 
-import utils.ErrCode;
-
 import java.sql.*;
 
-public class Operations {
+public class DBUtil {
     public static final String url = "jdbc:sqlite:src/db/GradingSystem.db";
-
+    public static final String JDBCName = "org.sqlite.JDBC";
     // call this method firstly
     public static boolean testDBConnection() {
         if (getConnection() != null) {
@@ -20,6 +18,7 @@ public class Operations {
     public static Connection getConnection() {
         Connection c = null;
         try {
+            Class.forName(JDBCName);
             c = DriverManager.getConnection(url);
         } catch (Exception e) {
             System.err.println(e);
@@ -27,9 +26,9 @@ public class Operations {
         return c;
     }
 
-    public static void main(String[] args) {
-        if(Operations.testDBConnection()) {
-            System.out.println("Success");
+    public static void closeConnection(Connection connection) throws SQLException {
+        if (null != connection){
+            connection.close();
         }
     }
 }

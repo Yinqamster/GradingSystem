@@ -23,6 +23,16 @@ public abstract class Student {
         this.buid = buid;
     }
 
+    public Student(Name name, String buid, int status, double bonus,
+                   String comment, List<Grade> grades) {
+        this.name = name;
+        this.buid = buid;
+        this.status = status;
+        this.bonus = bonus;
+        this.comment = comment;
+        this.grades = grades;
+    }
+
     public Name getName() {
         return name;
     }
