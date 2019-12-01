@@ -40,21 +40,30 @@ public class CourseService {
         return ErrCode.OK.getCode();
     }
 
-    public Course getCourse(int courseId) {
+    public static Course getCourse(String courseId) {
+        // 此signature加了static(此行可删)
         //TODO get a course by course id
         Course course = new Course();
         return course;
     }
 
-    public int deleteCourse(int courseId){
-
+    public static int deleteCourse(String courseId){
+        // 此signature加了static(此行可删)
         return ErrCode.OK.getCode();
     }
 
-    public List<Course> getCourseListBySemester(String semester) {
+    public static List<Course> getCourseListBySemester(String semester) {
+        // 此signature加了static(此行可删)
         //TODO get course list by semester
         List<Course> courses = new ArrayList<>();
 
         return courses;
     }
+
+    public static String getCourseID(String courseName, String section, List<Course> courseList){
+        // TODO get courseID by courseName and section
+        String courseID = "";
+        return courseID;
+    }
+
 }

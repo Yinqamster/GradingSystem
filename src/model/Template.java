@@ -15,8 +15,8 @@ public class Template extends Breakdown {
         this.name = name;
     }
 
-    public Template(String name, List<GradingRule> gradingRules, Map<String, double[]> letterRule) {
-        super(gradingRules, letterRule);
+    public Template(String templateID, String name, List<GradingRule> gradingRules, Map<String, double[]> letterRule) {
+        super(gradingRules, letterRule, templateID);
         this.name = name;
     }
 

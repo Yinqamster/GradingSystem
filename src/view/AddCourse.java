@@ -41,6 +41,7 @@ public class AddCourse extends JFrame {
 
         //======== this ========
         setTitle("Add a Course");
+        setIconImage(new ImageIcon(getClass().getResource("/images/icon.png")).getImage());
         Container contentPane = getContentPane();
         contentPane.setLayout(null);
 

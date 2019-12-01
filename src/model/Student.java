@@ -32,6 +32,11 @@ public abstract class Student {
         this.comment = comment;
         this.grades = grades;
     }
+    public Student(Name name, String buid, String comment) {
+        this.name = name;
+        this.buid = buid;
+        this.comment = comment;
+    }
 
     public Name getName() {
         return name;

@@ -30,6 +30,7 @@ public class saveAsTemplate extends JFrame {
         //======== frame1 ========
         {
             frame1.setTitle("Save as Template");
+            frame1.setIconImage(new ImageIcon(getClass().getResource("/images/icon.png")).getImage());
             Container frame1ContentPane = frame1.getContentPane();
             frame1ContentPane.setLayout(null);
 

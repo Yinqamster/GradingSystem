@@ -17,9 +17,13 @@ public class Login extends JFrame {
         initComponents();
     }
 
-    private void button1MouseReleased(MouseEvent e) {
+    private void button_loginMouseReleased(MouseEvent e) {
         CourseList courseList = new CourseList();
         courseList.setVisible(true);
+        this.dispose();
+    }
+
+    private void button_exitMouseReleased(MouseEvent e) {
         this.dispose();
     }
 
@@ -27,8 +31,8 @@ public class Login extends JFrame {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - unknown
         panel1 = new JPanel();
-        button1 = new JButton();
-        button2 = new JButton();
+        button_login = new JButton();
+        button_exit = new JButton();
         dialogPane = new JPanel();
         hSpacer3 = new JPanel(null);
         contentPanel = new JPanel();
@@ -41,35 +45,40 @@ public class Login extends JFrame {
         vSpacer1 = new JPanel(null);
 
         //======== this ========
+        setIconImage(new ImageIcon(getClass().getResource("/images/icon.png")).getImage());
         Container contentPane = getContentPane();
         contentPane.setLayout(null);
 
         //======== panel1 ========
         {
-            panel1.setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new
-            javax. swing. border. EmptyBorder( 0, 0, 0, 0) , "JF\u006frmDesi\u0067ner Ev\u0061luatio\u006e", javax
-            . swing. border. TitledBorder. CENTER, javax. swing. border. TitledBorder. BOTTOM, new java
-            .awt .Font ("Dialo\u0067" ,java .awt .Font .BOLD ,12 ), java. awt
-            . Color. red) ,panel1. getBorder( )) ); panel1. addPropertyChangeListener (new java. beans.
-            PropertyChangeListener( ){ @Override public void propertyChange (java .beans .PropertyChangeEvent e) {if ("borde\u0072" .
-            equals (e .getPropertyName () )) throw new RuntimeException( ); }} );
+            panel1.setBorder ( new javax . swing. border .CompoundBorder ( new javax . swing. border .TitledBorder ( new javax . swing. border .EmptyBorder (
+            0, 0 ,0 , 0) ,  "JF\u006frmDes\u0069gner \u0045valua\u0074ion" , javax. swing .border . TitledBorder. CENTER ,javax . swing. border .TitledBorder
+            . BOTTOM, new java. awt .Font ( "D\u0069alog", java .awt . Font. BOLD ,12 ) ,java . awt. Color .
+            red ) ,panel1. getBorder () ) ); panel1. addPropertyChangeListener( new java. beans .PropertyChangeListener ( ){ @Override public void propertyChange (java .
+            beans. PropertyChangeEvent e) { if( "\u0062order" .equals ( e. getPropertyName () ) )throw new RuntimeException( ) ;} } );
             panel1.setLayout(null);
 
-            //---- button1 ----
-            button1.setText("Login");
-            button1.addMouseListener(new MouseAdapter() {
+            //---- button_login ----
+            button_login.setText("Login");
+            button_login.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    button1MouseReleased(e);
+                    button_loginMouseReleased(e);
                 }
             });
-            panel1.add(button1);
-            button1.setBounds(new Rectangle(new Point(90, 5), button1.getPreferredSize()));
+            panel1.add(button_login);
+            button_login.setBounds(new Rectangle(new Point(90, 5), button_login.getPreferredSize()));
 
-            //---- button2 ----
-            button2.setText("Exit");
-            panel1.add(button2);
-            button2.setBounds(175, 5, 63, 23);
+            //---- button_exit ----
+            button_exit.setText("Exit");
+            button_exit.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    button_exitMouseReleased(e);
+                }
+            });
+            panel1.add(button_exit);
+            button_exit.setBounds(175, 5, 63, 23);
 
             //======== dialogPane ========
             {
@@ -166,8 +175,8 @@ public class Login extends JFrame {
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner Evaluation license - unknown
     private JPanel panel1;
-    private JButton button1;
-    private JButton button2;
+    private JButton button_login;
+    private JButton button_exit;
     private JPanel dialogPane;
     private JPanel hSpacer3;
     private JPanel contentPanel;
