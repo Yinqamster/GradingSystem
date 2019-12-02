@@ -9,7 +9,6 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.*;
-import javax.swing.event.ListDataListener;
 
 import service.CourseService;
 
@@ -65,16 +64,25 @@ public class CourseList extends JFrame{
         }
     }
 
-    private void refreshList(){
+    private void refreshList() {
         courses.clear();
         ArrayList<Course> courses_this_semester = new ArrayList<Course>(CourseService.getCourseListBySemester(currentSemester));
-        Vector<String> items = new Vector<>();
-        for(Course course : courses_this_semester){
+        DefaultListModel<String> dlm = new DefaultListModel<>();
+        for (Course course : courses_this_semester) {
             this.courses.add(course);
             String item = course.getName() + " Section: " + course.getSection();
-            items.add(item);
+            dlm.addElement(item);
         }
-        this.list_courseList = new JList<>(items);
+        this.list_courseList.setModel(dlm);
+    }
+
+    private void button_history_currentMouseReleased(MouseEvent e) {
+        if (button_history_current.getText().equals("History")) {
+            // todo: show all courses, change button text to "Current", reset courses Vector
+        } else {
+            button_history_current.setText("Current");
+            refreshList();
+        }
     }
 
     private void initComponents() {
@@ -113,9 +121,9 @@ public class CourseList extends JFrame{
             list_courseList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             list_courseList.setModel(new AbstractListModel<String>() {
                 String[] values = {
-                    "CS591 P1 Section A",
-                    "CS112 Section A",
-                    "CS112 Section B"
+                        "CS591 P1 Section A1",
+                        "CS112 Section A1",
+                        "CS112 Section A2"
                 };
                 @Override
                 public int getSize() { return values.length; }
@@ -130,25 +138,29 @@ public class CourseList extends JFrame{
         //======== panel_buttons ========
         {
             panel_buttons.setBackground(new Color(238, 238, 238));
-            panel_buttons.setBorder ( new javax . swing. border .CompoundBorder ( new javax . swing. border .TitledBorder ( new
-            javax . swing. border .EmptyBorder ( 0, 0 ,0 , 0) ,  "JF\u006frmDes\u0069gner \u0045valua\u0074ion" , javax
-            . swing .border . TitledBorder. CENTER ,javax . swing. border .TitledBorder . BOTTOM, new java
-            . awt .Font ( "D\u0069alog", java .awt . Font. BOLD ,12 ) ,java . awt
-            . Color .red ) ,panel_buttons. getBorder () ) ); panel_buttons. addPropertyChangeListener( new java. beans .
-            PropertyChangeListener ( ){ @Override public void propertyChange (java . beans. PropertyChangeEvent e) { if( "\u0062order" .
-            equals ( e. getPropertyName () ) )throw new RuntimeException( ) ;} } );
+            panel_buttons.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(
+                    0, 0, 0, 0), "JF\u006frmD\u0065sig\u006eer \u0045val\u0075ati\u006fn", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder
+                    .BOTTOM, new java.awt.Font("Dia\u006cog", java.awt.Font.BOLD, 12), java.awt.Color.
+                    red), panel_buttons.getBorder()));
+            panel_buttons.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+                @Override
+                public void propertyChange(java.
+                                                   beans.PropertyChangeEvent e) {
+                    if ("\u0062ord\u0065r".equals(e.getPropertyName())) throw new RuntimeException();
+                }
+            });
             panel_buttons.setLayout(new MigLayout(
-                "hidemode 3",
-                // columns
-                "[fill]",
-                // rows
-                "[]" +
-                "[]" +
-                "[]" +
-                "[]"));
+                    "hidemode 3",
+                    // columns
+                    "[fill]",
+                    // rows
+                    "[]" +
+                            "[]" +
+                            "[]" +
+                            "[]"));
 
             //---- button_open ----
-            button_open.setText("open");
+            button_open.setText("Open");
             button_open.setForeground(Color.black);
             button_open.setBackground(new Color(204, 204, 204));
             button_open.addMouseListener(new MouseAdapter() {
@@ -160,7 +172,7 @@ public class CourseList extends JFrame{
             panel_buttons.add(button_open, "cell 0 0");
 
             //---- button_delete ----
-            button_delete.setText("delete");
+            button_delete.setText("Delete");
             button_delete.setBackground(new Color(204, 204, 204));
             button_delete.setForeground(Color.black);
             button_delete.addMouseListener(new MouseAdapter() {
@@ -172,7 +184,7 @@ public class CourseList extends JFrame{
             panel_buttons.add(button_delete, "cell 0 1");
 
             //---- button_add ----
-            button_add.setText("add");
+            button_add.setText("Add");
             button_add.setForeground(Color.black);
             button_add.setBackground(new Color(204, 204, 204));
             button_add.addMouseListener(new MouseAdapter() {
@@ -184,9 +196,15 @@ public class CourseList extends JFrame{
             panel_buttons.add(button_add, "cell 0 2");
 
             //---- button_history_current ----
-            button_history_current.setText("history");
+            button_history_current.setText("History");
             button_history_current.setForeground(Color.black);
             button_history_current.setBackground(new Color(204, 204, 204));
+            button_history_current.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    button_history_currentMouseReleased(e);
+                }
+            });
             panel_buttons.add(button_history_current, "cell 0 3");
         }
         contentPane.add(panel_buttons);
