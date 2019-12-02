@@ -98,6 +98,7 @@ public abstract class Student {
 
     public String toString() {
         return "BUID: " + buid + "\n" + "Name: " + name.getFullName() + "\n"
-                 + "Status: " + status + "\n" + "Bonus: " + bonus + "\n";
+                 + "Status: " + status + "\n" + "Bonus: " + bonus + "\n" + "Comment: "
+                 + comment + "\n";
     }
 }
