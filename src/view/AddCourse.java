@@ -5,15 +5,58 @@
 package view;
 
 import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.*;
 import com.intellij.uiDesigner.core.*;
+import service.CourseService;
+import utils.ErrCode;
 
 /**
- * @author unknown
+ * @author Jun Li
  */
 public class AddCourse extends JFrame {
+    // breakdownID, name
+    private Map<String,String> breakdownID_Name = new HashMap<>();
     public AddCourse(CourseList courseList) {
         initComponents();
+
+        // load ComBox
+        loadComboBox();
+    }
+
+    private void loadComboBox(){
+        DefaultComboBoxModel comboBoxModel = (DefaultComboBoxModel) comboBox_chooseTemplate.getModel();
+
+        this.breakdownID_Name.clear();
+        this.breakdownID_Name.putAll(CourseService.getChooseBreakdownItems());
+
+        for(String name : breakdownID_Name.values()){
+            comboBoxModel.addElement(name);
+        }
+        comboBox_chooseTemplate.setModel(comboBoxModel);
+    }
+
+    private boolean textFiledsAreValid(){
+        if(textField_name.equals("")){
+            return false;
+        }else if(textField_section.equals("")){
+            return false;
+        }else return true;
+    }
+
+    private void button_cancelMouseReleased(MouseEvent e) {
+        this.dispose();
+    }
+
+    private void button_saveMouseReleased(MouseEvent e) {
+        // check validation of every textField
+        if(textFiledsAreValid()){
+            // todo add a new course
+
+        }else label_warning.setText(ErrCode.TEXTFIELDEMPTY.getDescription());
     }
 
     private void initComponents() {
@@ -38,6 +81,7 @@ public class AddCourse extends JFrame {
         button_cancel = new JButton();
         label_title = new JLabel();
         hSpacer2 = new JPanel(null);
+        label_warning = new JLabel();
 
         //======== this ========
         setTitle("Add a Course");
@@ -156,15 +200,27 @@ public class AddCourse extends JFrame {
         button_save.setText("save");
         button_save.setForeground(Color.black);
         button_save.setBackground(new Color(204, 204, 204));
+        button_save.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                button_saveMouseReleased(e);
+            }
+        });
         contentPane.add(button_save);
-        button_save.setBounds(75, 330, 88, 25);
+        button_save.setBounds(75, 350, 88, 25);
 
         //---- button_cancel ----
         button_cancel.setText("cancel");
         button_cancel.setForeground(Color.black);
         button_cancel.setBackground(new Color(204, 204, 204));
+        button_cancel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                button_cancelMouseReleased(e);
+            }
+        });
         contentPane.add(button_cancel);
-        button_cancel.setBounds(240, 330, 88, 25);
+        button_cancel.setBounds(240, 350, 88, 25);
 
         //---- label_title ----
         label_title.setText("Add a Course");
@@ -174,6 +230,11 @@ public class AddCourse extends JFrame {
         label_title.setBounds(115, 5, label_title.getPreferredSize().width, 45);
         contentPane.add(hSpacer2);
         hSpacer2.setBounds(355, 0, 40, 375);
+
+        //---- label_warning ----
+        label_warning.setForeground(Color.red);
+        contentPane.add(label_warning);
+        label_warning.setBounds(new Rectangle(new Point(90, 325), label_warning.getPreferredSize()));
 
         {
             // compute preferred size
@@ -215,5 +276,6 @@ public class AddCourse extends JFrame {
     private JButton button_cancel;
     private JLabel label_title;
     private JPanel hSpacer2;
+    private JLabel label_warning;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

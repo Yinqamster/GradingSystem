@@ -27,4 +27,8 @@ public class TemplateService {
     public Map<String, Breakdown> getTemplateMap() {
         return templateMap;
     }
+    public static Map<String,String> getAllTemplateName() {
+        //TODO return name for every saved template, format: Map<breakdownID, templateName>
+        return new HashMap<>();
+    }
 }

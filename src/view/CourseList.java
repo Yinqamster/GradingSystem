@@ -20,7 +20,7 @@ import utils.Config;
  * @author Jun Li
  */
 public class CourseList extends JFrame{
-    private Vector<Course> courses = new Vector<>();
+    private Vector<Course> coursesVector = new Vector<>();
     private String currentSemester = Config.CURRENT_SEMETER;
 
     public CourseList() {
@@ -34,7 +34,6 @@ public class CourseList extends JFrame{
     }
 
     private void button_addMouseReleased(MouseEvent e) {
-        this.setVisible(false);
         AddCourse addCourse = new AddCourse(this);
         addCourse.setVisible(true);
     }
@@ -58,18 +57,19 @@ public class CourseList extends JFrame{
         if(n == 0){
             // delete this course
             int selectedIndex = list_courseList.getSelectedIndex();
-            Course selectedCourse = courses.get(selectedIndex);
+            Course selectedCourse = this.coursesVector.get(selectedIndex);
             CourseService.deleteCourse(selectedCourse.getCourseID());
             refreshList();
         }
     }
 
+    // refresh list_courseList, show courses this semester
     private void refreshList() {
-        courses.clear();
+        this.coursesVector.clear();
         ArrayList<Course> courses_this_semester = new ArrayList<Course>(CourseService.getCourseListBySemester(currentSemester));
         DefaultListModel<String> dlm = new DefaultListModel<>();
         for (Course course : courses_this_semester) {
-            this.courses.add(course);
+            this.coursesVector.add(course);
             String item = course.getName() + " Section: " + course.getSection();
             dlm.addElement(item);
         }
@@ -121,9 +121,9 @@ public class CourseList extends JFrame{
             list_courseList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             list_courseList.setModel(new AbstractListModel<String>() {
                 String[] values = {
-                        "CS591 P1 Section A1",
-                        "CS112 Section A1",
-                        "CS112 Section A2"
+                    "CS591 P1 Section A1",
+                    "CS112 Section A1",
+                    "CS112 Section A2"
                 };
                 @Override
                 public int getSize() { return values.length; }
@@ -138,26 +138,22 @@ public class CourseList extends JFrame{
         //======== panel_buttons ========
         {
             panel_buttons.setBackground(new Color(238, 238, 238));
-            panel_buttons.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(
-                    0, 0, 0, 0), "JF\u006frmD\u0065sig\u006eer \u0045val\u0075ati\u006fn", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder
-                    .BOTTOM, new java.awt.Font("Dia\u006cog", java.awt.Font.BOLD, 12), java.awt.Color.
-                    red), panel_buttons.getBorder()));
-            panel_buttons.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-                @Override
-                public void propertyChange(java.
-                                                   beans.PropertyChangeEvent e) {
-                    if ("\u0062ord\u0065r".equals(e.getPropertyName())) throw new RuntimeException();
-                }
-            });
+            panel_buttons.setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new javax
+            . swing. border. EmptyBorder( 0, 0, 0, 0) , "JF\u006frmDes\u0069gner \u0045valua\u0074ion", javax. swing
+            . border. TitledBorder. CENTER, javax. swing. border. TitledBorder. BOTTOM, new java .awt .
+            Font ("D\u0069alog" ,java .awt .Font .BOLD ,12 ), java. awt. Color. red
+            ) ,panel_buttons. getBorder( )) ); panel_buttons. addPropertyChangeListener (new java. beans. PropertyChangeListener( ){ @Override
+            public void propertyChange (java .beans .PropertyChangeEvent e) {if ("\u0062order" .equals (e .getPropertyName (
+            ) )) throw new RuntimeException( ); }} );
             panel_buttons.setLayout(new MigLayout(
-                    "hidemode 3",
-                    // columns
-                    "[fill]",
-                    // rows
-                    "[]" +
-                            "[]" +
-                            "[]" +
-                            "[]"));
+                "hidemode 3",
+                // columns
+                "[fill]",
+                // rows
+                "[]" +
+                "[]" +
+                "[]" +
+                "[]"));
 
             //---- button_open ----
             button_open.setText("Open");
