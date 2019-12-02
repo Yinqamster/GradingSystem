@@ -20,11 +20,12 @@ public class BreakdownDAO extends DAOImpl{
     }
 
     public Breakdown getBreakdown(String breakdownID) throws SQLException {
-        String selectGradingRule = "SELECT * FROM breakdown WHERE break_down_id = ?";
-        ResultSet resultSet = super.getValue(selectGradingRule, breakdownID);
-        List<GradingRule> gradingRuleList = GradingRuleDAO.getInstance().getGradingRuleList(breakdownID);
-        Map<String, double[]> letterMap = LetterRuleDAO.getInstance().getLetterMap(breakdownID);
-        return new Breakdown(gradingRuleList, letterMap, breakdownID);
+//        String selectGradingRule = "SELECT * FROM breakdown WHERE break_down_id = ?";
+//        ResultSet resultSet = super.getValue(selectGradingRule, breakdownID);
+//        List<GradingRule> gradingRuleList = GradingRuleDAO.getInstance().getGradingRuleList(breakdownID);
+//        Map<String, double[]> letterMap = LetterRuleDAO.getInstance().getLetterMap(breakdownID);
+//        return new Breakdown(gradingRuleList, letterMap, breakdownID);
+        return null;
     }
 
     public int updateBreakdown(Breakdown breakdown) throws SQLException {

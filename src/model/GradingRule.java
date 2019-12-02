@@ -20,6 +20,14 @@ public class GradingRule {
         this.proportion = proportion;
     }
 
+    public GradingRule(String ID, String parentID, String name, double proportion) {
+        this.parentID = parentID;
+        this.id = ID;
+        this.name = name;
+        this.fullScore = 0.0;
+        this.proportion = proportion;
+    }
+
     public String getId() {
         return id;
     }

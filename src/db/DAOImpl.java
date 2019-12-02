@@ -1,6 +1,8 @@
 package db;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DAOImpl implements DAO {
 
@@ -14,7 +16,7 @@ public class DAOImpl implements DAO {
         }
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         for (int i = 0; i < args.length; i++) {
-            preparedStatement.setObject(i, args[i]);
+            preparedStatement.setObject(i + 1, args[i]);
         }
         return preparedStatement.executeUpdate();
     }
@@ -35,22 +37,22 @@ public class DAOImpl implements DAO {
     }
 
     @Override
-    public ResultSet getValue(Connection connection, String sql) throws SQLException {
+    public List<Object> getValue(Connection connection, String sql) throws SQLException {
         return this.getValue(connection, sql, (Object[])null);
     }
 
     @Override
-    public ResultSet getValue(String sql) throws SQLException {
+    public List<Object> getValue(String sql) throws SQLException {
         return this.getValue(DBUtil.getConnection(), sql, (Object[])null);
     }
 
     @Override
-    public ResultSet getValue(String sql, Object... args) throws SQLException {
+    public List<Object> getValue(String sql, Object... args) throws SQLException {
         return this.getValue(DBUtil.getConnection(), sql, args);
     }
 
     @Override
-    public ResultSet getValue(Connection connection, String sql, Object... args) throws SQLException {
+    public List<Object> getValue(Connection connection, String sql, Object... args) throws SQLException {
         if(connection == null) {
             throw new SQLException("Null connection");
         } else if (sql == null) {
@@ -59,9 +61,16 @@ public class DAOImpl implements DAO {
         }
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         for(int i = 0; i < args.length; i++) {
-            preparedStatement.setObject(i, args[i]);
+            preparedStatement.setObject(i + 1, args[i]);
         }
-        return preparedStatement.executeQuery();
+        ResultSet resultSet = preparedStatement.executeQuery();
+        List<Object> result = new ArrayList<>();
+        int columnCount = resultSet.getMetaData().getColumnCount();
+        for(int i = 1; i<= columnCount; i++) {
+            result.add(resultSet.getObject(i));
+            System.out.println(resultSet.getObject(i).toString());
+        }
+        return result;
     }
 
     @Override
@@ -74,7 +83,7 @@ public class DAOImpl implements DAO {
         }
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         for(int i = 0; i < args.length; i++) {
-            preparedStatement.setObject(i, args[i]);
+            preparedStatement.setObject(i + 1, args[i]);
         }
         return preparedStatement.executeUpdate();
     }

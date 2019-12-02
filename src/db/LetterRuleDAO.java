@@ -15,17 +15,18 @@ public class LetterRuleDAO extends DAOImpl {
     }
 
     public Map<String, double[]> getLetterMap(String breakdownID) throws SQLException {
-        String selectSql = "SELECT * FROM letter_rule WHERE fk_breakdown_id = ?";
-        ResultSet resultSet = super.getValue(selectSql, breakdownID);
-        Map<String, double[]> letterResult = new HashMap<>();
-        while(resultSet.next()) {
-            String letter = resultSet.getString("letter");
-            double minScore = resultSet.getDouble("min_score");
-            double maxScore = resultSet.getDouble("max_score");
-            double[] segment = {minScore, maxScore};
-            letterResult.put(letter, segment);
-        }
-        return letterResult;
+//        String selectSql = "SELECT * FROM letter_rule WHERE fk_breakdown_id = ?";
+//        ResultSet resultSet = super.getValue(selectSql, breakdownID);
+//        Map<String, double[]> letterResult = new HashMap<>();
+//        while(resultSet.next()) {
+//            String letter = resultSet.getString("letter");
+//            double minScore = resultSet.getDouble("min_score");
+//            double maxScore = resultSet.getDouble("max_score");
+//            double[] segment = {minScore, maxScore};
+//            letterResult.put(letter, segment);
+//        }
+//        return letterResult;
+        return null;
     }
 
     public void updateLetterMap(Map<String, double[]> mapLetter, String breakdownID) throws SQLException {

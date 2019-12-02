@@ -64,4 +64,8 @@ public class Name {
         this.fullName = fullName;
     }
 
+    public String toString() {
+        return fullName;
+    }
+
 }

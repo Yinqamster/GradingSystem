@@ -3,7 +3,8 @@ package utils;
 public enum ErrCode {
     OK("OK", 0),
     //course service
-    COURSEEXIST("Course exists.", 1),
+    COURSEEXIST("Course exists.", 101),
+    COURSENOTEXIST("Course exists.", 102),
 
     // Student service
     STUDENTEXIST("Student already exists.", 201),

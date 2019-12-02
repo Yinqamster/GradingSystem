@@ -3,6 +3,7 @@ package model;
 import utils.Config;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class Student {
@@ -36,6 +37,15 @@ public abstract class Student {
         this.name = name;
         this.buid = buid;
         this.comment = comment;
+    }
+
+    public Student(Name name, String buid, int status, double bonus,
+                   Map<String, Grade> grades) {
+        this.name = name;
+        this.buid = buid;
+        this.status = status;
+        this.bonus = bonus;
+        this.grades = grades;
     }
 
     public Name getName() {
@@ -84,5 +94,11 @@ public abstract class Student {
 
     public void setGrades(Map<String, Grade> grades) {
         this.grades = grades;
+    }
+
+    public String toString() {
+        return "BUID: " + buid + "\n" + "Name: " + name.getFullName() + "\n"
+                 + "Status: " + status + "\n" + "Bonus: " + bonus + "\n" + "Comment: "
+                 + comment + "\n";
     }
 }

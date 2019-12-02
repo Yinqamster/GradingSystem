@@ -19,7 +19,7 @@ public class GradingRuleService {
     }
 
     public int addGradingRule(String name, double fullScore, double proportion, int parentId) {
-        GradingRule gradingRule = new GradingRule(parentId, name, fullScore, proportion);
+//        GradingRule gradingRule = new GradingRule(parentId, name, fullScore, proportion);
 
         //TODO insert grading rule into database
         return ErrCode.OK.getCode();
