@@ -35,16 +35,6 @@ public class Statistics extends JFrame {
         label3 = new JLabel();
         label_section = new JLabel();
         scrollPane_chooseCategories = new JScrollPane();
-        panel_categories = new JPanel();
-        checkBox1 = new JCheckBox();
-        label2 = new JLabel();
-        label9 = new JLabel();
-        checkBox2 = new JCheckBox();
-        label4 = new JLabel();
-        label10 = new JLabel();
-        checkBox3 = new JCheckBox();
-        label8 = new JLabel();
-        label11 = new JLabel();
         checkBox_isAll = new JCheckBox();
         label5 = new JLabel();
         label6 = new JLabel();
@@ -86,62 +76,6 @@ public class Statistics extends JFrame {
         //======== scrollPane_chooseCategories ========
         {
             scrollPane_chooseCategories.setBackground(Color.white);
-
-            //======== panel_categories ========
-            {
-                panel_categories.setBackground(Color.white);
-                panel_categories.setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new javax.
-                swing. border. EmptyBorder( 0, 0, 0, 0) , "JFor\u006dDesi\u0067ner \u0045valu\u0061tion", javax. swing. border
-                . TitledBorder. CENTER, javax. swing. border. TitledBorder. BOTTOM, new java .awt .Font ("Dia\u006cog"
-                ,java .awt .Font .BOLD ,12 ), java. awt. Color. red) ,panel_categories. getBorder
-                ( )) ); panel_categories. addPropertyChangeListener (new java. beans. PropertyChangeListener( ){ @Override public void propertyChange (java
-                .beans .PropertyChangeEvent e) {if ("bord\u0065r" .equals (e .getPropertyName () )) throw new RuntimeException
-                ( ); }} );
-                panel_categories.setLayout(new TableLayout(new double[][] {
-                    {TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED},
-                    {TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED}}));
-                ((TableLayout)panel_categories.getLayout()).setHGap(10);
-
-                //---- checkBox1 ----
-                checkBox1.setText("asfdasfafa");
-                checkBox1.setBackground(Color.white);
-                panel_categories.add(checkBox1, new TableLayoutConstraints(0, 0, 0, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-
-                //---- label2 ----
-                label2.setText("text");
-                panel_categories.add(label2, new TableLayoutConstraints(1, 0, 1, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-
-                //---- label9 ----
-                label9.setText("text");
-                panel_categories.add(label9, new TableLayoutConstraints(2, 0, 2, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-
-                //---- checkBox2 ----
-                checkBox2.setText("text");
-                checkBox2.setBackground(Color.white);
-                panel_categories.add(checkBox2, new TableLayoutConstraints(0, 1, 0, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-
-                //---- label4 ----
-                label4.setText("text");
-                panel_categories.add(label4, new TableLayoutConstraints(1, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-
-                //---- label10 ----
-                label10.setText("text");
-                panel_categories.add(label10, new TableLayoutConstraints(2, 1, 2, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-
-                //---- checkBox3 ----
-                checkBox3.setText("text");
-                checkBox3.setBackground(Color.white);
-                panel_categories.add(checkBox3, new TableLayoutConstraints(0, 2, 0, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-
-                //---- label8 ----
-                label8.setText("text");
-                panel_categories.add(label8, new TableLayoutConstraints(1, 2, 1, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-
-                //---- label11 ----
-                label11.setText("text");
-                panel_categories.add(label11, new TableLayoutConstraints(2, 2, 2, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-            }
-            scrollPane_chooseCategories.setViewportView(panel_categories);
         }
         contentPane.add(scrollPane_chooseCategories);
         scrollPane_chooseCategories.setBounds(40, 70, 465, 180);
@@ -230,16 +164,6 @@ public class Statistics extends JFrame {
     private JLabel label3;
     private JLabel label_section;
     private JScrollPane scrollPane_chooseCategories;
-    private JPanel panel_categories;
-    private JCheckBox checkBox1;
-    private JLabel label2;
-    private JLabel label9;
-    private JCheckBox checkBox2;
-    private JLabel label4;
-    private JLabel label10;
-    private JCheckBox checkBox3;
-    private JLabel label8;
-    private JLabel label11;
     private JCheckBox checkBox_isAll;
     private JLabel label5;
     private JLabel label6;

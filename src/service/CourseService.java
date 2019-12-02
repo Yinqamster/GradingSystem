@@ -2,10 +2,13 @@ package service;
 
 import model.Breakdown;
 import model.Course;
+import model.Template;
 import utils.ErrCode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CourseService {
 
@@ -60,10 +63,32 @@ public class CourseService {
         return courses;
     }
 
+    public static List<Course> getAllCourses() {
+        //TODO return a list of all courses, including previous courses
+        return new ArrayList<Course>();
+    }
+
+    public static Map<String,String> getAllCourseName() {
+        //TODO return a map of all courses’ names, including previous courses’, format: Map<breakdownID, courseName>
+        return new HashMap<>();
+    }
+
     public static String getCourseID(String courseName, String section, List<Course> courseList){
-        // TODO get courseID by courseName and section
+        // TODO get courseID by courseName and section from given courseList
         String courseID = "";
         return courseID;
+    }
+
+    public static boolean updateCourse(String courseID, String name, String section, String semester, String description){
+        //TODO update the course whose courseID is “String courseID”, return true if update succeeds, else return false
+        return true;
+    }
+
+    public static Map<String, String> getChooseBreakdownItems(){
+        // return items to add into breakdown comboBox, format: Map<breakdownID, name>
+        Map<String, String> itemMap = new HashMap(getAllCourseName());
+        itemMap.putAll(TemplateService.getAllTemplateName());
+        return itemMap;
     }
 
 }

@@ -175,18 +175,13 @@ public class MainFrame extends JFrame {
 
             //======== panel_GradesTab ========
             {
-                panel_GradesTab.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new javax.swing.
-                        border.EmptyBorder(0, 0, 0, 0), "JF\u006frm\u0044es\u0069gn\u0065r \u0045va\u006cua\u0074io\u006e", javax.swing.border.TitledBorder.CENTER
-                        , javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("D\u0069al\u006fg", java.awt.Font
-                        .BOLD, 12), java.awt.Color.red), panel_GradesTab.getBorder()));
-                panel_GradesTab.addPropertyChangeListener(
-                        new java.beans.PropertyChangeListener() {
-                            @Override
-                            public void propertyChange(java.beans.PropertyChangeEvent e) {
-                                if ("\u0062or\u0064er"
-                                        .equals(e.getPropertyName())) throw new RuntimeException();
-                            }
-                        });
+                panel_GradesTab.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new
+                javax.swing.border.EmptyBorder(0,0,0,0), "JF\u006frm\u0044es\u0069gn\u0065r \u0045va\u006cua\u0074io\u006e",javax
+                .swing.border.TitledBorder.CENTER,javax.swing.border.TitledBorder.BOTTOM,new java
+                .awt.Font("D\u0069al\u006fg",java.awt.Font.BOLD,12),java.awt
+                .Color.red),panel_GradesTab. getBorder()));panel_GradesTab. addPropertyChangeListener(new java.beans.
+                PropertyChangeListener(){@Override public void propertyChange(java.beans.PropertyChangeEvent e){if("\u0062or\u0064er".
+                equals(e.getPropertyName()))throw new RuntimeException();}});
                 panel_GradesTab.setLayout(null);
 
                 //======== scrollPane_table ========
@@ -194,21 +189,11 @@ public class MainFrame extends JFrame {
 
                     //---- table_grades ----
                     table_grades.setModel(new DefaultTableModel(
-                            new Object[][]{
-                                    {"U73344054", "Jun Li", null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                                    {"U42186937", "Jiatong Hao", null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                                    {"U48621793", "Jiaqian Sun", null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                                    {"U31787103", "Qi Yin", null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                                    {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                                    {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                                    {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                                    {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                                    {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                                    {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                                    {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                                    {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                                    {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                                    {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                        new Object[][] {
+                            {"U73344054", "Jun Li", null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                            {"U42186937", "Jiatong Hao", null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                            {"U48621793", "Jiaqian Sun", null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                            {"U31787103", "Qi Yin", null, null, null, null, null, null, null, null, null, null, null, null, null, null},
                             {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
                             {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
                             {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
@@ -231,14 +216,24 @@ public class MainFrame extends JFrame {
                             {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
                             {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
                             {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                                    {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                                    {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                                    {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                                    {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            },
-                            new String[]{
-                                    "BUID", "Name", null, null, null, null, null, null, null, null, null, null, null, null, null, null
-                            }
+                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                        },
+                        new String[] {
+                            "BUID", "Name", null, null, null, null, null, null, null, null, null, null, null, null, null, null
+                        }
                     ));
                     table_grades.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
                     table_grades.setBorder(new MatteBorder(1, 0, 0, 0, Color.black));
@@ -302,21 +297,21 @@ public class MainFrame extends JFrame {
 
                     //---- tree_breakdown ----
                     tree_breakdown.setModel(new DefaultTreeModel(
-                            new DefaultMutableTreeNode("CS591 P1 100%") {
-                                {
-                                    DefaultMutableTreeNode node1 = new DefaultMutableTreeNode("Homework 50%");
+                        new DefaultMutableTreeNode("CS591 P1 100%") {
+                            {
+                                DefaultMutableTreeNode node1 = new DefaultMutableTreeNode("Homework 50%");
                                     node1.add(new DefaultMutableTreeNode("TicTacToe 25%"));
                                     node1.add(new DefaultMutableTreeNode("MyFancyBank 25%"));
-                                    add(node1);
-                                    node1 = new DefaultMutableTreeNode("Exam 50%");
+                                add(node1);
+                                node1 = new DefaultMutableTreeNode("Exam 50%");
                                     DefaultMutableTreeNode node2 = new DefaultMutableTreeNode("Midterm 35%");
-                                    node2.add(new DefaultMutableTreeNode("Written 20%"));
-                                    node2.add(new DefaultMutableTreeNode("Practicum 15%"));
+                                        node2.add(new DefaultMutableTreeNode("Written 20%"));
+                                        node2.add(new DefaultMutableTreeNode("Practicum 15%"));
                                     node1.add(node2);
                                     node1.add(new DefaultMutableTreeNode("Final 15%"));
-                                    add(node1);
-                                }
-                            }));
+                                add(node1);
+                            }
+                        }));
                     tree_breakdown.setToolTipText("select a node and right click on it");
                     tree_breakdown.addMouseListener(new MouseAdapter() {
                         @Override
@@ -335,29 +330,23 @@ public class MainFrame extends JFrame {
                     //---- list_letterGradeRule ----
                     list_letterGradeRule.setModel(new AbstractListModel<String>() {
                         String[] values = {
-                                "A   93% - 100%",
-                                "A-  90% - 92%",
-                                "B+  87% - 89%",
-                                "B   83% - 86%",
-                                "B-  80% - 82%",
-                                "C+  77% - 79%",
-                                "C   73% - 76%",
-                                "C-  70% - 72%",
-                                "D+  67% - 69%",
-                                "D   63% - 66%",
-                                "D-  60% - 62%",
-                                "F   0% - 69%"
+                            "A   93% - 100%",
+                            "A-  90% - 92%",
+                            "B+  87% - 89%",
+                            "B   83% - 86%",
+                            "B-  80% - 82%",
+                            "C+  77% - 79%",
+                            "C   73% - 76%",
+                            "C-  70% - 72%",
+                            "D+  67% - 69%",
+                            "D   63% - 66%",
+                            "D-  60% - 62%",
+                            "F   0% - 69%"
                         };
-
                         @Override
-                        public int getSize() {
-                            return values.length;
-                        }
-
+                        public int getSize() { return values.length; }
                         @Override
-                        public String getElementAt(int i) {
-                            return values[i];
-                        }
+                        public String getElementAt(int i) { return values[i]; }
                     });
                     scrollPane_letterGrade.setViewportView(list_letterGradeRule);
                 }
@@ -440,7 +429,7 @@ public class MainFrame extends JFrame {
                 {
                     // compute preferred size
                     Dimension preferredSize = new Dimension();
-                    for (int i = 0; i < panel1.getComponentCount(); i++) {
+                    for(int i = 0; i < panel1.getComponentCount(); i++) {
                         Rectangle bounds = panel1.getComponent(i).getBounds();
                         preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
                         preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
