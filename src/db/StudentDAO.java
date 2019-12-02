@@ -27,12 +27,22 @@ public class StudentDAO{
         String selectSql = "SELECT * FROM student WHERE buid = ?";
         PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(selectSql);
         Name name = NameDAO.getInstance().getName(buid);
+        preparedStatement.setObject(1, buid);
         ResultSet resultSet = preparedStatement.executeQuery();
-        int status = Integer.parseInt(resultSet.getString("status"));
-        double bonus = Double.parseDouble(resultSet.getString("bonus"));
-        String comment = resultSet.getString("comment");
-        Map<String, Grade> gradeList = GradeDAO.getInstance().getGradeList(buid);
-        int category = resultSet.getInt("category");
+
+        int status = 0;
+        double bonus = 0;
+        String comment = "";
+        Map<String, Grade> gradeList = null;
+        int category = 0;
+
+        if(resultSet.next()) {
+            status = Integer.parseInt(resultSet.getString("status"));
+            bonus = Double.parseDouble(resultSet.getString("bonus"));
+            comment = resultSet.getString("comment");
+            gradeList = GradeDAO.getInstance().getGradeList(buid);
+            category = resultSet.getInt("category");
+        }
         resultSet.close();
         preparedStatement.close();
         DBUtil.getConnection().close();
@@ -83,8 +93,10 @@ public class StudentDAO{
 
     public int updateStudent(String firstname, String midname, String lastname,
                              String buid, String comment, String courseId) throws SQLException {
-        String updateSql = "REPLACE INTO student (buid, first_name, middle_name, " +
-                "last_name, comment, bonus, category) values (?, ?, ?, ?, ?)";
+//        String updateSql = "UPDATE student SET first_name = ?, middle_name = ?, last_name = ?," +
+//                "comment = ? WHERE buid = ?";
+        String updateSql = "REPLACE INTO student (buid, first_name, middle_name, last_name, comment) " +
+                "values (?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(updateSql);
         preparedStatement.setObject(1, buid);
         preparedStatement.setObject(2, firstname);
@@ -110,7 +122,7 @@ public class StudentDAO{
     public int addStudent(String firstname, String midname, String lastname, String buid,
                           String year, String comment, String courseId) throws SQLException {
         this.updateStudent(firstname, midname, lastname, buid, comment, courseId);
-        String updateSql = "UPDATE student SET category = ? WHERE buid = ?";
+        String updateSql = "UPDATE student SET category  = ? WHERE buid = ?";
         PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(updateSql);
         if(year.equalsIgnoreCase("undergraduate")) {
             preparedStatement.setObject(1, 0);
@@ -145,9 +157,10 @@ public class StudentDAO{
             return ErrCode.STUDENTNOTEXIST.getCode();
         }
         preparedStatement.close();
-        String deleteCourseSql = "DELETE FROM course_student_relationship WHERE course_id = ?";
+        String deleteCourseSql = "DELETE FROM course_student_relationship WHERE course_id = ? AND student_id = ?";
         preparedStatement = DBUtil.getConnection().prepareStatement(deleteCourseSql);
         preparedStatement.setObject(1, courseId);
+        preparedStatement.setObject(2, buid);
         deleteReturnValue = preparedStatement.executeUpdate();
         if(deleteReturnValue == 0) {
             return ErrCode.COURSENOTEXIST.getCode();

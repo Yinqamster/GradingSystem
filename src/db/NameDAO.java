@@ -23,9 +23,17 @@ public class NameDAO {
         PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(selectSql);
         preparedStatement.setObject(1, BUID);
         ResultSet resultSet = preparedStatement.executeQuery();
-        String firstName = resultSet.getString("first_name");
-        String middleName = resultSet.getString("middle_name");
-        String lastName = resultSet.getString("last_name");
+        String firstName = "";
+        String middleName = "";
+        String lastName = "";
+        if(resultSet.next()) {
+            firstName = resultSet.getString("first_name");
+            middleName = resultSet.getString("middle_name");
+            lastName = resultSet.getString("last_name");
+        }
+        resultSet.close();
+        preparedStatement.close();
+        DBUtil.getConnection().close();
         return new Name(firstName, middleName, lastName);
     }
 
