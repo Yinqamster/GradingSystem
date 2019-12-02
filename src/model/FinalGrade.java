@@ -7,7 +7,6 @@ public class FinalGrade extends Grade {
 
     public FinalGrade() {
         super();
-        setRuleName(Config.FINALRULENAME);
     }
 
     public FinalGrade(double percentage, String letterGrade){

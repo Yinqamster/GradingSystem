@@ -2,10 +2,11 @@ package db;
 
 import model.Name;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class NameDAO extends DAOImpl{
+public class NameDAO {
 
     private static NameDAO nameDAO = new NameDAO();
 
@@ -19,7 +20,9 @@ public class NameDAO extends DAOImpl{
 
     public Name getName(String BUID) throws SQLException {
         String selectSql = "SELECT first_name, middle_name, last_name FROM student WHERE buid = ?";
-        ResultSet resultSet = super.getValue(selectSql, BUID);
+        PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(selectSql);
+        preparedStatement.setObject(1, BUID);
+        ResultSet resultSet = preparedStatement.executeQuery();
         String firstName = resultSet.getString("first_name");
         String middleName = resultSet.getString("middle_name");
         String lastName = resultSet.getString("last_name");
@@ -31,6 +34,7 @@ public class NameDAO extends DAOImpl{
         String middleName = name.getMiddleName();
         String lastName = name.getLastName();
         String updateSql = "UPDATE student SET first_name = ?, middle_name = ?, last_name = ? WHERE buid = ?";
-        return super.update(updateSql, firstName, middleName, lastName, BUID);
+        PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(updateSql);
+        return preparedStatement.executeUpdate();
     }
 }

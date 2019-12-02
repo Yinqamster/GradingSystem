@@ -3,6 +3,7 @@ package db;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public interface DAO {
 
@@ -39,20 +40,20 @@ public interface DAO {
      * @param sql: SQL statement
      * @return: Data value
      */
-    ResultSet getValue(Connection connection, String sql) throws SQLException;
+    List<Object> getValue(Connection connection, String sql) throws SQLException;
 
     /**
      * @param sql: SQL statement
      * @return: Data value
      */
-    ResultSet getValue(String sql) throws SQLException;
+    List<Object> getValue(String sql) throws SQLException;
 
     /**
      * @param sql: SQL statement
      * @param args: Parameter of SQL
      * @return: Data value
      */
-    ResultSet getValue(String sql, Object... args) throws SQLException;
+    List<Object> getValue(String sql, Object... args) throws SQLException;
 
     /**
      * @param connection: Connection of database
@@ -60,7 +61,7 @@ public interface DAO {
      * @param args: Parameter of SQL
      * @return: Data value
      */
-    ResultSet getValue(Connection connection, String sql, Object... args) throws SQLException;
+    List<Object> getValue(Connection connection, String sql, Object... args) throws SQLException;
 
     /**
      * @param connection: Connection of database

@@ -37,22 +37,22 @@ public class DAOImpl implements DAO {
     }
 
     @Override
-    public ResultSet getValue(Connection connection, String sql) throws SQLException {
+    public List<Object> getValue(Connection connection, String sql) throws SQLException {
         return this.getValue(connection, sql, (Object[])null);
     }
 
     @Override
-    public ResultSet getValue(String sql) throws SQLException {
+    public List<Object> getValue(String sql) throws SQLException {
         return this.getValue(DBUtil.getConnection(), sql, (Object[])null);
     }
 
     @Override
-    public ResultSet getValue(String sql, Object... args) throws SQLException {
+    public List<Object> getValue(String sql, Object... args) throws SQLException {
         return this.getValue(DBUtil.getConnection(), sql, args);
     }
 
     @Override
-    public ResultSet getValue(Connection connection, String sql, Object... args) throws SQLException {
+    public List<Object> getValue(Connection connection, String sql, Object... args) throws SQLException {
         if(connection == null) {
             throw new SQLException("Null connection");
         } else if (sql == null) {
@@ -70,7 +70,7 @@ public class DAOImpl implements DAO {
             result.add(resultSet.getObject(i));
             System.out.println(resultSet.getObject(i).toString());
         }
-        return preparedStatement.executeQuery();
+        return result;
     }
 
     @Override

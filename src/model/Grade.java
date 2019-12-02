@@ -1,49 +1,26 @@
 package model;
 
 public class Grade {
-    private String ruleName;
+    private String ruleId;
     private double absolute;
     private double percentage;
     private double deduction;
     private String comment;
-    private String ruleID;
 
     public Grade(){
 
     }
 
-    public Grade(String ruleName, double absolute, double percentage, double deduction, String comment) {
-        this.ruleName = ruleName;
+    public Grade(String ruleId, double absolute, double percentage, double deduction, String comment) {
+        this.ruleId = ruleId;
         this.absolute = absolute;
         this.percentage = percentage;
         this.deduction = deduction;
         this.comment = comment;
     }
 
-    public Grade(String ruleID, String ruleName, double absolute, double percentage, double deduction, String comment) {
-        this.ruleID = ruleID;
-        this.ruleName = ruleName;
-        this.absolute = absolute;
-        this.percentage = percentage;
-        this.deduction = deduction;
-        this.comment = comment;
-    }
-
-    public Grade(String ruleID, String ruleName, double absolute, double percentage, double deduction) {
-        this.ruleID = ruleID;
-        this.ruleName = ruleName;
-        this.absolute = absolute;
-        this.percentage = percentage;
-        this.comment = "";
-        this.deduction = deduction;
-    }
-
-    public String getRuleName() {
-        return ruleName;
-    }
-
-    public void setRuleName(String ruleName) {
-        this.ruleName = ruleName;
+    public void setRuleId(String ruleId) {
+        this.ruleId = ruleId;
     }
 
     public double getAbsolute() {
