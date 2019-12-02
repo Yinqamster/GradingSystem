@@ -38,6 +38,15 @@ public abstract class Student {
         this.comment = comment;
     }
 
+    public Student(Name name, String buid, int status, double bonus,
+                   List<Grade> grades) {
+        this.name = name;
+        this.buid = buid;
+        this.status = status;
+        this.bonus = bonus;
+        this.grades = grades;
+    }
+
     public Name getName() {
         return name;
     }
@@ -84,5 +93,10 @@ public abstract class Student {
 
     public void setGrades(List<Grade> grades) {
         this.grades = grades;
+    }
+
+    public String toString() {
+        return "BUID: " + buid + "\n" + "Name: " + name.getFullName() + "\n"
+                 + "Status: " + status + "\n" + "Bonus: " + bonus + "\n";
     }
 }

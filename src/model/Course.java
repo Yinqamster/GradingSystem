@@ -25,9 +25,28 @@ public class Course {
         this.description = description;
     }
 
+    public Course(String name, String semester, String description) {
+        this();
+        this.name = name;
+        this.semester = semester;
+        this.description = description;
+    }
+
+    public Course(String name, String section, String semester, String description, Map<String, Student> studentMap) {
+        this.students = studentMap;
+        this.name = name;
+        this.section = section;
+        this.semester = semester;
+        this.description = description;
+    }
 
     public Course(String name, String section, String semester, String description, Breakdown breakdown) {
         this(name, section, semester, description);
+        this.breakdown = breakdown;
+    }
+
+    public Course(String name, String section, String semester, String description, Map<String, Student> studentMap, Breakdown breakdown) {
+        this(name, section, semester, description, studentMap);
         this.breakdown = breakdown;
     }
 

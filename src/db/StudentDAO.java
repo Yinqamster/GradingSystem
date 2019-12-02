@@ -25,7 +25,7 @@ public class StudentDAO extends DAOImpl{
         String selectSql = "SELECT * FROM student WHERE buid = ?";
         ResultSet resultSet = super.getValue(selectSql, BUID);
         Name name = NameDAO.getInstance().getName(BUID);
-        int status = Integer.parseInt(resultSet.getString("statue"));
+        int status = Integer.parseInt(resultSet.getString("status"));
         double bonus = Double.parseDouble(resultSet.getString("bonus"));
         String comment = resultSet.getString("comment");
         List<Grade> gradeList = GradeDAO.getInstance().getGradeList(BUID);
@@ -51,13 +51,21 @@ public class StudentDAO extends DAOImpl{
         String comment = student.getComment();
         double bonus = student.getBonus();
         String updateSql = "REPLACE INTO student (buid, first_name, middle_name, " +
-                    "last_name, status, comment, bonus) values (?, ?, ?, ?, ?, ?, ?)";
-        return super.update(updateSql, firstName, middleName, lastName, status, comment, bonus, buid);
+                    "last_name, status, comment, bonus, category) values (?, ?, ?, ?, ?, ?, ?, ?)";
+        if(student instanceof GraduateStudent) {
+            return super.update(updateSql, buid, firstName, middleName, lastName, status, comment, bonus, 1);
+        }
+        else if(student instanceof UndergraduateStudent) {
+            return super.update(updateSql, buid, firstName, middleName, lastName, status, comment, bonus, 0);
+        }
+        else {
+            return ErrCode.STUDENTTYPEERROR.getCode();
+        }
     }
 
     public int deleteStudent(Student student) throws SQLException {
         String BUID = student.getBuid();
-        String deleteSql = "DELETE FROM undergraduate_student WHERE buid = ?";
+        String deleteSql = "DELETE FROM student WHERE buid = ?";
         return super.delete(deleteSql, BUID);
     }
 }

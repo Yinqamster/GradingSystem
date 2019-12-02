@@ -1,6 +1,8 @@
 package db;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DAOImpl implements DAO {
 
@@ -14,7 +16,7 @@ public class DAOImpl implements DAO {
         }
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         for (int i = 0; i < args.length; i++) {
-            preparedStatement.setObject(i, args[i]);
+            preparedStatement.setObject(i + 1, args[i]);
         }
         return preparedStatement.executeUpdate();
     }
@@ -59,7 +61,14 @@ public class DAOImpl implements DAO {
         }
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         for(int i = 0; i < args.length; i++) {
-            preparedStatement.setObject(i, args[i]);
+            preparedStatement.setObject(i + 1, args[i]);
+        }
+        ResultSet resultSet = preparedStatement.executeQuery();
+        List<Object> result = new ArrayList<>();
+        int columnCount = resultSet.getMetaData().getColumnCount();
+        for(int i = 1; i<= columnCount; i++) {
+            result.add(resultSet.getObject(i));
+            System.out.println(resultSet.getObject(i).toString());
         }
         return preparedStatement.executeQuery();
     }
@@ -74,7 +83,7 @@ public class DAOImpl implements DAO {
         }
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         for(int i = 0; i < args.length; i++) {
-            preparedStatement.setObject(i, args[i]);
+            preparedStatement.setObject(i + 1, args[i]);
         }
         return preparedStatement.executeUpdate();
     }

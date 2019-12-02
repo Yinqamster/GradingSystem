@@ -52,6 +52,10 @@ public class CourseDAO extends DAOImpl{
             }
             map.put(buid, student);
         }
-        return null;
+        return new Course(name, section, semester, description, map);
+    }
+
+    public int updateStudent(Student student, String courseID) throws SQLException{
+        return 0;
     }
 }

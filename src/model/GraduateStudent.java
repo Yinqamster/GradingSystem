@@ -18,4 +18,8 @@ public class GraduateStudent extends Student {
     public GraduateStudent(Name name, String buid, String comment) {
         super(name, buid, comment);
     }
+    public GraduateStudent(Name name, String buid, int status, double bonus,
+                           List<Grade> grades) {
+        super(name, buid, status, bonus, grades);
+    }
 }

@@ -6,6 +6,7 @@ public class Grade {
     private double percentage;
     private double deduction;
     private String comment;
+    private String ruleID;
 
     public Grade(){
 
@@ -17,6 +18,24 @@ public class Grade {
         this.percentage = percentage;
         this.deduction = deduction;
         this.comment = comment;
+    }
+
+    public Grade(String ruleID, String ruleName, double absolute, double percentage, double deduction, String comment) {
+        this.ruleID = ruleID;
+        this.ruleName = ruleName;
+        this.absolute = absolute;
+        this.percentage = percentage;
+        this.deduction = deduction;
+        this.comment = comment;
+    }
+
+    public Grade(String ruleID, String ruleName, double absolute, double percentage, double deduction) {
+        this.ruleID = ruleID;
+        this.ruleName = ruleName;
+        this.absolute = absolute;
+        this.percentage = percentage;
+        this.comment = "";
+        this.deduction = deduction;
     }
 
     public String getRuleName() {
