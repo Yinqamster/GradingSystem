@@ -23,8 +23,7 @@ public class MainFrame extends JFrame {
         this.courseID = courseID;
 
         // frozen table
-        table_grades = new JTable(); //JTable( <yourData>, <yourColumns> );
-        scrollPane_table = new FrozenTablePane(table_grades, 2);
+//        scrollPane_table = new FrozenTablePane(table_grades, 2);
 
         // right click on table header, show popupMenu to choose score expression
         table_grades.getTableHeader().addMouseListener(new MouseAdapter() {

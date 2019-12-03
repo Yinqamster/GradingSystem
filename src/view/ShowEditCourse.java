@@ -4,7 +4,6 @@
 
 package view;
 
-import com.sun.javaws.exceptions.ErrorCodeResponseException;
 import model.Course;
 import service.CourseService;
 import utils.ErrCode;
