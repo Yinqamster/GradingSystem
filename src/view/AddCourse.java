@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.*;
 import com.intellij.uiDesigner.core.*;
+import controller.AddCourseController;
 import model.Course;
 import service.CourseService;
 import utils.ErrCode;
@@ -34,7 +35,7 @@ public class AddCourse extends JFrame {
         DefaultComboBoxModel comboBoxModel = (DefaultComboBoxModel) comboBox_chooseTemplate.getModel();
 
         this.breakdownID_Name.clear();
-//        this.breakdownID_Name.putAll(CourseService.getChooseBreakdownItems());
+        this.breakdownID_Name.putAll(AddCourseController.getChooseBreakdownItems());
 
         for(String name : breakdownID_Name.values()){
             comboBoxModel.addElement(name);

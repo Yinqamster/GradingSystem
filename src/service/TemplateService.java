@@ -24,10 +24,10 @@ public class TemplateService {
         return instance;
     }
 
-    public static Map<String, Breakdown> getTemplateMap() {
+    public Map<String, Breakdown> getTemplateMap() {
         return templateMap;
     }
-    public static Map<String,String> getAllTemplateName() {
+    public Map<String,String> getAllTemplateName() {
         //TODO return name for every saved template, format: Map<breakdownID, templateName>
         return new HashMap<>();
     }

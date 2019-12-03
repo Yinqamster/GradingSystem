@@ -19,7 +19,7 @@ public class ShowEditCourse extends JFrame {
     private Course course;
     public ShowEditCourse(String courseID) {
         initComponents();
-        this.course = CourseService.getCourse(courseID);
+        this.course = CourseService.getInstance().getCourse(courseID);
         this.textField_courseName.setText(course.getName());
         this.textField_section.setText(course.getSection());
         this.textArea_description.setText(course.getDescription());

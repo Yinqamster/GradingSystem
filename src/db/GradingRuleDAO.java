@@ -1,5 +1,4 @@
 package db;
-
 import model.GradingRule;
 import utils.ErrCode;
 
