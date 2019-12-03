@@ -1,9 +1,11 @@
 package model;
 
+import java.util.List;
+
 public class GradingRule {
     private String id;
     private String parentID;
-    private String childrenID;
+    private List<GradingRule> children;
     private int depth; // example: 0 - Homework, 1 - Midterm, 2 - Written
     private String name;
     private double fullScore;
@@ -77,11 +79,11 @@ public class GradingRule {
         this.proportion = proportion;
     }
 
-    public String getChildrenID() {
-        return childrenID;
+    public List<GradingRule> getChildren() {
+        return children;
     }
 
-    public void setChildrenID(String childrenID) {
-        this.childrenID = childrenID;
+    public void setChildren(List<GradingRule> children) {
+        this.children = children;
     }
 }
