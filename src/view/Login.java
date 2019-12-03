@@ -27,15 +27,15 @@ public class Login extends JFrame {
         this.dispose();
     }
 
+    private void thisWindowClosing(WindowEvent e) {
+        System.exit(0);
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - unknown
-        panel1 = new JPanel();
         button_login = new JButton();
         button_exit = new JButton();
-        dialogPane = new JPanel();
-        hSpacer3 = new JPanel(null);
-        contentPanel = new JPanel();
         label1 = new JLabel();
         label2 = new JLabel();
         label3 = new JLabel();
@@ -46,112 +46,62 @@ public class Login extends JFrame {
 
         //======== this ========
         setIconImage(new ImageIcon(getClass().getResource("/images/icon.png")).getImage());
+        setTitle("Grading System");
+        setResizable(false);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                thisWindowClosing(e);
+            }
+        });
         Container contentPane = getContentPane();
         contentPane.setLayout(null);
 
-        //======== panel1 ========
-        {
-            panel1.setBorder ( new javax . swing. border .CompoundBorder ( new javax . swing. border .TitledBorder ( new javax . swing. border .EmptyBorder (
-            0, 0 ,0 , 0) ,  "JF\u006frmDes\u0069gner \u0045valua\u0074ion" , javax. swing .border . TitledBorder. CENTER ,javax . swing. border .TitledBorder
-            . BOTTOM, new java. awt .Font ( "D\u0069alog", java .awt . Font. BOLD ,12 ) ,java . awt. Color .
-            red ) ,panel1. getBorder () ) ); panel1. addPropertyChangeListener( new java. beans .PropertyChangeListener ( ){ @Override public void propertyChange (java .
-            beans. PropertyChangeEvent e) { if( "\u0062order" .equals ( e. getPropertyName () ) )throw new RuntimeException( ) ;} } );
-            panel1.setLayout(null);
-
-            //---- button_login ----
-            button_login.setText("Login");
-            button_login.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseReleased(MouseEvent e) {
-                    button_loginMouseReleased(e);
-                }
-            });
-            panel1.add(button_login);
-            button_login.setBounds(new Rectangle(new Point(90, 5), button_login.getPreferredSize()));
-
-            //---- button_exit ----
-            button_exit.setText("Exit");
-            button_exit.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseReleased(MouseEvent e) {
-                    button_exitMouseReleased(e);
-                }
-            });
-            panel1.add(button_exit);
-            button_exit.setBounds(175, 5, 63, 23);
-
-            //======== dialogPane ========
-            {
-                dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
-                dialogPane.setLayout(new BorderLayout());
-                dialogPane.add(hSpacer3, BorderLayout.EAST);
+        //---- button_login ----
+        button_login.setText("Login");
+        button_login.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                button_loginMouseReleased(e);
             }
-            panel1.add(dialogPane);
-            dialogPane.setBounds(-20, -150, 353, 173);
+        });
+        contentPane.add(button_login);
+        button_login.setBounds(new Rectangle(new Point(65, 115), button_login.getPreferredSize()));
 
-            {
-                // compute preferred size
-                Dimension preferredSize = new Dimension();
-                for(int i = 0; i < panel1.getComponentCount(); i++) {
-                    Rectangle bounds = panel1.getComponent(i).getBounds();
-                    preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
-                    preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
-                }
-                Insets insets = panel1.getInsets();
-                preferredSize.width += insets.right;
-                preferredSize.height += insets.bottom;
-                panel1.setMinimumSize(preferredSize);
-                panel1.setPreferredSize(preferredSize);
+        //---- button_exit ----
+        button_exit.setText("Exit");
+        button_exit.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                button_exitMouseReleased(e);
             }
-        }
-        contentPane.add(panel1);
-        panel1.setBounds(10, 125, 329, panel1.getPreferredSize().height);
+        });
+        contentPane.add(button_exit);
+        button_exit.setBounds(185, 115, 63, 23);
 
-        //======== contentPanel ========
-        {
-            contentPanel.setLayout(null);
+        //---- label1 ----
+        label1.setText("Grading System");
+        label1.setFont(new Font("Impact", Font.PLAIN, 30));
+        contentPane.add(label1);
+        label1.setBounds(55, 5, 205, label1.getPreferredSize().height);
 
-            //---- label1 ----
-            label1.setText("Grading System");
-            label1.setFont(new Font("Impact", Font.PLAIN, 30));
-            contentPanel.add(label1);
-            label1.setBounds(80, 0, 205, label1.getPreferredSize().height);
+        //---- label2 ----
+        label2.setText("Username:");
+        contentPane.add(label2);
+        label2.setBounds(25, 60, 70, label2.getPreferredSize().height);
 
-            //---- label2 ----
-            label2.setText("Username:");
-            contentPanel.add(label2);
-            label2.setBounds(new Rectangle(new Point(35, 65), label2.getPreferredSize()));
-
-            //---- label3 ----
-            label3.setText("Password:");
-            contentPanel.add(label3);
-            label3.setBounds(35, 90, 54, 15);
-            contentPanel.add(textField1);
-            textField1.setBounds(95, 60, 195, textField1.getPreferredSize().height);
-            contentPanel.add(textField2);
-            textField2.setBounds(95, 90, 195, 21);
-
-            {
-                // compute preferred size
-                Dimension preferredSize = new Dimension();
-                for(int i = 0; i < contentPanel.getComponentCount(); i++) {
-                    Rectangle bounds = contentPanel.getComponent(i).getBounds();
-                    preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
-                    preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
-                }
-                Insets insets = contentPanel.getInsets();
-                preferredSize.width += insets.right;
-                preferredSize.height += insets.bottom;
-                contentPanel.setMinimumSize(preferredSize);
-                contentPanel.setPreferredSize(preferredSize);
-            }
-        }
-        contentPane.add(contentPanel);
-        contentPanel.setBounds(10, 5, 329, 125);
+        //---- label3 ----
+        label3.setText("Password:");
+        contentPane.add(label3);
+        label3.setBounds(25, 80, 65, 15);
+        contentPane.add(textField1);
+        textField1.setBounds(105, 55, 185, textField1.getPreferredSize().height);
+        contentPane.add(textField2);
+        textField2.setBounds(105, 80, 185, 21);
         contentPane.add(hSpacer4);
-        hSpacer4.setBounds(new Rectangle(new Point(335, 0), hSpacer4.getPreferredSize()));
+        hSpacer4.setBounds(new Rectangle(new Point(305, 10), hSpacer4.getPreferredSize()));
         contentPane.add(vSpacer1);
-        vSpacer1.setBounds(155, 155, 35, 15);
+        vSpacer1.setBounds(155, 145, 35, 10);
 
         {
             // compute preferred size
@@ -174,12 +124,8 @@ public class Login extends JFrame {
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner Evaluation license - unknown
-    private JPanel panel1;
     private JButton button_login;
     private JButton button_exit;
-    private JPanel dialogPane;
-    private JPanel hSpacer3;
-    private JPanel contentPanel;
     private JLabel label1;
     private JLabel label2;
     private JLabel label3;

@@ -3,6 +3,11 @@ package service;
 import model.GradingRule;
 import utils.ErrCode;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class GradingRuleService {
     private static GradingRuleService instance;
 
@@ -18,5 +23,11 @@ public class GradingRuleService {
 
         //TODO insert grading rule into database
         return ErrCode.OK.getCode();
+    }
+
+    public static List<GradingRule> getAllCategories(int depth){
+        //TODO get the list of GradingRule given depth
+
+        return new ArrayList<>();
     }
 }

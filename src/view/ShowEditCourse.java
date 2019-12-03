@@ -4,7 +4,6 @@
 
 package view;
 
-import com.sun.javaws.exceptions.ErrorCodeResponseException;
 import model.Course;
 import service.CourseService;
 import utils.ErrCode;
@@ -48,10 +47,8 @@ public class ShowEditCourse extends JFrame {
             String section = textField_section.getText();
             String semester = comboBox_season.getSelectedItem().toString() + " " + comboBox_year.getSelectedItem().toString();
             String description = textArea_description.getText();
-            course.setName(name);
-            course.setSection(section);
-            course.setSemester(semester);
-            course.setDescription(description);
+
+            // todo: update course
         }else{
             label_warning.setText(ErrCode.TEXTFIELDEMPTY.getDescription());
         }
@@ -90,6 +87,7 @@ public class ShowEditCourse extends JFrame {
 
         //======== this ========
         setIconImage(new ImageIcon(getClass().getResource("/images/icon.png")).getImage());
+        setTitle("Show/Edit Course");
         Container contentPane = getContentPane();
         contentPane.setLayout(null);
 

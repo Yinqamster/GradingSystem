@@ -7,8 +7,12 @@ package view;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.util.List;
+import javax.swing.event.*;
 import info.clearthought.layout.*;
+import model.GradingRule;
 import net.miginfocom.swing.*;
+import service.GradingRuleService;
 
 /**
  * @author unknown
@@ -16,14 +20,93 @@ import net.miginfocom.swing.*;
 public class Statistics extends JFrame {
     public Statistics() {
         initComponents();
+        loadCheckList();
+    }
+
+    private void loadCheckList(){
+        // get a list of GradingRule whose depth is 0
+        List<GradingRule> gradingRuleList = GradingRuleService.getAllCategories(0);
+        DefaultListModel listModel = new DefaultListModel();
+        for(GradingRule g : gradingRuleList){
+            String item = g.getName() + " (" + g.getProportion() + "%)";
+            listModel.addElement(new CheckListItem(item));
+        }
+//        test
+        listModel.addElement(new CheckListItem("item1"));
+        listModel.addElement(new CheckListItem("item2"));
+        listModel.addElement(new CheckListItem("item3"));
+
+        list_checkList.setCellRenderer(new CheckListRenderer());
+        list_checkList.setModel(listModel);
     }
 
     private void checkBox_isAllMouseReleased(MouseEvent e) {
         if(checkBox_isAll.isSelected()){
             // todo select all checkboxes
+            int count = list_checkList.getModel().getSize();
+            while(count-->0){
+                CheckListItem item = (CheckListItem) list_checkList.getModel().getElementAt(count);
+                item.setSelected(true); // set true
+                list_checkList.repaint();// Repaint cell
+            }
         }
         else {
             // todo undo select all checkboxes
+            int count = list_checkList.getModel().getSize();
+            while(count-->0){
+                CheckListItem item = (CheckListItem) list_checkList.getModel().getElementAt(count);
+                item.setSelected(false); // set true
+                list_checkList.repaint();// Repaint cell
+            }
+        }
+    }
+
+    private void list_checkListMouseReleased(MouseEvent e) {
+        int index = list_checkList.locationToIndex(e.getPoint());// Get index of item
+        // clicked
+        CheckListItem item = (CheckListItem) list_checkList.getModel()
+                .getElementAt(index);
+        item.setSelected(!item.isSelected()); // Toggle selected state
+        list_checkList.repaint(list_checkList.getCellBounds(index, index));// Repaint cell
+    }
+
+    private void list_checkListValueChanged(ListSelectionEvent e) {
+        // TODO recalculate mean, median, and standard deviation, refresh labels
+    }
+
+    class CheckListItem {
+
+        private String label;
+        private boolean isSelected = false;
+
+        public CheckListItem(String label) {
+            this.label = label;
+        }
+
+        public boolean isSelected() {
+            return isSelected;
+        }
+
+        public void setSelected(boolean isSelected) {
+            this.isSelected = isSelected;
+        }
+
+        @Override
+        public String toString() {
+            return label;
+        }
+    }
+
+    class CheckListRenderer extends JCheckBox implements ListCellRenderer {
+        public Component getListCellRendererComponent(JList list, Object value,
+                                                      int index, boolean isSelected, boolean hasFocus) {
+            setEnabled(list.isEnabled());
+            setSelected(((CheckListItem) value).isSelected());
+            setFont(list.getFont());
+            setBackground(list.getBackground());
+            setForeground(list.getForeground());
+            setText(value.toString());
+            return this;
         }
     }
 
@@ -35,16 +118,7 @@ public class Statistics extends JFrame {
         label3 = new JLabel();
         label_section = new JLabel();
         scrollPane_chooseCategories = new JScrollPane();
-        panel_categories = new JPanel();
-        checkBox1 = new JCheckBox();
-        label2 = new JLabel();
-        label9 = new JLabel();
-        checkBox2 = new JCheckBox();
-        label4 = new JLabel();
-        label10 = new JLabel();
-        checkBox3 = new JCheckBox();
-        label8 = new JLabel();
-        label11 = new JLabel();
+        list_checkList = new JList();
         checkBox_isAll = new JCheckBox();
         label5 = new JLabel();
         label6 = new JLabel();
@@ -87,61 +161,16 @@ public class Statistics extends JFrame {
         {
             scrollPane_chooseCategories.setBackground(Color.white);
 
-            //======== panel_categories ========
-            {
-                panel_categories.setBackground(Color.white);
-                panel_categories.setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new javax.
-                swing. border. EmptyBorder( 0, 0, 0, 0) , "JFor\u006dDesi\u0067ner \u0045valu\u0061tion", javax. swing. border
-                . TitledBorder. CENTER, javax. swing. border. TitledBorder. BOTTOM, new java .awt .Font ("Dia\u006cog"
-                ,java .awt .Font .BOLD ,12 ), java. awt. Color. red) ,panel_categories. getBorder
-                ( )) ); panel_categories. addPropertyChangeListener (new java. beans. PropertyChangeListener( ){ @Override public void propertyChange (java
-                .beans .PropertyChangeEvent e) {if ("bord\u0065r" .equals (e .getPropertyName () )) throw new RuntimeException
-                ( ); }} );
-                panel_categories.setLayout(new TableLayout(new double[][] {
-                    {TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED},
-                    {TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED}}));
-                ((TableLayout)panel_categories.getLayout()).setHGap(10);
-
-                //---- checkBox1 ----
-                checkBox1.setText("asfdasfafa");
-                checkBox1.setBackground(Color.white);
-                panel_categories.add(checkBox1, new TableLayoutConstraints(0, 0, 0, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-
-                //---- label2 ----
-                label2.setText("text");
-                panel_categories.add(label2, new TableLayoutConstraints(1, 0, 1, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-
-                //---- label9 ----
-                label9.setText("text");
-                panel_categories.add(label9, new TableLayoutConstraints(2, 0, 2, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-
-                //---- checkBox2 ----
-                checkBox2.setText("text");
-                checkBox2.setBackground(Color.white);
-                panel_categories.add(checkBox2, new TableLayoutConstraints(0, 1, 0, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-
-                //---- label4 ----
-                label4.setText("text");
-                panel_categories.add(label4, new TableLayoutConstraints(1, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-
-                //---- label10 ----
-                label10.setText("text");
-                panel_categories.add(label10, new TableLayoutConstraints(2, 1, 2, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-
-                //---- checkBox3 ----
-                checkBox3.setText("text");
-                checkBox3.setBackground(Color.white);
-                panel_categories.add(checkBox3, new TableLayoutConstraints(0, 2, 0, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-
-                //---- label8 ----
-                label8.setText("text");
-                panel_categories.add(label8, new TableLayoutConstraints(1, 2, 1, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-
-                //---- label11 ----
-                label11.setText("text");
-                panel_categories.add(label11, new TableLayoutConstraints(2, 2, 2, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-            }
-            scrollPane_chooseCategories.setViewportView(panel_categories);
+            //---- list_checkList ----
+            list_checkList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            list_checkList.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    list_checkListMouseReleased(e);
+                }
+            });
+            list_checkList.addListSelectionListener(e -> list_checkListValueChanged(e));
+            scrollPane_chooseCategories.setViewportView(list_checkList);
         }
         contentPane.add(scrollPane_chooseCategories);
         scrollPane_chooseCategories.setBounds(40, 70, 465, 180);
@@ -175,17 +204,17 @@ public class Statistics extends JFrame {
         //---- label_mean ----
         label_mean.setText("82%");
         contentPane.add(label_mean);
-        label_mean.setBounds(new Rectangle(new Point(330, 255), label_mean.getPreferredSize()));
+        label_mean.setBounds(330, 255, 40, label_mean.getPreferredSize().height);
 
         //---- label_median ----
         label_median.setText("82%");
         contentPane.add(label_median);
-        label_median.setBounds(330, 280, 18, 15);
+        label_median.setBounds(330, 280, 40, 15);
 
         //---- label_stddev ----
         label_stddev.setText("12");
         contentPane.add(label_stddev);
-        label_stddev.setBounds(330, 305, 18, 15);
+        label_stddev.setBounds(330, 305, 45, 15);
 
         //---- comboBox_chooseStudent ----
         comboBox_chooseStudent.setModel(new DefaultComboBoxModel<>(new String[] {
@@ -230,16 +259,7 @@ public class Statistics extends JFrame {
     private JLabel label3;
     private JLabel label_section;
     private JScrollPane scrollPane_chooseCategories;
-    private JPanel panel_categories;
-    private JCheckBox checkBox1;
-    private JLabel label2;
-    private JLabel label9;
-    private JCheckBox checkBox2;
-    private JLabel label4;
-    private JLabel label10;
-    private JCheckBox checkBox3;
-    private JLabel label8;
-    private JLabel label11;
+    private JList list_checkList;
     private JCheckBox checkBox_isAll;
     private JLabel label5;
     private JLabel label6;

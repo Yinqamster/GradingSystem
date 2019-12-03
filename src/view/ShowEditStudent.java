@@ -17,11 +17,11 @@ public class ShowEditStudent extends JFrame {
     }
 
     private void button_saveMouseReleased(MouseEvent e) {
-        // TODO add your code here
+        // TODO check valid for every compulsory blanks, if valid , then save and refresh the table
     }
 
     private void button_cancelMouseReleased(MouseEvent e) {
-        // TODO add your code here
+        this.dispose();
     }
 
     private void initComponents() {

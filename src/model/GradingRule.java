@@ -5,8 +5,8 @@ import java.util.List;
 public class GradingRule {
     private String id;
     private String parentID;
-    private List<GradingRule> childrenID;
-    private int depth;
+    private List<GradingRule> children;
+    private int depth; // example: 0 - Homework, 1 - Midterm, 2 - Written
     private String name;
     private double fullScore;
     private double proportion;
@@ -15,12 +15,8 @@ public class GradingRule {
 
     }
 
-    public List<GradingRule> getChildrenID() {
-        return childrenID;
-    }
-
-    public void setChildrenID(List<GradingRule> childrenID) {
-        this.childrenID = childrenID;
+    public void setChildrenID(List<GradingRule> children) {
+        this.children = children;
     }
 
     public GradingRule(String ID, String parentID, String name, double fullScore, double proportion) {
@@ -39,14 +35,14 @@ public class GradingRule {
         this.proportion = proportion;
     }
 
-    public GradingRule(String ID, String parentID, String name, double proportion, List<GradingRule> childrenID) {
+    public GradingRule(String ID, String parentID, String name, double proportion, List<GradingRule> children) {
         this(ID, parentID, name, proportion);
-        this.childrenID = childrenID;
+        this.children = children;
     }
 
-    public GradingRule(String ID, String parentID, String name, double fullScore, double proportion, List<GradingRule> childrenID) {
+    public GradingRule(String ID, String parentID, String name, double fullScore, double proportion, List<GradingRule> children) {
         this(ID, parentID, name,fullScore, proportion);
-        this.childrenID = childrenID;
+        this.children = children;
     }
 
     public String getId() {
@@ -95,5 +91,13 @@ public class GradingRule {
 
     public void setProportion(double proportion) {
         this.proportion = proportion;
+    }
+
+    public List<GradingRule> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<GradingRule> children) {
+        this.children = children;
     }
 }

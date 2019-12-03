@@ -2,6 +2,7 @@ package db;
 
 import model.Breakdown;
 import model.GradingRule;
+import utils.ErrCode;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,4 +38,7 @@ public class BreakdownDAO extends DAOImpl{
         String deleteSql = "DELETE breakdown WHERE break_down_id = ?";
         return super.delete(deleteSql, breakdown.getBreakdownID());
     }
+//TODO
+//    public int updateLetterRule() {
+//    }
 }
