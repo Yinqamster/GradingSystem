@@ -24,4 +24,10 @@ public class GradingRuleService {
         //TODO insert grading rule into database
         return ErrCode.OK.getCode();
     }
+
+    public static List<GradingRule> getAllCategories(int depth){
+        //TODO get the list of GradingRule given depth
+
+        return new ArrayList<>();
+    }
 }
