@@ -1,5 +1,6 @@
 package service;
 
+import db.CourseDAO;
 import model.Breakdown;
 import model.Course;
 import model.Template;
@@ -12,21 +13,21 @@ import java.util.Map;
 
 public class CourseService {
 
-    private static CourseService instance;
-    public TemplateService templateService = TemplateService.getInstance();
+//    private static CourseService instance;
+//    public TemplateService templateService = TemplateService.getInstance();
 //    public StudentService studentService = StudentService.getInstance();
 
-    public static CourseService getInstance() {
-        if (instance == null) {
-            instance = new CourseService();
-        }
-        return instance;
-    }
+//    public static CourseService getInstance() {
+//        if (instance == null) {
+//            instance = new CourseService();
+//        }
+//        return instance;
+//    }
 
-    public int addCourse(String name, String section, String semester, String description, String templateName, String filename){
+    public static int addCourse(String name, String section, String semester, String description, String templateName, String filename){
         Course course = new Course(name, section, semester, description);
         if(templateName != null && !templateName.isEmpty()) {
-            Breakdown breakdown = templateService.getTemplateMap().get(templateName);
+            Breakdown breakdown = TemplateService.getTemplateMap().get(templateName);
             course.setBreakdown(breakdown);
         }
         if(filename != null && !filename.isEmpty()){
@@ -35,31 +36,26 @@ public class CourseService {
 
         //TODO insert course to database
 
-        return ErrCode.OK.getCode();
+        return CourseDAO.getInstance().addCourse(course);
     }
 
-    public int editCourse(String name, String section, String semester, String description, int courseId) {
-
-        return ErrCode.OK.getCode();
+    public static int updateCourse(String name, String section, String semester, String description, String courseId) {
+        Course course = new Course(name, section, semester, description);
+        course.setCourseID(courseId);
+        return CourseDAO.getInstance().updateCourse(course);
     }
 
     public static Course getCourse(String courseId) {
-        // 此signature加了static(此行可删)
-        //TODO get a course by course id
-        Course course = new Course();
+        Course course = CourseDAO.getInstance().getCourse(courseId);
         return course;
     }
 
     public static int deleteCourse(String courseId){
-        // 此signature加了static(此行可删)
-        return ErrCode.OK.getCode();
+        return CourseDAO.getInstance().deleteCourse(courseId);
     }
 
     public static List<Course> getCourseListBySemester(String semester) {
-        // 此signature加了static(此行可删)
-        //TODO get course list by semester
-        List<Course> courses = new ArrayList<>();
-
+        List<Course> courses = CourseDAO.getInstance().getCourseListBySemester(semester);
         return courses;
     }
 
@@ -73,22 +69,11 @@ public class CourseService {
         return new HashMap<>();
     }
 
-    public static String getCourseID(String courseName, String section, List<Course> courseList){
+    public static String getCourseID(String courseName, String section, List<Course> courseList) {
         // TODO get courseID by courseName and section from given courseList
         String courseID = "";
         return courseID;
     }
 
-    public static boolean updateCourse(String courseID, String name, String section, String semester, String description){
-        //TODO update the course whose courseID is “String courseID”, return true if update succeeds, else return false
-        return true;
-    }
-
-    public static Map<String, String> getChooseBreakdownItems(){
-        // return items to add into breakdown comboBox, format: Map<breakdownID, name>
-        Map<String, String> itemMap = new HashMap(getAllCourseName());
-        itemMap.putAll(TemplateService.getAllTemplateName());
-        return itemMap;
-    }
 
 }

@@ -3,6 +3,7 @@ package model;
 public class GradingRule {
     private String id;
     private String parentID;
+    private String childrenID;
     private int depth; // example: 0 - Homework, 1 - Midterm, 2 - Written
     private String name;
     private double fullScore;
@@ -74,5 +75,13 @@ public class GradingRule {
 
     public void setProportion(double proportion) {
         this.proportion = proportion;
+    }
+
+    public String getChildrenID() {
+        return childrenID;
+    }
+
+    public void setChildrenID(String childrenID) {
+        this.childrenID = childrenID;
     }
 }
