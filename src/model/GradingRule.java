@@ -1,8 +1,11 @@
 package model;
 
+import java.util.List;
+
 public class GradingRule {
     private String id;
     private String parentID;
+    private List<GradingRule> childrenID;
     private int depth;
     private String name;
     private double fullScore;
@@ -10,6 +13,14 @@ public class GradingRule {
 
     public GradingRule(){
 
+    }
+
+    public List<GradingRule> getChildrenID() {
+        return childrenID;
+    }
+
+    public void setChildrenID(List<GradingRule> childrenID) {
+        this.childrenID = childrenID;
     }
 
     public GradingRule(String ID, String parentID, String name, double fullScore, double proportion) {
@@ -26,6 +37,16 @@ public class GradingRule {
         this.name = name;
         this.fullScore = 0.0;
         this.proportion = proportion;
+    }
+
+    public GradingRule(String ID, String parentID, String name, double proportion, List<GradingRule> childrenID) {
+        this(ID, parentID, name, proportion);
+        this.childrenID = childrenID;
+    }
+
+    public GradingRule(String ID, String parentID, String name, double fullScore, double proportion, List<GradingRule> childrenID) {
+        this(ID, parentID, name,fullScore, proportion);
+        this.childrenID = childrenID;
     }
 
     public String getId() {

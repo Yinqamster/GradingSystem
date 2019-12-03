@@ -59,7 +59,7 @@ public class CourseList extends JFrame{
             // delete this course
             int selectedIndex = list_courseList.getSelectedIndex();
             Course selectedCourse = courses.get(selectedIndex);
-            CourseService.deleteCourse(selectedCourse.getCourseID());
+//            CourseService.deleteCourse(selectedCourse.getCourseID());
             refreshList();
         }
     }
