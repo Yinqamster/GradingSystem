@@ -11,6 +11,15 @@ public class Course {
     private Breakdown breakdown;
     //buid, student
     Map<String, Student> students;
+    String courseID;
+
+    public String getCourseID() {
+        return courseID;
+    }
+
+    public void setCourseID(String courseID) {
+        this.courseID = courseID;
+    }
 
     public Course() {
         students = new HashMap<>();

@@ -49,25 +49,25 @@ public class GradeDAO {
         return result;
     }
 
-    public int updateGrade(GradingRule gradingRule) throws SQLException {
-        String currentId = gradingRule.getId();
-        String parentId = gradingRule.getParentID();
-        String name = gradingRule.getName();
-        double fullScore = gradingRule.getFullScore();
-        double proportion = gradingRule.getProportion();
-        String childId ="";
-        List<GradingRule> gradingRuleList = gradingRule.getChildrenID();
-        String updateSql = "REPLACE INTO grading_rule (name, full_score, proportion, " +
-                "parent_id, child_id, current_id, grading_rule_id) values (?, ?, ?, ?, ?, ?, ?)";
-        if(gradingRuleList.size() != 0) {
-            for(int i = 0; i < gradingRuleList.size(); i++) {
-                childId = gradingRuleList.get(i).getId();
-                int returnValue = updateGrade(gradingRuleList.get(i));
-            }
-        }
-        else {
-
-        }
-        return 0;
-    }
+//    public int updateGrade(GradingRule gradingRule) throws SQLException {
+//        String currentId = gradingRule.getId();
+//        String parentId = gradingRule.getParentID();
+//        String name = gradingRule.getName();
+//        double fullScore = gradingRule.getFullScore();
+//        double proportion = gradingRule.getProportion();
+//        String childId ="";
+//        List<GradingRule> gradingRuleList = gradingRule.getChildrenID();
+//        String updateSql = "REPLACE INTO grading_rule (name, full_score, proportion, " +
+//                "parent_id, child_id, current_id, grading_rule_id) values (?, ?, ?, ?, ?, ?, ?)";
+//        if(gradingRuleList.size() != 0) {
+//            for(int i = 0; i < gradingRuleList.size(); i++) {
+//                childId = gradingRuleList.get(i).getId();
+//                int returnValue = updateGrade(gradingRuleList.get(i));
+//            }
+//        }
+//        else {
+//
+//        }
+//        return 0;
+//    }
 }

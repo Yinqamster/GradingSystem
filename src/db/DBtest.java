@@ -36,29 +36,32 @@ public class DBtest {
         List<GradingRule> WRITTENList = new ArrayList<>();
         List<GradingRule> PRACTICEList = new ArrayList<>();
 
-        PRACTICE = new GradingRule("practice", "midterm", "practice", 100, 0.2, PRACTICEList);
-        WRITTEN = new GradingRule("written", "midterm", "written", 100, 0.2, WRITTENList);
+        PRACTICE = new GradingRule("practicum", "midtermFALLCS591A1", "practice", 100, 0.2, PRACTICEList);
+        WRITTEN = new GradingRule("written", "midtermFALLCS591A1", "written", 100, 0.2, WRITTENList);
+        GradingRule temp = new GradingRule("temp", "hwFALLCS591A1", "temp", 100, 0.2, new ArrayList<>());
         MIDList.add(PRACTICE);
         MIDList.add(WRITTEN);
 
-        MID = new GradingRule("midterm", "exam", "midterm", 0.4, MIDList);
-        FINAL = new GradingRule("final", "exam", "final", 0.2, FINALLIST);
+        MID = new GradingRule("midterm", "examFALLCS591A1", "midterm", 0.4, MIDList);
+        FINAL = new GradingRule("final", "examFALLCS591A1", "final", 100, 0.2, FINALLIST);
 
         EXAMList.add(MID);
         EXAMList.add(FINAL);
         EXAM = new GradingRule("exam", "", "exam", 0.6, EXAMList);
 
-        TICTACTOE = new GradingRule("tictactoe", "hw", "tictactoe", 150, 0.2, TICTACTOEList);
-        TICTACTOEII = new GradingRule("tictactoeii", "hw", "tictactoeii", 100, 0.2, TICTACTOEIIList);
+        TICTACTOE = new GradingRule("tictactoe", "hwFALLCS591A1", "tictactoe", 150, 0.2, TICTACTOEList);
+        TICTACTOEII = new GradingRule("tictactoeii", "hwFALLCS591A1", "tictactoeii", 100, 0.2, TICTACTOEIIList);
         HWList.add(TICTACTOE);
         HWList.add(TICTACTOEII);
 
         HW = new GradingRule("hw", "", "hw", 0.4, HWList);
 
-        GradingRuleDAO.getInstance().updateGradingRule(HW, "FALLCS591A1");
         GradingRuleDAO.getInstance().updateGradingRule(EXAM, "FALLCS591A1");
+        GradingRuleDAO.getInstance().updateGradingRule(HW, "FALLCS591A1");
 
-        GradingRule gradingRule = GradingRuleDAO.getInstance().getGradingRule("exam");
+        GradingRule gradingRule = GradingRuleDAO.getInstance().getGradingRule("examFALLCS591A1");
+        GradingRuleDAO.getInstance().deleteGradingRule("examFALLCS591A1");
+//        GradingRuleDAO.getInstance().delete();
         System.out.println();
     }
 }
