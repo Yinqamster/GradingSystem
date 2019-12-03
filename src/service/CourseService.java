@@ -1,5 +1,6 @@
 package service;
 
+import db.CourseDAO;
 import model.Breakdown;
 import model.Course;
 import model.Template;
@@ -14,7 +15,7 @@ public class CourseService {
 
     private static CourseService instance;
     public TemplateService templateService = TemplateService.getInstance();
-//    public StudentService studentService = StudentService.getInstance();
+    public StudentService studentService = StudentService.getInstance();
 
     public static CourseService getInstance() {
         if (instance == null) {
@@ -26,61 +27,62 @@ public class CourseService {
     public int addCourse(String name, String section, String semester, String description, String templateName, String filename){
         Course course = new Course(name, section, semester, description);
         if(templateName != null && !templateName.isEmpty()) {
-            Breakdown breakdown = templateService.getTemplateMap().get(templateName);
+            Breakdown breakdown = TemplateService.getInstance().getTemplateMap().get(templateName);
             course.setBreakdown(breakdown);
         }
         if(filename != null && !filename.isEmpty()){
 //            course.setStudents(studentService.importStudent(filename));
         }
 
-        //TODO insert course to database
-
-        return ErrCode.OK.getCode();
+        return CourseDAO.getInstance().addCourse(course);
     }
 
-    public int editCourse(String name, String section, String semester, String description, int courseId) {
-
-        return ErrCode.OK.getCode();
+    public int updateCourse(String name, String section, String semester, String description, String courseId) {
+        Course course = new Course(name, section, semester, description);
+        course.setCourseID(courseId);
+        return CourseDAO.getInstance().updateCourse(course);
     }
 
-    public static Course getCourse(String courseId) {
-        // 此signature加了static(此行可删)
-        //TODO get a course by course id
-        Course course = new Course();
+    public Course getCourse(String courseId) {
+        Course course = CourseDAO.getInstance().getCourse(courseId);
         return course;
     }
 
-    public static int deleteCourse(String courseId){
-        // 此signature加了static(此行可删)
-        return ErrCode.OK.getCode();
+    public int deleteCourse(String courseId){
+        return CourseDAO.getInstance().deleteCourse(courseId);
     }
 
-    public static List<Course> getCourseListBySemester(String semester) {
-        // 此signature加了static(此行可删)
-        //TODO get course list by semester
-        List<Course> courses = new ArrayList<>();
-
-        return courses;
+    public List<Course> getCourseListBySemester(String semester) {
+        List<Course> courses = CourseDAO.getInstance().getAllCourses();
+        if(courses == null || courses.isEmpty()) return null;
+        List<Course> coursesSemester = new ArrayList<>();
+        for(Course course : courses) {
+            if(course.getSemester().equals(semester)) {
+                coursesSemester.add(course);
+            }
+        }
+        return coursesSemester;
     }
 
-    public static List<Course> getAllCourses() {
-        //TODO return a list of all courses, including previous courses
-        return new ArrayList<Course>();
+    public List<Course> getAllCourses() {
+        return CourseDAO.getInstance().getAllCourses();
     }
 
-    public static Map<String,String> getAllCourseName() {
+    public Map<String,String> getAllCourseName() {
         //TODO return a map of all courses’ names, including previous courses’, format: Map<breakdownID, courseName>
-        return new HashMap<>();
+        List<Course> courses = CourseDAO.getInstance().getAllCourses();
+        if(courses == null || courses.isEmpty()) return null;
+        Map<String, String> coursesNames = new HashMap<>();
+        for(Course course : courses) {
+            coursesNames.put(course.getBreakdown().getBreakdownID(), course.getName());
+        }
+        return coursesNames;
     }
 
-    public static String getCourseID(String courseName, String section, List<Course> courseList){
+    public String getCourseID(String courseName, String section, List<Course> courseList) {
         // TODO get courseID by courseName and section from given courseList
         String courseID = "";
         return courseID;
     }
 
-    public static boolean updateCourse(String courseID, String name, String section, String semester, String description){
-        //TODO update the course whose courseID is “String courseID”, return true if update succeeds, else return false
-        return true;
-    }
 }
