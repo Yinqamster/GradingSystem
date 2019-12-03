@@ -3,7 +3,7 @@ package model;
 public class GradingRule {
     private String id;
     private String parentID;
-    private int depth;
+    private int depth; // example: 0 - Homework, 1 - Midterm, 2 - Written
     private String name;
     private double fullScore;
     private double proportion;
