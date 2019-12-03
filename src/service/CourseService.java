@@ -13,16 +13,16 @@ import java.util.Map;
 
 public class CourseService {
 
-//    private static CourseService instance;
-//    public TemplateService templateService = TemplateService.getInstance();
-//    public StudentService studentService = StudentService.getInstance();
+    private static CourseService instance;
+    public TemplateService templateService = TemplateService.getInstance();
+    public StudentService studentService = StudentService.getInstance();
 
-//    public static CourseService getInstance() {
-//        if (instance == null) {
-//            instance = new CourseService();
-//        }
-//        return instance;
-//    }
+    public static CourseService getInstance() {
+        if (instance == null) {
+            instance = new CourseService();
+        }
+        return instance;
+    }
 
     public static int addCourse(String name, String section, String semester, String description, String templateName, String filename){
         Course course = new Course(name, section, semester, description);

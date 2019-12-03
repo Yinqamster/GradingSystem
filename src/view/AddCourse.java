@@ -34,7 +34,7 @@ public class AddCourse extends JFrame {
         DefaultComboBoxModel comboBoxModel = (DefaultComboBoxModel) comboBox_chooseTemplate.getModel();
 
         this.breakdownID_Name.clear();
-        this.breakdownID_Name.putAll(CourseService.getChooseBreakdownItems());
+//        this.breakdownID_Name.putAll(CourseService.getChooseBreakdownItems());
 
         for(String name : breakdownID_Name.values()){
             comboBoxModel.addElement(name);

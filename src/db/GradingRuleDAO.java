@@ -1,6 +1,5 @@
 package db;
 
-import com.sun.org.apache.bcel.internal.generic.ANEWARRAY;
 import model.GradingRule;
 import utils.ErrCode;
 
@@ -44,7 +43,7 @@ public class GradingRuleDAO extends DAOImpl{
             name = resultSet.getString("name");
             fullScore = resultSet.getDouble("full_score");
             proportion = resultSet.getDouble("proportion");
-            tempId = resultSet.getString("current_id");
+            tempId = resultSet.getString("grading_rule_id");
             gradingRuleList.add(getGradingRuleHelper(tempId, depth + 1));
         }
         // Get the information of current grading_rule
@@ -58,6 +57,7 @@ public class GradingRuleDAO extends DAOImpl{
             proportion = resultSet.getDouble("proportion");
             parentId = resultSet.getString("parent_id");
         }
+        resultSet.close();
         return new GradingRule(currentId, parentId, name, fullScore, proportion, gradingRuleList);
     }
 
@@ -89,14 +89,15 @@ public class GradingRuleDAO extends DAOImpl{
         temp.add(gradingRule.getId());
         temp.add(gradingRule.getName() + breakdownId);
         infoList.add(temp);
-        for(int i = 0; i < gradingRule.getChildrenID().size(); i++) {
-            getUpdateList(gradingRule.getChildrenID().get(i), infoList, breakdownId);
+        for(int i = 0; i < gradingRule.getChildren().size(); i++) {
+            getUpdateList(gradingRule.getChildren().get(i), infoList, breakdownId);
         }
     }
 
     public int deleteGradingRule(String gradingRuleID) throws SQLException {
         int returnValue = 1;
         List<String> deleteList = new ArrayList<>();
+        deleteList.add(gradingRuleID);
         getDeleteRuleList(gradingRuleID, deleteList);
         for(int i = 0; i < deleteList.size(); i++) {
             String deleteSql = "DELETE FROM grading_rule WHERE grading_rule_id = ?";
@@ -118,9 +119,16 @@ public class GradingRuleDAO extends DAOImpl{
         preparedStatement.setObject(1, gradingRuleID);
         ResultSet resultSet = preparedStatement.executeQuery();
         while(resultSet.next()) {
+            String currentId = resultSet.getString("grading_rule_id");
             deleteRuleList.add(resultSet.getString("grading_rule_id"));
-            String childId = resultSet.getString("child_id");
-            getDeleteRuleList(childId, deleteRuleList);
+            getDeleteRuleList(currentId, deleteRuleList);
         }
+    }
+
+    public void delete() throws SQLException {
+        String deleteSql = "DELETE FROM grading_rule WHERE grading_rule_id = ?";
+        PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(deleteSql);
+        preparedStatement.setObject(1, "tictactoeFALLCS591A1");
+        preparedStatement.executeUpdate();
     }
 }
