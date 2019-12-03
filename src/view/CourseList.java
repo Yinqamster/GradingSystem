@@ -43,8 +43,9 @@ public class CourseList extends JFrame{
         if(list_courseList.getSelectedIndex() == -1){
             // select nothing
             return;
+        }else{
+            // todo 1. get selected course's courseID 2. open a new MainFrame with this courseID 3. make this frame invisible
         }
-        // todo 1. get selected course's courseID 2. open a new MainFrame with this courseID 3. make this frame invisible
         this.setVisible(false);
     }
 

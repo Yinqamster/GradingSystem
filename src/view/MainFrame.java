@@ -4,6 +4,9 @@
 
 package view;
 
+import model.Course;
+import service.CourseService;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -19,7 +22,7 @@ public class MainFrame extends JFrame {
     private String courseID;
     public MainFrame(CourseList courseList, String courseID) {
         initComponents();
-        parent = courseList;
+        this.parent = courseList;
         this.courseID = courseID;
 
         // frozen table
@@ -47,6 +50,11 @@ public class MainFrame extends JFrame {
                 }
             }
         });
+
+        // load course name and section
+        Course thisCourse = CourseService.getCourse(courseID);
+        this.label_courseName.setText(thisCourse.getName());
+        this.label_section.setText(thisCourse.getSection());
     }
 
     private void button_showEditMouseReleased(MouseEvent e) {
@@ -60,7 +68,6 @@ public class MainFrame extends JFrame {
             //show in JTree
             if (tree_breakdown.getSelectionCount() == 0) return;
             int i = tree_breakdown.getClosestRowForLocation(e.getX(), e.getY());
-            popupMenu_breakdownTree.add(i + "");
             popupMenu_breakdownTree.show(tree_breakdown, e.getX(), e.getY());
         }
     }

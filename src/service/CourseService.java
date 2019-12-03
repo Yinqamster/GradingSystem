@@ -83,12 +83,4 @@ public class CourseService {
         //TODO update the course whose courseID is “String courseID”, return true if update succeeds, else return false
         return true;
     }
-
-    public static Map<String, String> getChooseBreakdownItems(){
-        // return items to add into breakdown comboBox, format: Map<breakdownID, name>
-        Map<String, String> itemMap = new HashMap(getAllCourseName());
-        itemMap.putAll(TemplateService.getAllTemplateName());
-        return itemMap;
-    }
-
 }
