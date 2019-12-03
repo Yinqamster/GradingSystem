@@ -46,28 +46,11 @@ public class CourseDAO extends DAOImpl{
         return ErrCode.OK.getCode();
     }
 
-    public List<Course> getCourseListBySemester(String semester) {
-        //TODO get course list by semester
-        List<Course> courses = new ArrayList<>();
-
-        return courses;
-    }
-
     public List<Course> getAllCourses() {
         //TODO return a list of all courses, including previous courses
         return new ArrayList<Course>();
     }
 
-    public Map<String,String> getAllCourseName() {
-        //TODO return a map of all courses’ names, including previous courses’, format: Map<breakdownID, courseName>
-        return new HashMap<>();
-    }
-
-//    public String getCourseID(String courseName, String section, List<Course> courseList){
-//        // TODO get courseID by courseName and section from given courseList
-//        String courseID = "";
-//        return courseID;
-//    }
 
     public int updateCourse(Course course){
         //TODO update the course whose courseID is “String courseID”
