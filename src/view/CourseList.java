@@ -70,7 +70,7 @@ public class CourseList extends JFrame{
     // refresh list_courseList, show courses this semester
     private void refreshList() {
         this.coursesVector.clear();
-        ArrayList<Course> courses_this_semester = new ArrayList<Course>(CourseService.getCourseListBySemester(currentSemester));
+        ArrayList<Course> courses_this_semester = new ArrayList<Course>(CourseService.getInstance().getCourseListBySemester(currentSemester));
         DefaultListModel<String> dlm = new DefaultListModel<>();
         for (Course course : courses_this_semester) {
             this.coursesVector.add(course);

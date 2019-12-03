@@ -52,7 +52,7 @@ public class MainFrame extends JFrame {
         });
 
         // load course name and section
-        Course thisCourse = CourseService.getCourse(courseID);
+        Course thisCourse = CourseService.getInstance().getCourse(courseID);
         this.label_courseName.setText(thisCourse.getName());
         this.label_section.setText(thisCourse.getSection());
     }
