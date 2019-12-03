@@ -15,7 +15,8 @@ public class Breakdown {
         letterRule = new HashMap<>();
     }
 
-    public Breakdown(Map<String, GradingRule> gradingRules, Map<String, double[]> letterRule, String breakdownID) {
+    public Breakdown(Map<String, GradingRule> gradingRules,
+                     Map<String, double[]> letterRule, String breakdownID) {
         this.gradingRules = gradingRules;
         this.letterRule = letterRule;
         this.breakdownID = breakdownID;

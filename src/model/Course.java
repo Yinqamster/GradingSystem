@@ -9,7 +9,6 @@ public class Course {
     private String semester;
     private String description;
     private Breakdown breakdown;
-    private String courseID;
     //buid, student
     Map<String, Student> students;
 
@@ -88,14 +87,6 @@ public class Course {
 
     public void setBreakdown(Breakdown breakdown) {
         this.breakdown = breakdown;
-    }
-
-    public String getCourseID() {
-        return courseID;
-    }
-
-    public void setCourseID(String courseID) {
-        this.courseID = courseID;
     }
 
     public Map<String, Student> getStudents() {

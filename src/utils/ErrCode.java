@@ -12,7 +12,10 @@ public enum ErrCode {
     STUDENTTYPEERROR("Wrong student type", 203),
 
     // views
-    TEXTFIELDEMPTY("Please fill in all textfields with *.", 301);
+    TEXTFIELDEMPTY("Please fill in all textfields with *.", 301),
+
+    //grading rule service
+    DELETEGRADINGRULEERROR("There is an error while deleting grading rule", 401);
 
     private final String description;
     private final int code;

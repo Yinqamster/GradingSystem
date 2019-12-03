@@ -15,6 +15,10 @@ public class GradingRule {
 
     }
 
+    public void setChildrenID(List<GradingRule> children) {
+        this.children = children;
+    }
+
     public GradingRule(String ID, String parentID, String name, double fullScore, double proportion) {
         this.parentID = parentID;
         this.id = ID;
@@ -29,6 +33,16 @@ public class GradingRule {
         this.name = name;
         this.fullScore = 0.0;
         this.proportion = proportion;
+    }
+
+    public GradingRule(String ID, String parentID, String name, double proportion, List<GradingRule> children) {
+        this(ID, parentID, name, proportion);
+        this.children = children;
+    }
+
+    public GradingRule(String ID, String parentID, String name, double fullScore, double proportion, List<GradingRule> children) {
+        this(ID, parentID, name,fullScore, proportion);
+        this.children = children;
     }
 
     public String getId() {

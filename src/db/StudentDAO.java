@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class StudentDAO{
+public class StudentDAO {
 
     // Student has a Category in database, 0 for undergraduate, 1 for graduate
 
