@@ -1,5 +1,5 @@
 package db;
-import com.sun.tools.internal.xjc.ErrorReceiver;
+
 import model.GradingRule;
 import utils.ErrCode;
 

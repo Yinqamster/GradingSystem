@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.*;
 import javax.swing.tree.*;
 
@@ -51,6 +52,7 @@ public class MainFrame extends JFrame {
             }
         });
 
+        // test
         // load course name and section
 //        Course thisCourse = CourseService.getInstance().getCourse(courseID);
 //        this.label_courseName.setText(thisCourse.getName());
@@ -58,7 +60,9 @@ public class MainFrame extends JFrame {
     }
 
     private void button_showEditMouseReleased(MouseEvent e) {
-        ShowEditCourse showEditCourse = new ShowEditCourse(courseID);
+        // test
+        ShowEditCourse showEditCourse = new ShowEditCourse();
+        //ShowEditCourse showEditCourse = new ShowEditCourse(courseID);
         showEditCourse.setVisible(true);
     }
 
@@ -70,6 +74,18 @@ public class MainFrame extends JFrame {
             int i = tree_breakdown.getClosestRowForLocation(e.getX(), e.getY());
             popupMenu_breakdownTree.show(tree_breakdown, e.getX(), e.getY());
         }
+    }
+
+    private void list_letterGradeSelectionChanged(MouseEvent e) {
+        String item = list_letterGradeRule.getSelectedValue();
+        String[] ss = item.split(" ");
+        String letterName = ss[0];
+        String lowerBound = ss[1].replace("%","");
+        String upperBound = ss[3].replace("%","");
+
+        // set textField;
+        spinner_lowerBound.setValue(Integer.parseInt(lowerBound));
+        spinner_upperBound.setValue(Integer.parseInt(upperBound));
     }
 
     // add a student
