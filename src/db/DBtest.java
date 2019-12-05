@@ -61,7 +61,6 @@ public class DBtest {
 
         GradingRule gradingRule = GradingRuleDAO.getInstance().getGradingRule("examFALLCS591A1");
         GradingRuleDAO.getInstance().deleteGradingRule("examFALLCS591A1");
-//        GradingRuleDAO.getInstance().delete();
         System.out.println();
     }
 }
