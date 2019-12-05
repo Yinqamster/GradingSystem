@@ -8,4 +8,8 @@ public class Config {
 
     public static final String FINALRULENAME = "final";
 
+    //course type
+    public static final int BREAKDOWN = 1;
+    public static final int TEMPLATE = 2;
+
 }

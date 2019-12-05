@@ -15,7 +15,14 @@ public enum ErrCode {
     TEXTFIELDEMPTY("Please fill in all textfields with *.", 301),
 
     //grading rule service
-    DELETEGRADINGRULEERROR("There is an error while deleting grading rule", 401);
+    DELETEGRADINGRULEERROR("There is an error while deleting grading rule", 401),
+
+    //database error
+    UPDATEERROR("There is an error while updating table", 501),
+    DELETEERROR("There is an error while deleting table", 502),
+
+    // breakdown
+    BREAKDOWNNOTEXIST("Breakdown doesn't exist.", 601);
 
     private final String description;
     private final int code;
