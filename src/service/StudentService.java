@@ -3,6 +3,8 @@ package service;
 import model.*;
 import utils.Config;
 import utils.ErrCode;
+import db.StudentDAO;
+import db.CourseDAO;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,23 +34,25 @@ public class StudentService {
     public int addStudent(String firstname, String midname, String lastname, String buid, String year, String comment, String courseId) {
         Name name = new Name(firstname, midname, lastname);
         Student student;
-        // TODO: add name to DB
         if (year.equalsIgnoreCase("undergraduate")) {
             student = new UndergraduateStudent(name, buid, comment);
         }
         else {
             student = new GraduateStudent(name, buid, comment);
         }
-        // TODO: add student to DB
+
         Course course = courseService.getCourse(courseId);
         Map<String, Student> students = course.getStudents();
         if (students.containsKey(buid)) {
             return ErrCode.STUDENTEXIST.getCode();
         }
         students.put(buid, student);
+        // add student to DB
+        StudentDAO.getInstance().addStudent(firstname, midname, lastname, buid, year, comment, courseId);
+
         course.setStudents(students);
-        // TODO: update course in DB
-        return ErrCode.OK.getCode();
+        //update course in DB
+        return CourseDAO.getInstance().updateCourse(course);
     }
 
     public Student getStudent(String buid, String courseId) {
@@ -71,10 +75,8 @@ public class StudentService {
         name.setLastName(lastname);
         student.setName(name);
         student.setComment(comment);
-        // TODO: update student in DB
-        students.put(buid, student);
-        course.setStudents(students);
-        return ErrCode.OK.getCode();
+        // update student in DB
+        return StudentDAO.getInstance().updateStudent(student);
     }
 
     public int freezeStudent(String buid, String courseId) {
@@ -86,9 +88,9 @@ public class StudentService {
         }
 
         student.setStatus(Config.FREEZE);
-        // TODO: update student in DB
-        students.put(buid, student);
-        course.setStudents(students);
+        // freeze student in DB
+        StudentDAO.getInstance().freezeStudent(buid, courseId);
+
         return ErrCode.OK.getCode();
     }
 
@@ -100,8 +102,8 @@ public class StudentService {
         }
         else {
             students.remove(buid);
-            // TODO: delete student from DB
-            return ErrCode.OK.getCode();
+            // delete student from DB
+            return StudentDAO.getInstance().deleteStudent(buid, courseId);
         }
     }
 }
