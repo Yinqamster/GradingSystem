@@ -1,5 +1,8 @@
 package service;
 
+import db.BreakdownDAO;
+import db.LetterRuleDAO;
+import model.Breakdown;
 import utils.ErrCode;
 
 import java.util.HashMap;
@@ -18,12 +21,19 @@ public class BreakdownService {
         return instance;
     }
 
-    public int editBreakdown(int id, String name, double fullScore, double proportion) {
+
+    public int editLetterRule(String courseId, Map<String, double[]> letterRule) {
+        return LetterRuleDAO.getInstance().updateLetterMap(letterRule, courseId);
+    }
+
+    public int editLetterRule(String courseId, String letter, double lower, double upper) {
+
+
         return ErrCode.OK.getCode();
     }
 
-    public int editLetterRule(int courseId, Map<String, double[]> letterRule) {
-        return ErrCode.OK.getCode();
+    public Breakdown getBreakdownByID(String breakdownID) {
+        return BreakdownDAO.getInstance().getBreakdown(breakdownID);
     }
 
 
