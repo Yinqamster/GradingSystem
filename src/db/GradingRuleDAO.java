@@ -72,8 +72,8 @@ public class GradingRuleDAO {
         try {
             for(int i = 0; i < infoList.size(); i++) {
                 String updateSql = "REPLACE INTO grading_rule (name, full_score, proportion, " +
-                        "parent_id, fk_breakdown, current_id, grading_rule_id) values (?, ?, " +
-                        "?, ?, ?, ?, ?)";
+                        "parent_id, fk_breakdown, grading_rule_id) values (?, ?, " +
+                        "?, ?, ?, ?)";
                 PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(updateSql);
                 List<Object> temp = infoList.get(i);
                 for(int j = 0; j < temp.size(); j++) {
@@ -104,7 +104,6 @@ public class GradingRuleDAO {
         temp.add(gradingRule.getParentID());
         temp.add(breakdownId);
         temp.add(gradingRule.getId());
-        temp.add(gradingRule.getName() + breakdownId);
         infoList.add(temp);
         for(int i = 0; i < gradingRule.getChildren().size(); i++) {
             getUpdateList(gradingRule.getChildren().get(i), infoList, breakdownId);
