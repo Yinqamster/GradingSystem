@@ -59,6 +59,7 @@ public class BreakdownDAO extends DAOImpl{
         for(Map.Entry<String, GradingRule> entry : gradingRuleMap.entrySet()) {
             gradingRuleUpdateFlag *= GradingRuleDAO.getInstance().updateGradingRule(entry.getValue(), breakdown.getBreakdownID());
         }
+        gradingRuleUpdateFlag *= LetterRuleDAO.getInstance().updateLetterMap(breakdown.getLetterRule(), breakdown.getBreakdownID());
         return gradingRuleUpdateFlag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
     }
 

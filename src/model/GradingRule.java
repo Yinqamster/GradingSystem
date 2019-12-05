@@ -27,11 +27,37 @@ public class GradingRule {
         this.proportion = proportion;
     }
 
+    public GradingRule(String parentID, String name, double fullScore, double proportion) {
+        this.parentID = parentID;
+        this.name = name;
+        this.fullScore = fullScore;
+        this.proportion = proportion;
+    }
+
     public GradingRule(String ID, String parentID, String name, double proportion) {
         this.parentID = parentID;
         this.id = ID;
         this.name = name;
         this.fullScore = 0.0;
+        this.proportion = proportion;
+    }
+
+    public GradingRule(String parentID, String name, double proportion) {
+        this.parentID = parentID;
+        this.name = name;
+        this.fullScore = 0.0;
+        this.proportion = proportion;
+    }
+
+    public GradingRule(String name, double proportion) {
+        this.name = name;
+        this.fullScore = 0.0;
+        this.proportion = proportion;
+    }
+
+    public GradingRule(String name, double fullScore, double proportion) {
+        this.name = name;
+        this.fullScore = fullScore;
         this.proportion = proportion;
     }
 
@@ -44,6 +70,28 @@ public class GradingRule {
         this(ID, parentID, name,fullScore, proportion);
         this.children = children;
     }
+
+    public GradingRule(String parentID, String name, double proportion, List<GradingRule> children) {
+        this(parentID, name, proportion);
+        this.children = children;
+    }
+
+    public GradingRule(String parentID, String name, double fullScore, double proportion, List<GradingRule> children) {
+        this(parentID, name,fullScore, proportion);
+        this.children = children;
+    }
+
+    public GradingRule(String name, double proportion, List<GradingRule> children) {
+        this(name, proportion);
+        this.children = children;
+    }
+
+    public GradingRule(String name, double fullScore, double proportion, List<GradingRule> children) {
+        this(name,fullScore, proportion);
+        this.children = children;
+    }
+
+
 
     public String getId() {
         return id;
