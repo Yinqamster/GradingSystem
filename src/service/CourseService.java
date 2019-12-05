@@ -4,6 +4,7 @@ import db.CourseDAO;
 import model.Breakdown;
 import model.Course;
 import model.Template;
+import utils.Config;
 import utils.ErrCode;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class CourseService {
 
     private static CourseService instance = new CourseService();
     public TemplateService templateService = TemplateService.getInstance();
-//    public StudentService studentService = StudentService.getInstance();
+    public StudentService studentService = StudentService.getInstance();
     private CourseService(){
 
     }
@@ -26,14 +27,20 @@ public class CourseService {
         return instance;
     }
 
-    public int addCourse(String name, String section, String semester, String description, String templateName, String filename){
+    public int addCourse(String name, String section, String semester, String description, String templateName, String filename, int type){
         Course course = new Course(name, section, semester, description);
         if(templateName != null && !templateName.isEmpty()) {
-            Breakdown breakdown = TemplateService.getInstance().getTemplateMap().get(templateName);
+            Breakdown breakdown = new Breakdown();
+            if(type == Config.TEMPLATE) {
+                breakdown = TemplateService.getInstance().getTemplateMap().get(templateName);
+            }
+            else if(type == Config.BREAKDOWN){
+                breakdown = BreakdownService.getInstance().getBreakdownByID(templateName);
+            }
             course.setBreakdown(breakdown);
         }
         if(filename != null && !filename.isEmpty()){
-//            course.setStudents(studentService.importStudent(filename));
+            course.setStudents(studentService.importStudent(filename));
         }
 
         return CourseDAO.getInstance().addCourse(course);
@@ -71,9 +78,9 @@ public class CourseService {
     }
 
     public Map<String,String> getAllCourseName() {
-        //TODO return a map of all courses’ names, including previous courses’, format: Map<breakdownID, courseName>
         List<Course> courses = CourseDAO.getInstance().getAllCourses();
         if(courses == null || courses.isEmpty()) return null;
+        //breakdownID, courseName
         Map<String, String> coursesNames = new HashMap<>();
         for(Course course : courses) {
             coursesNames.put(course.getBreakdown().getBreakdownID(), course.getName());
@@ -82,8 +89,13 @@ public class CourseService {
     }
 
     public String getCourseID(String courseName, String section, List<Course> courseList) {
-        // TODO get courseID by courseName and section from given courseList
+        //get courseID by courseName and section from given courseList
         String courseID = "";
+        for(Course course : courseList) {
+            if(course.getName().equals(courseName) && course.getSection().equals(section)) {
+                courseID = course.getCourseID();
+            }
+        }
         return courseID;
     }
 

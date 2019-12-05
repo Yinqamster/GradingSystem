@@ -19,6 +19,14 @@ public class GradingRule {
         this.children = children;
     }
 
+    public GradingRule(String parentID, int depth, String name, double fullScore, double proportion) {
+        this.parentID = parentID;
+        this.depth = depth;
+        this.name = name;
+        this.fullScore = fullScore;
+        this.proportion = proportion;
+    }
+
     public GradingRule(String ID, String parentID, String name, double fullScore, double proportion) {
         this.parentID = parentID;
         this.id = ID;
