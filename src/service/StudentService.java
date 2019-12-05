@@ -72,6 +72,7 @@ public class StudentService {
         return students;
     }
 
+    //only for test
     public void printStudent(Map<String, Student> students) {
         System.out.println("student size: " + students.size());
         for(Student s : students.values()) {
