@@ -15,8 +15,7 @@ public class CourseService {
 
     private static CourseService instance = new CourseService();
     public TemplateService templateService = TemplateService.getInstance();
-    public StudentService studentService = StudentService.getInstance();
-
+//    public StudentService studentService = StudentService.getInstance();
     private CourseService(){
 
     }
