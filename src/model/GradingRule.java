@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GradingRule {
@@ -12,7 +13,7 @@ public class GradingRule {
     private double proportion;
 
     public GradingRule(){
-
+        new ArrayList<>();
     }
 
     public void setChildrenID(List<GradingRule> children) {

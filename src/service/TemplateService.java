@@ -12,6 +12,7 @@ import java.util.Map;
 
 public class TemplateService {
 
+    //template name, template
     private static Map<String, Template> templateMap;
     private static TemplateService instance = new TemplateService();
 
