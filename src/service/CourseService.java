@@ -13,14 +13,16 @@ import java.util.Map;
 
 public class CourseService {
 
-    private static CourseService instance;
+    private static CourseService instance = new CourseService();
     public TemplateService templateService = TemplateService.getInstance();
-    public StudentService studentService = StudentService.getInstance();
+//    public StudentService studentService = StudentService.getInstance();
+    private CourseService(){
 
+    }
     public static CourseService getInstance() {
-        if (instance == null) {
-            instance = new CourseService();
-        }
+//        if (instance == null) {
+//            instance = new CourseService();
+//        }
         return instance;
     }
 
@@ -54,7 +56,7 @@ public class CourseService {
 
     public List<Course> getCourseListBySemester(String semester) {
         List<Course> courses = CourseDAO.getInstance().getAllCourses();
-        if(courses == null || courses.isEmpty()) return null;
+        if(courses == null || courses.isEmpty()) return new ArrayList<Course>();
         List<Course> coursesSemester = new ArrayList<>();
         for(Course course : courses) {
             if(course.getSemester().equals(semester)) {
