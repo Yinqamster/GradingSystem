@@ -8,13 +8,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StudentService {
-    private static StudentService instance;
+    private static StudentService instance = new StudentService();
     public CourseService courseService = CourseService.getInstance();
 
+    private StudentService() {
+
+    }
+
     public static StudentService getInstance() {
-        if (instance == null) {
-            instance = new StudentService();
-        }
+//        if (instance == null) {
+//            instance = new StudentService();
+//        }
         return instance;
     }
 
