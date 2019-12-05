@@ -17,16 +17,83 @@ public class ScoreService {
         return instance;
     }
 
-    public int updateRowScore(String courseId, String buid, Map<String, String> scores) {
-        // TODO
+    // only update scores that is not a composite, i.e. generated directly by grading
+    public int updateRowScore(String courseId, String buid, Map<String, Double> scores) {
+        // get course, breakdown and student
+        Course course = courseService.getCourse(courseId);
+        if (course == null) {
+            return ErrCode.COURSENOTEXIST.getCode();
+        }
+        Breakdown breakdown = course.getBreakdown();
+        if (breakdown == null) {
+            return ErrCode.BREAKDOWNNOTEXIST.getCode();
+        }
+        Student student = course.getStudents().get(buid);
+        if (student == null) {
+            return ErrCode.STUDENTNOTEXIST.getCode();
+        }
+
+        // update score
+        for (String ruleId : scores.keySet()) {
+            GradingRule rule = breakdown.getGradingRules().get(ruleId);
+            if (rule.getChildren() == null || rule.getChildren().size() == 0) {
+                Grade grade = student.getGrades().get(ruleId);
+                double absolute = scores.get(ruleId);
+                grade.setAbsolute(absolute);
+                grade.setPercentage(absolute / rule.getFullScore());
+                grade.setDeduction(rule.getFullScore() - absolute);
+                // TODO: update student grade in DB
+            }
+        }
 
         return ErrCode.OK.getCode();
     }
 
+    // calculate and update any composite score, i.e. grade that is made up of sub-grades
     public int calculateScores(String courseId) {
-        // TODO
+        // get course, breakdown and students
+        Course course = courseService.getCourse(courseId);
+        if (course == null) {
+            return ErrCode.COURSENOTEXIST.getCode();
+        }
+        Breakdown breakdown = course.getBreakdown();
+        if (breakdown == null) {
+            return ErrCode.BREAKDOWNNOTEXIST.getCode();
+        }
+        Map<String, Student> students = course.getStudents();
+
+        // calculate score for each student
+        for (String buid : students.keySet()) {
+            Student student = students.get(buid);
+            Map<String, Grade> grades = student.getGrades();
+            for (String ruleId : grades.keySet()) {
+                Grade grade = grades.get(ruleId);
+                double fullScore = breakdown.getGradingRules().get(ruleId).getFullScore();
+                double absolute = calculateScore(breakdown, ruleId, grades);
+                grade.setAbsolute(absolute);
+                grade.setPercentage(absolute / fullScore);
+                grade.setDeduction(fullScore - absolute);
+                // TODO: update this grade in DB
+            }
+        }
 
         return ErrCode.OK.getCode();
+    }
+
+    // calculate score for a grading rule; return the absolute score for this rule
+    private double calculateScore(Breakdown breakdown, String ruleId, Map<String, Grade> grades) {
+        GradingRule rule = breakdown.getGradingRules().get(ruleId);
+        // not a composite rule
+        if (rule.getChildren() == null || rule.getChildren().size() == 0) {
+            return grades.get(ruleId).getAbsolute();
+        }
+        // a composite rule with sub-grades
+        double absolute = 0;
+        List<GradingRule> subRules = rule.getChildren();
+        for (GradingRule subRule : subRules) {
+            absolute += calculateScore(breakdown, subRule.getId(), grades);
+        }
+        return absolute;
     }
 
     public String[] calculateStats(String courseId, String ruleId, String studentType) {
