@@ -7,13 +7,16 @@ import java.util.*;
 import java.text.DecimalFormat;
 
 public class ScoreService {
-    private static ScoreService instance;
+    private static ScoreService instance = new ScoreService();
     public CourseService courseService = CourseService.getInstance();
 
+    private ScoreService(){
+
+    }
     public static ScoreService getInstance() {
-        if (instance == null) {
-            instance = new ScoreService();
-        }
+//        if (instance == null) {
+//            instance = new ScoreService();
+//        }
         return instance;
     }
 

@@ -6,12 +6,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BreakdownService {
-    private static BreakdownService instance;
+    private static BreakdownService instance = new BreakdownService();
 
+    private BreakdownService(){
+
+    }
     public static BreakdownService getInstance() {
-        if (instance == null) {
-            instance = new BreakdownService();
-        }
+//        if (instance == null) {
+//            instance = new BreakdownService();
+//        }
         return instance;
     }
 

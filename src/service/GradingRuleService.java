@@ -9,12 +9,15 @@ import java.util.List;
 import java.util.Map;
 
 public class GradingRuleService {
-    private static GradingRuleService instance;
+    private static GradingRuleService instance = new GradingRuleService();
 
+    private GradingRuleService() {
+
+    }
     public static GradingRuleService getInstance() {
-        if (instance == null) {
-            instance = new GradingRuleService();
-        }
+//        if (instance == null) {
+//            instance = new GradingRuleService();
+//        }
         return instance;
     }
 
