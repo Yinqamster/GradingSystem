@@ -42,9 +42,17 @@ public class CourseList extends JFrame{
     private void button_openMouseReleased(MouseEvent e) {
         if(list_courseList.getSelectedIndex() == -1){
             // select nothing
+            // test
+            MainFrame mainFrame = new MainFrame(this, "");
+            mainFrame.setVisible(true);
+            this.setVisible(false);
             return;
         }else{
             // todo 1. get selected course's courseID 2. open a new MainFrame with this courseID 3. make this frame invisible
+            // test
+            MainFrame mainFrame = new MainFrame(this, "");
+            mainFrame.setVisible(true);
+            this.setVisible(false);
         }
         this.setVisible(false);
     }
