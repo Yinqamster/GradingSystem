@@ -23,7 +23,7 @@ public class StudentDAO {
         return studentDAO;
     }
 
-    public Student getStudent(String buid, String courseid) {
+    public Student getStudent(String buid, String courseId) {
         try {
             String selectSql = "SELECT * FROM student WHERE buid = ?";
             PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(selectSql);
@@ -41,7 +41,7 @@ public class StudentDAO {
                 status = Integer.parseInt(resultSet.getString("status"));
                 bonus = Double.parseDouble(resultSet.getString("bonus"));
                 comment = resultSet.getString("comment");
-                gradeList = GradeDAO.getInstance().getGradeList(buid, courseid);
+                gradeList = GradeDAO.getInstance().getGradeList(buid, courseId);
                 category = resultSet.getInt("category");
             }
             resultSet.close();
@@ -138,10 +138,6 @@ public class StudentDAO {
         } catch(SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
         }
-    }
-
-    public int addStudent(Student student) {
-        return updateStudent(student);
     }
 
     public Student freezeStudent(String buid, String courseId) {

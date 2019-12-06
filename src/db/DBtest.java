@@ -29,12 +29,12 @@ public class DBtest {
 
     public static void main(String[] args) throws SQLException {
         DBtest dBtest = new DBtest();
-        dBtest.gradingRuleDAOTest();
-        dBtest.breakdownDAOTest();
+        dBtest.courseDAOTest();
     }
 
     public void courseDAOTest() {
-
+        Course course = new Course("CS591P1", "A1", "GOOD CLASS");
+        CourseDAO.getInstance().updateCourse(course);
     }
 
     public void breakdownDAOTest() {
@@ -48,7 +48,7 @@ public class DBtest {
         letterMap.put("F", new double[]{0l, 59});
         breakdown = new Breakdown(gradingRuleMap, letterMap, breakdownId);
         BreakdownDAO.getInstance().updateBreakdown(breakdown);
-        BreakdownDAO.getInstance().deleteBreakdown(breakdown);
+        BreakdownDAO.getInstance().deleteBreakdown(breakdown.getBreakdownID());
     }
 
     public void gradingRuleDAOTest() {
@@ -104,8 +104,8 @@ public class DBtest {
         TICTACTOE.setParentID(HW.getId());
         TICTACTOEII.setParentID(HW.getId());
 
-        GradingRuleDAO.getInstance().updateGradingRule(EXAM, "FALLCS591A1Breakdown");
-        GradingRuleDAO.getInstance().updateGradingRule(HW, "FALLCS591A1Breakdown");
+        GradingRuleDAO.getInstance().updateBreakdownGradingRule(EXAM, "FALLCS591A1Breakdown");
+        GradingRuleDAO.getInstance().updateBreakdownGradingRule(HW, "FALLCS591A1Breakdown");
 
         GradingRule gradingRule = GradingRuleDAO.getInstance().getGradingRule("examFALLCS591A1");
         GradingRuleDAO.getInstance().deleteGradingRule("examFALLCS591A1");
@@ -115,11 +115,11 @@ public class DBtest {
     public void studentDAOTest() {
         int code = StudentDAO.getInstance().addStudent("Jerry", "", "Tom", "U28384838", "graduate", "", "CS591P1EEE");
         System.out.println(code);
-        Student student = StudentDAO.getInstance().getStudent("U28384838");
+        Student student = StudentDAO.getInstance().getStudent("U28384838", "CS591P1");
         System.out.println(student);
         student.setComment("Good Boy");
         code = StudentDAO.getInstance().updateStudent(student);
-        student = StudentDAO.getInstance().getStudent("U28384838");
+        student = StudentDAO.getInstance().getStudent("U28384838", "CS591P1");
         System.out.println(student);
         StudentDAO.getInstance().freezeStudent("U28384838", "CS591P1EEE");
         StudentDAO.getInstance().deleteStudent("U28384838", "CS591P1EEE");

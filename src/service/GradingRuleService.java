@@ -24,7 +24,7 @@ public class GradingRuleService {
 
     public int addGradingRule(String courseID, String name, double fullScore, double proportion, String parentId, int depth) {
         GradingRule gradingRule = new GradingRule(parentId, depth, name, fullScore, proportion);
-        return GradingRuleDAO.getInstance().updateGradingRule(gradingRule, courseID);
+        return GradingRuleDAO.getInstance().updateBreakdownGradingRule(gradingRule, courseID);
     }
 
     public static List<GradingRule> getAllCategories(int depth){

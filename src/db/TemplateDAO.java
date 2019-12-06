@@ -51,7 +51,7 @@ public class TemplateDAO extends BreakdownDAO{
         } catch (SQLException sqle) {
             return null;
         }
-        Map<String, double[]> letterMap = LetterRuleDAO.getInstance().getLetterMap(templateId, "template");
+        Map<String, double[]> letterMap = LetterRuleDAO.getInstance().getTemplateLetterMap(templateId);
         return new Template(templateId, templateName, gradingRuleMap, letterMap);
     }
 
@@ -68,9 +68,9 @@ public class TemplateDAO extends BreakdownDAO{
         }
         Map<String, GradingRule> gradingRuleMap = template.getGradingRules();
         for(Map.Entry<String, GradingRule> entry : gradingRuleMap.entrySet()) {
-            gradingRuleUpdateFlag *= GradingRuleDAO.getInstance().updateGradingRule(entry.getValue(), template.getBreakdownID(), "template");
+            gradingRuleUpdateFlag *= GradingRuleDAO.getInstance().updateTemplateGradingRule(entry.getValue(), template.getBreakdownID());
         }
-        gradingRuleUpdateFlag *= LetterRuleDAO.getInstance().updateLetterMap(template.getLetterRule(), template.getBreakdownID(),"template");
+        gradingRuleUpdateFlag *= LetterRuleDAO.getInstance().updateTemplateLetterMap(template.getLetterRule(), template.getBreakdownID());
         return gradingRuleUpdateFlag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
     }
 
@@ -91,7 +91,7 @@ public class TemplateDAO extends BreakdownDAO{
         for(Map.Entry<String, GradingRule> entry : gradingRuleMap.entrySet()) {
             deleteFlag *= GradingRuleDAO.getInstance().deleteGradingRule(entry.getKey());
         }
-        deleteFlag *= LetterRuleDAO.getInstance().deleteLetterMap(template.getBreakdownID(), "template");
+        deleteFlag *= LetterRuleDAO.getInstance().deleteTemplateLetterMap(template.getBreakdownID());
         return deleteFlag == 0 ? ErrCode.DELETEERROR.getCode() : ErrCode.OK.getCode();
     }
 
@@ -119,7 +119,7 @@ public class TemplateDAO extends BreakdownDAO{
                 String gradingRuleId = resultSet.getString("grading_rule_id");
                 String name = resultSet.getString("name");
                 String templateId = resultSet.getString("template_id");
-                Map<String, double[]> letterMap = LetterRuleDAO.getInstance().getLetterMap(templateId, "template");
+                Map<String, double[]> letterMap = LetterRuleDAO.getInstance().getTemplateLetterMap(templateId);
                 if(result.containsKey(name)) {
                     result.get(name).getGradingRules().put(gradingRuleId, temp.get(gradingRuleId));
                 }

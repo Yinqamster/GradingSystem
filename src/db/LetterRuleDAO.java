@@ -17,7 +17,31 @@ public class LetterRuleDAO extends DAOImpl {
         return letterRuleDAO;
     }
 
-    public Map<String, double[]> getLetterMap(String ID, String category) {
+    public Map<String, double[]> getTemplateLetterMap(String ID) {
+        return getLetterMap(ID, "template");
+    }
+
+    public Map<String, double[]> getBreakdownLetterMap(String ID) {
+        return getLetterMap(ID, "breakdown");
+    }
+
+    public int updateTemplateLetterMap(Map<String, double[]> mapLetter, String ID) {
+        return updateLetterMap(mapLetter, ID, "template");
+    }
+
+    public int updateBreakdownLetterMap(Map<String, double[]> mapLetter, String ID) {
+        return updateLetterMap(mapLetter, ID, "breakdown");
+    }
+
+    public int deleteTemplateLetterMap(String ID) {
+        return deleteLetterMap(ID, "template");
+    }
+
+    public int deleteBreakdownLetterMap(String ID) {
+        return deleteLetterMap(ID, "breakdown");
+    }
+
+    private Map<String, double[]> getLetterMap(String ID, String category) {
         Map<String, double[]> letterResult = new HashMap<>();
         try {
             String preSql = "SELECT * FROM letter_rule WHERE placeholder = ?";
@@ -42,7 +66,7 @@ public class LetterRuleDAO extends DAOImpl {
         return letterResult;
     }
 
-    public int updateLetterMap(Map<String, double[]> mapLetter, String ID, String category) {
+    private int updateLetterMap(Map<String, double[]> mapLetter, String ID, String category) {
         int updateFlag = 1;
         String preSql = "REPLACE INTO letter_rule (letter, min_score, max_score, placeholder)" +
                 "values (?, ?, ?, ?)";
@@ -73,7 +97,7 @@ public class LetterRuleDAO extends DAOImpl {
         }
     }
 
-    public int deleteLetterMap(String ID, String category) {
+    private int deleteLetterMap(String ID, String category) {
         String preSql = "DELETE FROM letter_rule WHERE placeholder = ?";
         String deleteSql = assambleSql(preSql, category);
         try {

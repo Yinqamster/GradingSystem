@@ -23,7 +23,7 @@ public class BreakdownService {
 
 
     public int editLetterRule(String courseId, Map<String, double[]> letterRule) {
-        return LetterRuleDAO.getInstance().updateLetterMap(letterRule, courseId);
+        return LetterRuleDAO.getInstance().updateBreakdownLetterMap(letterRule, courseId);
     }
 
     public int editLetterRule(String courseId, String letter, double lower, double upper) {
