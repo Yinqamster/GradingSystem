@@ -15,10 +15,17 @@ import net.miginfocom.swing.*;
 import service.GradingRuleService;
 
 /**
- * @author unknown
+ * @author Jun Li
  */
 public class Statistics extends JFrame {
-    public Statistics() {
+    private String courseID;
+    public Statistics(String courseID) {
+        initComponents();
+        this.courseID = courseID;
+        loadCheckList();
+    }
+    // test
+    public Statistics(){
         initComponents();
         loadCheckList();
     }
@@ -72,6 +79,10 @@ public class Statistics extends JFrame {
 
     private void list_checkListValueChanged(ListSelectionEvent e) {
         // TODO recalculate mean, median, and standard deviation, refresh labels
+    }
+
+    private void button_backMouseReleased(MouseEvent e) {
+        this.dispose();
     }
 
     class CheckListItem {
@@ -140,22 +151,22 @@ public class Statistics extends JFrame {
         //---- label1 ----
         label1.setText("Course:");
         contentPane.add(label1);
-        label1.setBounds(new Rectangle(new Point(40, 20), label1.getPreferredSize()));
+        label1.setBounds(40, 20, 60, label1.getPreferredSize().height);
 
         //---- label_courseName ----
         label_courseName.setText("course name");
         contentPane.add(label_courseName);
-        label_courseName.setBounds(new Rectangle(new Point(85, 20), label_courseName.getPreferredSize()));
+        label_courseName.setBounds(105, 20, 100, label_courseName.getPreferredSize().height);
 
         //---- label3 ----
         label3.setText("Section");
         contentPane.add(label3);
-        label3.setBounds(new Rectangle(new Point(210, 20), label3.getPreferredSize()));
+        label3.setBounds(210, 20, 60, label3.getPreferredSize().height);
 
         //---- label_section ----
         label_section.setText("which section");
         contentPane.add(label_section);
-        label_section.setBounds(new Rectangle(new Point(260, 20), label_section.getPreferredSize()));
+        label_section.setBounds(270, 20, 110, label_section.getPreferredSize().height);
 
         //======== scrollPane_chooseCategories ========
         {
@@ -189,12 +200,12 @@ public class Statistics extends JFrame {
         //---- label5 ----
         label5.setText("Median:");
         contentPane.add(label5);
-        label5.setBounds(new Rectangle(new Point(180, 280), label5.getPreferredSize()));
+        label5.setBounds(180, 280, 105, label5.getPreferredSize().height);
 
         //---- label6 ----
         label6.setText("Mean:");
         contentPane.add(label6);
-        label6.setBounds(180, 255, 42, 15);
+        label6.setBounds(180, 255, 115, 15);
 
         //---- label7 ----
         label7.setText("Standard Deviation:");
@@ -204,17 +215,17 @@ public class Statistics extends JFrame {
         //---- label_mean ----
         label_mean.setText("82%");
         contentPane.add(label_mean);
-        label_mean.setBounds(330, 255, 40, label_mean.getPreferredSize().height);
+        label_mean.setBounds(330, 255, 55, label_mean.getPreferredSize().height);
 
         //---- label_median ----
         label_median.setText("82%");
         contentPane.add(label_median);
-        label_median.setBounds(330, 280, 40, 15);
+        label_median.setBounds(330, 280, 60, 15);
 
         //---- label_stddev ----
         label_stddev.setText("12");
         contentPane.add(label_stddev);
-        label_stddev.setBounds(330, 305, 45, 15);
+        label_stddev.setBounds(330, 305, 60, 15);
 
         //---- comboBox_chooseStudent ----
         comboBox_chooseStudent.setModel(new DefaultComboBoxModel<>(new String[] {
@@ -226,6 +237,12 @@ public class Statistics extends JFrame {
 
         //---- button_back ----
         button_back.setText("Back");
+        button_back.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                button_backMouseReleased(e);
+            }
+        });
         contentPane.add(button_back);
         button_back.setBounds(new Rectangle(new Point(230, 360), button_back.getPreferredSize()));
         contentPane.add(vSpacer1);

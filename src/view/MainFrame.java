@@ -52,9 +52,9 @@ public class MainFrame extends JFrame {
         });
 
         // load course name and section
-        Course thisCourse = CourseService.getInstance().getCourse(courseID);
-        this.label_courseName.setText(thisCourse.getName());
-        this.label_section.setText(thisCourse.getSection());
+//        Course thisCourse = CourseService.getInstance().getCourse(courseID);
+//        this.label_courseName.setText(thisCourse.getName());
+//        this.label_section.setText(thisCourse.getSection());
     }
 
     private void button_showEditMouseReleased(MouseEvent e) {
@@ -83,6 +83,11 @@ public class MainFrame extends JFrame {
         this.dispose();
     }
 
+    private void button_statisticsMouseReleased(MouseEvent e) {
+        Statistics statistics = new Statistics();
+        statistics.setVisible(true);
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - unknown
@@ -99,6 +104,7 @@ public class MainFrame extends JFrame {
         button_saveGrades = new JButton();
         button_calculate = new JButton();
         button_statistics = new JButton();
+        vSpacer1 = new JPanel(null);
         panel1 = new JPanel();
         scrollPane_breakdown = new JScrollPane();
         tree_breakdown = new JTree();
@@ -123,7 +129,7 @@ public class MainFrame extends JFrame {
         spinner_upperBound = new JSpinner();
         button_back = new JButton();
         hSpacer1 = new JPanel(null);
-        vSpacer1 = new JPanel(null);
+        vSpacer3 = new JPanel(null);
         popupMenu_breakdownTree = new JPopupMenu();
         menuItem_addChildren = new JMenuItem();
         menuItem_editThis = new JMenuItem();
@@ -148,22 +154,22 @@ public class MainFrame extends JFrame {
         //---- label1 ----
         label1.setText("Course:");
         contentPane.add(label1);
-        label1.setBounds(20, 10, 42, 15);
+        label1.setBounds(20, 10, 70, 15);
 
         //---- label_courseName ----
         label_courseName.setText("course name");
         contentPane.add(label_courseName);
-        label_courseName.setBounds(65, 10, 66, 15);
+        label_courseName.setBounds(90, 10, 100, 15);
 
         //---- label3 ----
         label3.setText("Section");
         contentPane.add(label3);
-        label3.setBounds(195, 10, 42, 15);
+        label3.setBounds(195, 10, 65, 15);
 
         //---- label_section ----
         label_section.setText("which section");
         contentPane.add(label_section);
-        label_section.setBounds(245, 10, 78, 15);
+        label_section.setBounds(265, 10, 110, 15);
 
         //---- button_showEdit ----
         button_showEdit.setText("Show/Edit");
@@ -174,20 +180,19 @@ public class MainFrame extends JFrame {
             }
         });
         contentPane.add(button_showEdit);
-        button_showEdit.setBounds(new Rectangle(new Point(340, 5), button_showEdit.getPreferredSize()));
+        button_showEdit.setBounds(new Rectangle(new Point(385, 5), button_showEdit.getPreferredSize()));
 
         //======== tabbedPane_gradingTable ========
         {
 
             //======== panel_GradesTab ========
             {
-                panel_GradesTab.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new
-                javax.swing.border.EmptyBorder(0,0,0,0), "JF\u006frm\u0044es\u0069gn\u0065r \u0045va\u006cua\u0074io\u006e",javax
-                .swing.border.TitledBorder.CENTER,javax.swing.border.TitledBorder.BOTTOM,new java
-                .awt.Font("D\u0069al\u006fg",java.awt.Font.BOLD,12),java.awt
-                .Color.red),panel_GradesTab. getBorder()));panel_GradesTab. addPropertyChangeListener(new java.beans.
-                PropertyChangeListener(){@Override public void propertyChange(java.beans.PropertyChangeEvent e){if("\u0062or\u0064er".
-                equals(e.getPropertyName()))throw new RuntimeException();}});
+                panel_GradesTab.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new javax.swing.
+                border.EmptyBorder(0,0,0,0), "JF\u006frmD\u0065sig\u006eer \u0045val\u0075ati\u006fn",javax.swing.border.TitledBorder.CENTER
+                ,javax.swing.border.TitledBorder.BOTTOM,new java.awt.Font("Dia\u006cog",java.awt.Font
+                .BOLD,12),java.awt.Color.red),panel_GradesTab. getBorder()));panel_GradesTab. addPropertyChangeListener(
+                new java.beans.PropertyChangeListener(){@Override public void propertyChange(java.beans.PropertyChangeEvent e){if("\u0062ord\u0065r"
+                .equals(e.getPropertyName()))throw new RuntimeException();}});
                 panel_GradesTab.setLayout(null);
 
                 //======== scrollPane_table ========
@@ -274,8 +279,16 @@ public class MainFrame extends JFrame {
 
                 //---- button_statistics ----
                 button_statistics.setText("Statistics");
+                button_statistics.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+                        button_statisticsMouseReleased(e);
+                    }
+                });
                 panel_GradesTab.add(button_statistics);
                 button_statistics.setBounds(new Rectangle(new Point(665, 430), button_statistics.getPreferredSize()));
+                panel_GradesTab.add(vSpacer1);
+                vSpacer1.setBounds(new Rectangle(new Point(430, 460), vSpacer1.getPreferredSize()));
 
                 {
                     // compute preferred size
@@ -426,7 +439,7 @@ public class MainFrame extends JFrame {
                 //---- button_saveLetterGradeRule ----
                 button_saveLetterGradeRule.setText("Save");
                 panel1.add(button_saveLetterGradeRule);
-                button_saveLetterGradeRule.setBounds(785, 430, 57, 23);
+                button_saveLetterGradeRule.setBounds(785, 430, 70, 23);
                 panel1.add(spinner_lowerBound);
                 spinner_lowerBound.setBounds(620, 405, 155, spinner_lowerBound.getPreferredSize().height);
                 panel1.add(spinner_upperBound);
@@ -464,8 +477,8 @@ public class MainFrame extends JFrame {
         button_back.setBounds(new Rectangle(new Point(1035, 10), button_back.getPreferredSize()));
         contentPane.add(hSpacer1);
         hSpacer1.setBounds(1090, 5, 20, 30);
-        contentPane.add(vSpacer1);
-        vSpacer1.setBounds(new Rectangle(new Point(435, 540), vSpacer1.getPreferredSize()));
+        contentPane.add(vSpacer3);
+        vSpacer3.setBounds(new Rectangle(new Point(390, 555), vSpacer3.getPreferredSize()));
 
         {
             // compute preferred size
@@ -558,6 +571,7 @@ public class MainFrame extends JFrame {
     private JButton button_saveGrades;
     private JButton button_calculate;
     private JButton button_statistics;
+    private JPanel vSpacer1;
     private JPanel panel1;
     private JScrollPane scrollPane_breakdown;
     private JTree tree_breakdown;
@@ -582,7 +596,7 @@ public class MainFrame extends JFrame {
     private JSpinner spinner_upperBound;
     private JButton button_back;
     private JPanel hSpacer1;
-    private JPanel vSpacer1;
+    private JPanel vSpacer3;
     private JPopupMenu popupMenu_breakdownTree;
     private JMenuItem menuItem_addChildren;
     private JMenuItem menuItem_editThis;

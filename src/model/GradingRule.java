@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GradingRule {
@@ -12,11 +13,19 @@ public class GradingRule {
     private double proportion;
 
     public GradingRule(){
-
+        new ArrayList<>();
     }
 
     public void setChildrenID(List<GradingRule> children) {
         this.children = children;
+    }
+
+    public GradingRule(String parentID, int depth, String name, double fullScore, double proportion) {
+        this.parentID = parentID;
+        this.depth = depth;
+        this.name = name;
+        this.fullScore = fullScore;
+        this.proportion = proportion;
     }
 
     public GradingRule(String ID, String parentID, String name, double fullScore, double proportion) {

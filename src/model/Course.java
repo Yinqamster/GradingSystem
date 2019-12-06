@@ -12,8 +12,6 @@ public class Course {
     //buid, student
     private Map<String, Student> students;
     private String courseID;
-    //template or breakdown
-    private int type;
 
     public String getCourseID() {
         return courseID;
@@ -106,13 +104,5 @@ public class Course {
 
     public void setStudents(Map<String, Student> students) {
         this.students = students;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
     }
 }
