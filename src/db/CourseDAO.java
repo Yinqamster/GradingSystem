@@ -130,4 +130,25 @@ public class CourseDAO {
             return null;
         }
     }
+
+    public List<Course> getCourseListBySemester(String semester) {
+        String selectSql = "SELECT course_id FROM course WHERE semester = ?";
+        List<Course> result = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(selectSql);
+            preparedStatement.setObject(1, semester);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                String courseId = resultSet.getString("course_id");
+                result.add(getCourse(courseId));
+            }
+            resultSet.close();
+            preparedStatement.close();
+            DBUtil.getConnection().close();
+            return result;
+        } catch (SQLException sqle) {
+            return null;
+        }
+    }
+
 }

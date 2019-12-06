@@ -143,8 +143,19 @@ public class StudentDAO {
 
     //TODO
     public int addStudent(String courseId, Student student){
-
-        return ErrCode.OK.getCode();
+        int updateFlag = 1;
+        updateFlag *= updateStudent(student);
+        String updateSql = "REPLACE INTO course_student_relationship (course_id, student_id) " +
+                "values (?, ?)";
+        try {
+            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(updateSql);
+            preparedStatement.setObject(1, courseId);
+            preparedStatement.setObject(2, student.getBuid());
+            updateFlag *= preparedStatement.executeUpdate();
+            return updateFlag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
+        } catch(SQLException sqle) {
+            return ErrCode.UPDATEERROR.getCode();
+        }
     }
 
 
