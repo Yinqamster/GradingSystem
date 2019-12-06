@@ -32,7 +32,7 @@ public class StudentService {
 
     public Map<String, Student> importStudent(String filename) {
         Map<String, Student> students = new HashMap<>();
-        // TODO: read students from worksheet
+        // read students from worksheet
         /*the column of the first five cols should be
          * student type   Undergraduate/Graduate
          * buid
@@ -86,7 +86,6 @@ public class StudentService {
         } catch(Exception e) {
             return null;
         }
-        // TODO: add students to DB
         return students;
     }
 
@@ -174,9 +173,5 @@ public class StudentService {
             // delete student from DB
             return StudentDAO.getInstance().deleteStudent(buid, courseId);
         }
-    }
-
-    public static void main(String args[]) {
-        StudentService.getInstance().importStudent("test.xlsx");
     }
 }

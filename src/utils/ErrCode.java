@@ -10,6 +10,7 @@ public enum ErrCode {
     STUDENTEXIST("Student already exists.", 201),
     STUDENTNOTEXIST("Student doesn't exist.", 202),
     STUDENTTYPEERROR("Wrong student type", 203),
+    IMPORTERROR("Student import error", 204),
 
     // views
     TEXTFIELDEMPTY("Please fill in all textfields with *.", 301),

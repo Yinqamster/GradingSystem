@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -139,6 +140,13 @@ public class StudentDAO {
             return ErrCode.UPDATEERROR.getCode();
         }
     }
+
+    //TODO
+    public int addStudent(String courseId, Student student){
+
+        return ErrCode.OK.getCode();
+    }
+
 
     public Student freezeStudent(String buid, String courseId) {
         try {
