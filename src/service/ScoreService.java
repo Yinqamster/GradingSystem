@@ -2,6 +2,7 @@ package service;
 
 import model.*;
 import utils.ErrCode;
+import db.GradeDAO;
 
 import java.util.*;
 import java.text.DecimalFormat;
@@ -45,9 +46,28 @@ public class ScoreService {
                 grade.setAbsolute(absolute);
                 grade.setPercentage(absolute / rule.getFullScore());
                 grade.setDeduction(rule.getFullScore() - absolute);
-                // TODO: update student grade in DB
+                // update student grade in DB
+                GradeDAO.getInstance().upgradeGrade(ruleId, buid, grade);
             }
         }
+
+        return ErrCode.OK.getCode();
+    }
+
+    public int updateGradeComment(String courseId, String buid, String ruleId, String comment) {
+        // get course, student and grade
+        Course course = courseService.getCourse(courseId);
+        if (course == null) {
+            return ErrCode.COURSENOTEXIST.getCode();
+        }
+        Student student = course.getStudents().get(buid);
+        if (student == null) {
+            return ErrCode.STUDENTNOTEXIST.getCode();
+        }
+        Grade grade = student.getGrades().get(ruleId);
+
+        grade.setComment(comment);
+        // TODO: update grade comment in DB
 
         return ErrCode.OK.getCode();
     }
@@ -76,7 +96,8 @@ public class ScoreService {
                 grade.setAbsolute(absolute);
                 grade.setPercentage(absolute / fullScore);
                 grade.setDeduction(fullScore - absolute);
-                // TODO: update this grade in DB
+                // update this grade in DB
+                GradeDAO.getInstance().upgradeGrade(ruleId, buid, grade);
             }
         }
 
