@@ -23,11 +23,12 @@ public class GradeDAO {
         return gradeDAO;
     }
 
-    public Map<String, Grade> getGradeList(String BUID) throws SQLException {
+    public Map<String, Grade> getGradeList(String BUID, String courseID) throws SQLException {
         Map<String, Grade> result = new HashMap<>();
-        String selectSql = "SELECT * FROM grade WHERE fk_student = ?";
+        String selectSql = "SELECT * FROM grade WHERE fk_student = ? and fk_grading_rule = ?";
         PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(selectSql);
         preparedStatement.setObject(1, BUID);
+        preparedStatement.setObject(2, courseID);
         ResultSet resultSet = preparedStatement.executeQuery();
         while(resultSet.next()) {
             double absolute_score = resultSet.getDouble("absolute_score");

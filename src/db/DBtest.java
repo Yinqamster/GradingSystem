@@ -47,7 +47,7 @@ public class DBtest {
         letterMap.put("C", new double[]{60, 79});
         letterMap.put("F", new double[]{0l, 59});
         breakdown = new Breakdown(gradingRuleMap, letterMap, breakdownId);
-//        BreakdownDAO.getInstance().updateBreakdown(breakdown);
+        BreakdownDAO.getInstance().updateBreakdown(breakdown);
         BreakdownDAO.getInstance().deleteBreakdown(breakdown);
     }
 

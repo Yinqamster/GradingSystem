@@ -19,6 +19,11 @@ public class Template extends Breakdown {
         this.name = name;
     }
 
+    public Template(String templateID, String name, Map<String, double[]> letterRule) {
+        super.setLetterRule(letterRule);
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
