@@ -20,6 +20,14 @@ public class GradingRuleDAO {
 
     }
 
+    public int updateTemplateGradingRule(GradingRule gradingRule, String breakdownId) {
+        return updateGradingRule(gradingRule, breakdownId, "template");
+    }
+
+    public int updateBreakdownGradingRule(GradingRule gradingRule, String breakdownId) {
+        return updateGradingRule(gradingRule, breakdownId, "breakdown");
+    }
+
     public GradingRule getGradingRule(String currentRuleId) {
         return this.getGradingRuleHelper(currentRuleId, 0);
     }
@@ -64,7 +72,7 @@ public class GradingRuleDAO {
         }
     }
 
-    public int updateGradingRule(GradingRule gradingRule, String breakdownId, String category) {
+    private int updateGradingRule(GradingRule gradingRule, String breakdownId, String category) {
         int updateFlag = 1;
         List<List<Object>> infoList = new ArrayList<>();
         getUpdateList(gradingRule, infoList, breakdownId);
