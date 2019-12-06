@@ -1,5 +1,4 @@
 package db;
-
 import model.GradingRule;
 import utils.ErrCode;
 
@@ -18,7 +17,14 @@ public class GradingRuleDAO {
     }
 
     private GradingRuleDAO() {
+    }
 
+    public int updateTemplateGradingRule(GradingRule gradingRule, String breakdownId) {
+        return updateGradingRule(gradingRule, breakdownId, "template");
+    }
+
+    public int updateBreakdownGradingRule(GradingRule gradingRule, String breakdownId) {
+        return updateGradingRule(gradingRule, breakdownId, "breakdown");
     }
 
     public GradingRule getGradingRule(String currentRuleId) {
@@ -65,15 +71,16 @@ public class GradingRuleDAO {
         }
     }
 
-    public int updateGradingRule(GradingRule gradingRule, String breakdownId) {
+    private int updateGradingRule(GradingRule gradingRule, String breakdownId, String category) {
         int updateFlag = 1;
         List<List<Object>> infoList = new ArrayList<>();
         getUpdateList(gradingRule, infoList, breakdownId);
         try {
             for(int i = 0; i < infoList.size(); i++) {
-                String updateSql = "REPLACE INTO grading_rule (name, full_score, proportion, " +
-                        "parent_id, fk_breakdown, grading_rule_id) values (?, ?, " +
+                String preSql = "REPLACE INTO grading_rule (name, full_score, proportion, " +
+                        "parent_id, placeholder, grading_rule_id) values (?, ?, " +
                         "?, ?, ?, ?)";
+                String updateSql = assambleSql(preSql, category);
                 PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(updateSql);
                 List<Object> temp = infoList.get(i);
                 for(int j = 0; j < temp.size(); j++) {
@@ -149,5 +156,10 @@ public class GradingRuleDAO {
         } catch (SQLException sqle) {
             System.err.println(sqle);
         }
+    }
+
+    private String assambleSql(String sql, String category) {
+        sql = sql.replace("placeholder", "fk_" + category);
+        return sql;
     }
 }

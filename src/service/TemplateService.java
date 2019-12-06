@@ -1,6 +1,7 @@
 package service;
 
 import db.BreakdownDAO;
+import db.TemplateDAO;
 import model.Breakdown;
 import model.Template;
 import utils.ErrCode;
@@ -18,7 +19,6 @@ public class TemplateService {
 
 
     private TemplateService() {
-        //TODO read template from database
         templateMap = new HashMap<>();
     }
 
@@ -30,10 +30,11 @@ public class TemplateService {
     }
 
     public Map<String, Template> getTemplateMap() {
+        templateMap = TemplateDAO.getInstance().getTemplateMap();
         return templateMap;
     }
     public Map<String,String> getAllTemplateName() {
-        //TODO return name for every saved template, format: Map<breakdownID, templateName>
+        // return name for every saved template, format: Map<breakdownID, templateName>
         Map<String, String> result = new HashMap<>();
         for(Map.Entry<String, Template> m : templateMap.entrySet()) {
             result.put(m.getValue().getBreakdownID(), m.getValue().getName());
@@ -41,10 +42,13 @@ public class TemplateService {
         return new HashMap<>();
     }
 
+    public Template getTemplateById(String templateId) {
+        return TemplateDAO.getInstance().getTemplate(templateId);
+    }
+
     public int saveTemplate(String courseId, String templateName) {
         Breakdown breakdown = BreakdownDAO.getInstance().getBreakdown(courseId);
-
-        //TODO save template into db
-        return ErrCode.OK.getCode();
+        Template template = new Template(breakdown.getBreakdownID(), templateName, breakdown.getGradingRules(), breakdown.getLetterRule());
+        return TemplateDAO.getInstance().addTemplate(courseId, template);
     }
 }

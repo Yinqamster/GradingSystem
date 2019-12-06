@@ -22,14 +22,17 @@ public class BreakdownService {
     }
 
 
-    public int editLetterRule(String courseId, Map<String, double[]> letterRule) {
-        return LetterRuleDAO.getInstance().updateLetterMap(letterRule, courseId);
-    }
+//    public int editLetterRule(String courseId, Map<String, double[]> letterRule) {
+//        return LetterRuleDAO.getInstance().updateLetterMap(letterRule, courseId);
+//    }
 
     public int editLetterRule(String courseId, String letter, double lower, double upper) {
 
+        return LetterRuleDAO.getInstance().editLetterRule(courseId, letter, lower, upper);
+    }
 
-        return ErrCode.OK.getCode();
+    public int addLetterRule(String courseId, String letter, double lower, double upper) {
+        return LetterRuleDAO.getInstance().addLetterRule(courseId, letter, lower, upper);
     }
 
     public Breakdown getBreakdownByID(String breakdownID) {

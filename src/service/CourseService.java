@@ -1,8 +1,10 @@
 package service;
 
 import db.CourseDAO;
+import db.StudentDAO;
 import model.Breakdown;
 import model.Course;
+import model.Student;
 import model.Template;
 import utils.Config;
 import utils.ErrCode;
@@ -43,7 +45,22 @@ public class CourseService {
             course.setStudents(studentService.importStudent(filename));
         }
 
-        return CourseDAO.getInstance().addCourse(course);
+        //add student to db
+        int res = CourseDAO.getInstance().addCourse(course);
+        if(res == ErrCode.OK.getCode()) {
+            String courseId = CourseDAO.getInstance().getCourse(semester, name, section).getCourseID();
+            course.setCourseID(courseId);
+            for(Student s : course.getStudents().values()) {
+                int resStu = StudentDAO.getInstance().addStudent(courseId, s);
+                if(resStu != ErrCode.OK.getCode()) {
+                    return resStu;
+                }
+            }
+        }
+        else {
+            return res;
+        }
+        return ErrCode.OK.getCode();
     }
 
     public int updateCourse(String name, String section, String semester, String description, String courseId) {

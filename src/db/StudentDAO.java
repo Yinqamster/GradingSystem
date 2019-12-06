@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +24,7 @@ public class StudentDAO {
         return studentDAO;
     }
 
-    public Student getStudent(String buid) {
+    public Student getStudent(String buid, String courseId) {
         try {
             String selectSql = "SELECT * FROM student WHERE buid = ?";
             PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(selectSql);
@@ -41,7 +42,7 @@ public class StudentDAO {
                 status = Integer.parseInt(resultSet.getString("status"));
                 bonus = Double.parseDouble(resultSet.getString("bonus"));
                 comment = resultSet.getString("comment");
-                gradeList = GradeDAO.getInstance().getGradeList(buid);
+                gradeList = GradeDAO.getInstance().getGradeList(buid, courseId);
                 category = resultSet.getInt("category");
             }
             resultSet.close();
@@ -58,10 +59,6 @@ public class StudentDAO {
         } catch (SQLException sqle) {
             return null;
         }
-    }
-
-    public Student getStudent(String buid, String courseId) {
-        return this.getStudent(buid);
     }
 
     public int updateStudent(Student student) {
@@ -144,6 +141,24 @@ public class StudentDAO {
         }
     }
 
+    //TODO
+    public int addStudent(String courseId, Student student){
+        int updateFlag = 1;
+        updateFlag *= updateStudent(student);
+        String updateSql = "REPLACE INTO course_student_relationship (course_id, student_id) " +
+                "values (?, ?)";
+        try {
+            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(updateSql);
+            preparedStatement.setObject(1, courseId);
+            preparedStatement.setObject(2, student.getBuid());
+            updateFlag *= preparedStatement.executeUpdate();
+            return updateFlag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
+        } catch(SQLException sqle) {
+            return ErrCode.UPDATEERROR.getCode();
+        }
+    }
+
+
     public Student freezeStudent(String buid, String courseId) {
         try {
             String updateSql = "UPDATE student SET status = ? WHERE buid = ?";
@@ -153,7 +168,7 @@ public class StudentDAO {
             preparedStatement.executeUpdate();
             preparedStatement.close();
             DBUtil.getConnection().close();
-            return this.getStudent(buid);
+            return this.getStudent(buid, courseId);
         } catch (SQLException sqle) {
             return null;
         }
