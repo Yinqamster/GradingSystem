@@ -3,6 +3,7 @@ package db;
 import model.FinalGrade;
 import model.Grade;
 import model.GradingRule;
+import utils.ErrCode;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,32 +24,54 @@ public class GradeDAO {
         return gradeDAO;
     }
 
-    public Map<String, Grade> getGradeList(String BUID, String courseID) throws SQLException {
+    public Map<String, Grade> getGradeList(String BUID, String courseId) {
         Map<String, Grade> result = new HashMap<>();
-        String selectSql = "SELECT * FROM grade WHERE fk_student = ? and fk_grading_rule = ?";
-        PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(selectSql);
-        preparedStatement.setObject(1, BUID);
-        preparedStatement.setObject(2, courseID);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while(resultSet.next()) {
-            double absolute_score = resultSet.getDouble("absolute_score");
-            double percentage_score = resultSet.getDouble("percentage_score");
-            double deduction_score = resultSet.getDouble("deduction_score");
-            String comment = resultSet.getString("comment");
-            String gradeName = resultSet.getString("grading_rule_id");
-            if(gradeName.equalsIgnoreCase("Final")) {
-                String letter = resultSet.getString("letter_grade");
-                Grade finalGrade = new FinalGrade(gradeName, absolute_score, percentage_score,
-                        deduction_score, comment, letter);
-                result.put(gradeName, finalGrade);
+        String selectSql = "SELECT * FROM grade WHERE fk_student = ? and fk_course = ?";
+        try {
+            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(selectSql);
+            preparedStatement.setObject(1, BUID);
+            preparedStatement.setObject(2, courseId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                double absolute_score = resultSet.getDouble("absolute_score");
+                double percentage_score = resultSet.getDouble("percentage_score");
+                double deduction_score = resultSet.getDouble("deduction_score");
+                String comment = resultSet.getString("comment");
+                String gradeName = resultSet.getString("name");
+                if (gradeName.equalsIgnoreCase("Final")) {
+                    String letter = resultSet.getString("letter_grade");
+                    Grade finalGrade = new FinalGrade(gradeName, absolute_score, percentage_score,
+                            deduction_score, comment, letter);
+                    result.put(gradeName, finalGrade);
+                } else {
+                    Grade grade = new Grade(gradeName, absolute_score, percentage_score, deduction_score, comment);
+                    result.put(gradeName, grade);
+                }
             }
-            else {
-                Grade grade = new Grade(gradeName, absolute_score, percentage_score, deduction_score, comment);
-                result.put(gradeName, grade);
-            }
+            return result;
+        } catch (SQLException sqle) {
+            return null;
         }
-        return result;
     }
+
+    public int upgradeGrade(String ruleId, String buid, Grade grade) {
+        String updateSql = "REPLACE INTO grade (fk_grading_rule, fk_student, absolute_score, percentage_score, deduction_score)" +
+                "values (?, ?, ?, ?, ?)";
+        try {
+            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(updateSql);
+            preparedStatement.setObject(1, ruleId);
+            preparedStatement.setObject(2, buid);
+            preparedStatement.setObject(3, grade.getAbsolute());
+            preparedStatement.setObject(4, grade.getPercentage());
+            preparedStatement.setObject(5, grade.getDeduction());
+            int flag = preparedStatement.executeUpdate();
+            return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
+        } catch(SQLException sqle) {
+            return ErrCode.UPDATEERROR.getCode();
+        }
+    }
+
+
 
 //    public int updateGrade(GradingRule gradingRule) throws SQLException {
 //        String currentId = gradingRule.getId();
