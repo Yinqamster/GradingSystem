@@ -4,13 +4,20 @@
 
 package view;
 
+import controller.MainFrameController;
+import model.Breakdown;
 import model.Course;
+import model.GradingRule;
 import service.CourseService;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
+import java.util.List;
+import javax.print.DocFlavor;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.*;
 import javax.swing.tree.*;
 
@@ -19,11 +26,11 @@ import javax.swing.tree.*;
  */
 public class MainFrame extends JFrame {
     private CourseList parent;
-    private String courseID;
+    private Course course;
     public MainFrame(CourseList courseList, String courseID) {
         initComponents();
         this.parent = courseList;
-        this.courseID = courseID;
+        this.course = CourseService.getInstance().getCourse(courseID);
 
         // frozen table
 //        scrollPane_table = new FrozenTablePane(table_grades, 2);
@@ -51,21 +58,44 @@ public class MainFrame extends JFrame {
             }
         });
 
+        // test
         // load course name and section
 //        Course thisCourse = CourseService.getInstance().getCourse(courseID);
 //        this.label_courseName.setText(thisCourse.getName());
 //        this.label_section.setText(thisCourse.getSection());
+
+        loadBreakdownTree();
     }
 
     private void button_showEditMouseReleased(MouseEvent e) {
-        ShowEditCourse showEditCourse = new ShowEditCourse(courseID);
+        // test
+        ShowEditCourse showEditCourse = new ShowEditCourse();
+        //ShowEditCourse showEditCourse = new ShowEditCourse(courseID);
         showEditCourse.setVisible(true);
     }
 
     private void tree_breakdownMouseReleased(MouseEvent e) {
+        // left click on breakdown tree, show information
+        if (e.getButton() == MouseEvent.BUTTON1){
+            if (tree_breakdown.getSelectionCount() == 0) return;
+            String itemText = Objects.requireNonNull(tree_breakdown.getSelectionPath()).getLastPathComponent().toString();
+            String[] items = itemText.split(" ");
+            String name = items[0];
+            String proportion = items[1].replace("%", "");
+            textField_name.setText(name);
+            spinner_percentage.setValue(Integer.parseInt(proportion));
+
+            if(items.length == 3) {// not leaf node
+                panel_fullScore.setVisible(true);
+                String fullScore = items[2];
+                spinner_fullScore.setValue(Integer.parseInt(fullScore));
+            }else {
+                panel_fullScore.setVisible(false);
+            }
+        }
         // right button on breakdown tree
         if (e.getButton() == MouseEvent.BUTTON3) {
-            //show in JTree
+            //popupMenu show in JTree
             if (tree_breakdown.getSelectionCount() == 0) return;
             int i = tree_breakdown.getClosestRowForLocation(e.getX(), e.getY());
             popupMenu_breakdownTree.show(tree_breakdown, e.getX(), e.getY());
@@ -88,6 +118,44 @@ public class MainFrame extends JFrame {
         statistics.setVisible(true);
     }
 
+    private void loadBreakdownTree(){
+        // test
+//        Breakdown breakdown = this.course.getBreakdown();
+//        Map<String, GradingRule> gradingRules = breakdown.getGradingRules(); // GradingRuleID, GradingRule
+//        List<GradingRule> grs= new ArrayList<>(gradingRules.values());
+//        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(course.getName() + " 100%");
+
+        // test
+        List<GradingRule> grs= new ArrayList<>();
+        for(int i=0; i<5; i++){
+            List<GradingRule> gs= new ArrayList<>();
+            List<GradingRule> gs0= new ArrayList<>();
+            gs0.add(new GradingRule("Homework3", 100, 0.33));
+            gs.add(new GradingRule("Homework1",0.21, gs0));
+            GradingRule gradingRule = new GradingRule("Homework2",0.55,gs);
+            grs.add(gradingRule);
+        }
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode( "CS 591 P1 100%");
+
+        DefaultTreeModel treeModel = new DefaultTreeModel(MainFrameController.initBreakdownTree(rootNode, MainFrameController.getGradeRuleOfDepth0(grs)));
+        this.tree_breakdown.setModel(treeModel);
+    }
+
+    private void list_letterGradeRuleValueChanged(ListSelectionEvent e) {
+        String item = list_letterGradeRule.getSelectedValue();
+        String[] ss = item.split("  ");
+        String letterName = ss[0];
+        String Bound = ss[1].replace(" ","").replace("%","");
+        String[] bounds = Bound.split("-");
+        String lowerBound = bounds[0];
+        String upperBound = bounds[1];
+
+        // set textField;
+        label_letterGrade.setText(letterName);
+        spinner_lowerBound.setValue(Integer.parseInt(lowerBound));
+        spinner_upperBound.setValue(Integer.parseInt(upperBound));
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - unknown
@@ -105,21 +173,17 @@ public class MainFrame extends JFrame {
         button_calculate = new JButton();
         button_statistics = new JButton();
         vSpacer1 = new JPanel(null);
-        panel1 = new JPanel();
+        panel_whole = new JPanel();
         scrollPane_breakdown = new JScrollPane();
         tree_breakdown = new JTree();
         scrollPane_letterGrade = new JScrollPane();
         list_letterGradeRule = new JList<>();
         button_saveBreakdown = new JButton();
         button_saveAsTemplate = new JButton();
-        label2 = new JLabel();
-        label_whichCategory = new JLabel();
         label5 = new JLabel();
         textField_name = new JTextField();
         label6 = new JLabel();
         spinner_percentage = new JSpinner();
-        label7 = new JLabel();
-        textField_fullScore = new JTextField();
         label8 = new JLabel();
         label_letterGrade = new JLabel();
         label9 = new JLabel();
@@ -127,6 +191,13 @@ public class MainFrame extends JFrame {
         button_saveLetterGradeRule = new JButton();
         spinner_lowerBound = new JSpinner();
         spinner_upperBound = new JSpinner();
+        label4 = new JLabel();
+        label11 = new JLabel();
+        label12 = new JLabel();
+        vSpacer4 = new JPanel(null);
+        panel_fullScore = new JPanel();
+        label7 = new JLabel();
+        spinner_fullScore = new JSpinner();
         button_back = new JButton();
         hSpacer1 = new JPanel(null);
         vSpacer3 = new JPanel(null);
@@ -187,12 +258,12 @@ public class MainFrame extends JFrame {
 
             //======== panel_GradesTab ========
             {
-                panel_GradesTab.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new javax.swing.
-                border.EmptyBorder(0,0,0,0), "JF\u006frmD\u0065sig\u006eer \u0045val\u0075ati\u006fn",javax.swing.border.TitledBorder.CENTER
-                ,javax.swing.border.TitledBorder.BOTTOM,new java.awt.Font("Dia\u006cog",java.awt.Font
-                .BOLD,12),java.awt.Color.red),panel_GradesTab. getBorder()));panel_GradesTab. addPropertyChangeListener(
-                new java.beans.PropertyChangeListener(){@Override public void propertyChange(java.beans.PropertyChangeEvent e){if("\u0062ord\u0065r"
-                .equals(e.getPropertyName()))throw new RuntimeException();}});
+                panel_GradesTab.setBorder ( new javax . swing. border .CompoundBorder ( new javax . swing. border .TitledBorder ( new javax . swing. border
+                .EmptyBorder ( 0, 0 ,0 , 0) ,  "JF\u006frm\u0044es\u0069gn\u0065r \u0045va\u006cua\u0074io\u006e" , javax. swing .border . TitledBorder. CENTER ,javax
+                . swing. border .TitledBorder . BOTTOM, new java. awt .Font ( "D\u0069al\u006fg", java .awt . Font. BOLD ,
+                12 ) ,java . awt. Color .red ) ,panel_GradesTab. getBorder () ) ); panel_GradesTab. addPropertyChangeListener( new java. beans
+                .PropertyChangeListener ( ){ @Override public void propertyChange (java . beans. PropertyChangeEvent e) { if( "\u0062or\u0064er" .equals ( e.
+                getPropertyName () ) )throw new RuntimeException( ) ;} } );
                 panel_GradesTab.setLayout(null);
 
                 //======== scrollPane_table ========
@@ -307,9 +378,9 @@ public class MainFrame extends JFrame {
             }
             tabbedPane_gradingTable.addTab("Grades", panel_GradesTab);
 
-            //======== panel1 ========
+            //======== panel_whole ========
             {
-                panel1.setLayout(null);
+                panel_whole.setLayout(null);
 
                 //======== scrollPane_breakdown ========
                 {
@@ -319,15 +390,15 @@ public class MainFrame extends JFrame {
                         new DefaultMutableTreeNode("CS591 P1 100%") {
                             {
                                 DefaultMutableTreeNode node1 = new DefaultMutableTreeNode("Homework 50%");
-                                    node1.add(new DefaultMutableTreeNode("TicTacToe 25%"));
-                                    node1.add(new DefaultMutableTreeNode("MyFancyBank 25%"));
+                                    node1.add(new DefaultMutableTreeNode("TicTacToe 25% 100"));
+                                    node1.add(new DefaultMutableTreeNode("MyFancyBank 25% 100"));
                                 add(node1);
                                 node1 = new DefaultMutableTreeNode("Exam 50%");
                                     DefaultMutableTreeNode node2 = new DefaultMutableTreeNode("Midterm 35%");
-                                        node2.add(new DefaultMutableTreeNode("Written 20%"));
-                                        node2.add(new DefaultMutableTreeNode("Practicum 15%"));
+                                        node2.add(new DefaultMutableTreeNode("Written 20% 50"));
+                                        node2.add(new DefaultMutableTreeNode("Practicum 15% 133"));
                                     node1.add(node2);
-                                    node1.add(new DefaultMutableTreeNode("Final 15%"));
+                                    node1.add(new DefaultMutableTreeNode("Final 15% 100"));
                                 add(node1);
                             }
                         }));
@@ -340,7 +411,7 @@ public class MainFrame extends JFrame {
                     });
                     scrollPane_breakdown.setViewportView(tree_breakdown);
                 }
-                panel1.add(scrollPane_breakdown);
+                panel_whole.add(scrollPane_breakdown);
                 scrollPane_breakdown.setBounds(10, 10, 510, 340);
 
                 //======== scrollPane_letterGrade ========
@@ -367,103 +438,143 @@ public class MainFrame extends JFrame {
                         @Override
                         public String getElementAt(int i) { return values[i]; }
                     });
+                    list_letterGradeRule.setToolTipText("Select a Row to Edit ");
+                    list_letterGradeRule.addListSelectionListener(e -> list_letterGradeRuleValueChanged(e));
                     scrollPane_letterGrade.setViewportView(list_letterGradeRule);
                 }
-                panel1.add(scrollPane_letterGrade);
+                panel_whole.add(scrollPane_letterGrade);
                 scrollPane_letterGrade.setBounds(530, 10, 530, 340);
 
                 //---- button_saveBreakdown ----
                 button_saveBreakdown.setText("Save");
-                panel1.add(button_saveBreakdown);
-                button_saveBreakdown.setBounds(new Rectangle(new Point(390, 430), button_saveBreakdown.getPreferredSize()));
+                panel_whole.add(button_saveBreakdown);
+                button_saveBreakdown.setBounds(new Rectangle(new Point(380, 405), button_saveBreakdown.getPreferredSize()));
 
                 //---- button_saveAsTemplate ----
                 button_saveAsTemplate.setText("Save as Template");
-                panel1.add(button_saveAsTemplate);
-                button_saveAsTemplate.setBounds(new Rectangle(new Point(935, 440), button_saveAsTemplate.getPreferredSize()));
-
-                //---- label2 ----
-                label2.setText("Category:");
-                panel1.add(label2);
-                label2.setBounds(145, 360, 60, label2.getPreferredSize().height);
-
-                //---- label_whichCategory ----
-                label_whichCategory.setText("which category");
-                panel1.add(label_whichCategory);
-                label_whichCategory.setBounds(225, 360, 145, label_whichCategory.getPreferredSize().height);
+                panel_whole.add(button_saveAsTemplate);
+                button_saveAsTemplate.setBounds(new Rectangle(new Point(925, 405), button_saveAsTemplate.getPreferredSize()));
 
                 //---- label5 ----
                 label5.setText("Name:");
-                panel1.add(label5);
-                label5.setBounds(145, 380, 60, label5.getPreferredSize().height);
-                panel1.add(textField_name);
-                textField_name.setBounds(225, 375, 155, textField_name.getPreferredSize().height);
+                panel_whole.add(label5);
+                label5.setBounds(145, 360, 60, label5.getPreferredSize().height);
+                panel_whole.add(textField_name);
+                textField_name.setBounds(225, 360, 135, textField_name.getPreferredSize().height);
 
                 //---- label6 ----
                 label6.setText("Percentage:");
-                panel1.add(label6);
-                label6.setBounds(145, 405, 80, label6.getPreferredSize().height);
+                panel_whole.add(label6);
+                label6.setBounds(145, 385, 80, label6.getPreferredSize().height);
 
                 //---- spinner_percentage ----
                 spinner_percentage.setModel(new SpinnerNumberModel(0, 0, 100, 1));
-                panel1.add(spinner_percentage);
-                spinner_percentage.setBounds(225, 400, 155, spinner_percentage.getPreferredSize().height);
-
-                //---- label7 ----
-                label7.setText("Full Score:");
-                panel1.add(label7);
-                label7.setBounds(145, 430, 70, label7.getPreferredSize().height);
-                panel1.add(textField_fullScore);
-                textField_fullScore.setBounds(225, 430, 155, textField_fullScore.getPreferredSize().height);
+                panel_whole.add(spinner_percentage);
+                spinner_percentage.setBounds(225, 385, 135, spinner_percentage.getPreferredSize().height);
 
                 //---- label8 ----
                 label8.setText("Letter Grade:");
-                panel1.add(label8);
-                label8.setBounds(new Rectangle(new Point(535, 385), label8.getPreferredSize()));
+                panel_whole.add(label8);
+                label8.setBounds(new Rectangle(new Point(530, 365), label8.getPreferredSize()));
 
                 //---- label_letterGrade ----
-                label_letterGrade.setText("which letter grade");
-                panel1.add(label_letterGrade);
-                label_letterGrade.setBounds(new Rectangle(new Point(620, 385), label_letterGrade.getPreferredSize()));
+                label_letterGrade.setText("Choose One Letter Grade Above");
+                panel_whole.add(label_letterGrade);
+                label_letterGrade.setBounds(615, 365, label_letterGrade.getPreferredSize().width, 16);
 
                 //---- label9 ----
                 label9.setText("Lower Bound:");
-                panel1.add(label9);
-                label9.setBounds(535, 410, label9.getPreferredSize().width, 15);
+                panel_whole.add(label9);
+                label9.setBounds(530, 390, 85, 15);
 
                 //---- label10 ----
                 label10.setText("Upper Bound:");
-                panel1.add(label10);
-                label10.setBounds(535, 435, 72, 15);
+                panel_whole.add(label10);
+                label10.setBounds(530, 415, 85, 15);
 
                 //---- button_saveLetterGradeRule ----
                 button_saveLetterGradeRule.setText("Save");
-                panel1.add(button_saveLetterGradeRule);
-                button_saveLetterGradeRule.setBounds(785, 430, 70, 23);
-                panel1.add(spinner_lowerBound);
-                spinner_lowerBound.setBounds(620, 405, 155, spinner_lowerBound.getPreferredSize().height);
-                panel1.add(spinner_upperBound);
-                spinner_upperBound.setBounds(620, 430, 155, 22);
+                panel_whole.add(button_saveLetterGradeRule);
+                button_saveLetterGradeRule.setBounds(new Rectangle(new Point(745, 405), button_saveLetterGradeRule.getPreferredSize()));
+
+                //---- spinner_lowerBound ----
+                spinner_lowerBound.setModel(new SpinnerNumberModel(0, 0, 100, 1));
+                panel_whole.add(spinner_lowerBound);
+                spinner_lowerBound.setBounds(615, 385, 110, spinner_lowerBound.getPreferredSize().height);
+
+                //---- spinner_upperBound ----
+                spinner_upperBound.setModel(new SpinnerNumberModel(0, 0, 100, 1));
+                panel_whole.add(spinner_upperBound);
+                spinner_upperBound.setBounds(615, 410, 110, 22);
+
+                //---- label4 ----
+                label4.setText("%");
+                panel_whole.add(label4);
+                label4.setBounds(new Rectangle(new Point(365, 390), label4.getPreferredSize()));
+
+                //---- label11 ----
+                label11.setText("%");
+                panel_whole.add(label11);
+                label11.setBounds(730, 390, 25, 15);
+
+                //---- label12 ----
+                label12.setText("%");
+                panel_whole.add(label12);
+                label12.setBounds(730, 415, 25, 15);
+                panel_whole.add(vSpacer4);
+                vSpacer4.setBounds(500, 425, 10, 20);
+
+                //======== panel_fullScore ========
+                {
+                    panel_fullScore.setLayout(null);
+
+                    //---- label7 ----
+                    label7.setText("Full Score:");
+                    panel_fullScore.add(label7);
+                    label7.setBounds(5, 5, 70, label7.getPreferredSize().height);
+
+                    //---- spinner_fullScore ----
+                    spinner_fullScore.setModel(new SpinnerNumberModel(0, 0, null, 1));
+                    panel_fullScore.add(spinner_fullScore);
+                    spinner_fullScore.setBounds(85, 5, 135, spinner_fullScore.getPreferredSize().height);
+
+                    {
+                        // compute preferred size
+                        Dimension preferredSize = new Dimension();
+                        for(int i = 0; i < panel_fullScore.getComponentCount(); i++) {
+                            Rectangle bounds = panel_fullScore.getComponent(i).getBounds();
+                            preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
+                            preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
+                        }
+                        Insets insets = panel_fullScore.getInsets();
+                        preferredSize.width += insets.right;
+                        preferredSize.height += insets.bottom;
+                        panel_fullScore.setMinimumSize(preferredSize);
+                        panel_fullScore.setPreferredSize(preferredSize);
+                    }
+                }
+                panel_whole.add(panel_fullScore);
+                panel_fullScore.setBounds(140, 410, 220, 30);
 
                 {
                     // compute preferred size
                     Dimension preferredSize = new Dimension();
-                    for(int i = 0; i < panel1.getComponentCount(); i++) {
-                        Rectangle bounds = panel1.getComponent(i).getBounds();
+                    for(int i = 0; i < panel_whole.getComponentCount(); i++) {
+                        Rectangle bounds = panel_whole.getComponent(i).getBounds();
                         preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
                         preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
                     }
-                    Insets insets = panel1.getInsets();
+                    Insets insets = panel_whole.getInsets();
                     preferredSize.width += insets.right;
                     preferredSize.height += insets.bottom;
-                    panel1.setMinimumSize(preferredSize);
-                    panel1.setPreferredSize(preferredSize);
+                    panel_whole.setMinimumSize(preferredSize);
+                    panel_whole.setPreferredSize(preferredSize);
                 }
             }
-            tabbedPane_gradingTable.addTab("Breakdown", panel1);
+            tabbedPane_gradingTable.addTab("Breakdown", panel_whole);
         }
         contentPane.add(tabbedPane_gradingTable);
-        tabbedPane_gradingTable.setBounds(20, 35, 1075, 500);
+        tabbedPane_gradingTable.setBounds(20, 35, 1075, 480);
 
         //---- button_back ----
         button_back.setText("Back");
@@ -478,7 +589,7 @@ public class MainFrame extends JFrame {
         contentPane.add(hSpacer1);
         hSpacer1.setBounds(1090, 5, 20, 30);
         contentPane.add(vSpacer3);
-        vSpacer3.setBounds(new Rectangle(new Point(390, 555), vSpacer3.getPreferredSize()));
+        vSpacer3.setBounds(520, 515, vSpacer3.getPreferredSize().width, 15);
 
         {
             // compute preferred size
@@ -572,21 +683,17 @@ public class MainFrame extends JFrame {
     private JButton button_calculate;
     private JButton button_statistics;
     private JPanel vSpacer1;
-    private JPanel panel1;
+    private JPanel panel_whole;
     private JScrollPane scrollPane_breakdown;
     private JTree tree_breakdown;
     private JScrollPane scrollPane_letterGrade;
     private JList<String> list_letterGradeRule;
     private JButton button_saveBreakdown;
     private JButton button_saveAsTemplate;
-    private JLabel label2;
-    private JLabel label_whichCategory;
     private JLabel label5;
     private JTextField textField_name;
     private JLabel label6;
     private JSpinner spinner_percentage;
-    private JLabel label7;
-    private JTextField textField_fullScore;
     private JLabel label8;
     private JLabel label_letterGrade;
     private JLabel label9;
@@ -594,6 +701,13 @@ public class MainFrame extends JFrame {
     private JButton button_saveLetterGradeRule;
     private JSpinner spinner_lowerBound;
     private JSpinner spinner_upperBound;
+    private JLabel label4;
+    private JLabel label11;
+    private JLabel label12;
+    private JPanel vSpacer4;
+    private JPanel panel_fullScore;
+    private JLabel label7;
+    private JSpinner spinner_fullScore;
     private JButton button_back;
     private JPanel hSpacer1;
     private JPanel vSpacer3;

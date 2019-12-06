@@ -4,6 +4,8 @@
 
 package view;
 
+import utils.ErrCode;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -18,6 +20,21 @@ public class ShowEditStudent extends JFrame {
 
     private void button_saveMouseReleased(MouseEvent e) {
         // TODO check valid for every compulsory blanks, if valid , then save and refresh the table
+        if(checkValid()){
+            // TODO save and refresh the table
+        }else{
+            this.label_warning.setText(ErrCode.TEXTFIELDEMPTY.getDescription());
+        }
+    }
+
+    private boolean checkValid(){
+        if(textField_firstName.getText().equals("")){
+            return false;
+        }else if(textField_lastName.getText().equals("")){
+            return false;
+        }else if(textField_buid.getText().equals("")){
+            return false;
+        }else return true;
     }
 
     private void button_cancelMouseReleased(MouseEvent e) {
