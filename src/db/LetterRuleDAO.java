@@ -42,6 +42,15 @@ public class LetterRuleDAO extends DAOImpl {
         return letterResult;
     }
 
+    public int addLetterRule(String courseId, String letter, double lower, double upper) {
+
+        return ErrCode.OK.getCode();
+    }
+
+    public int editLetterRule(String courseId, String letter, double lower, double upper) {
+        return ErrCode.OK.getCode();
+    }
+
     public int updateLetterMap(Map<String, double[]> mapLetter, String ID, String category) {
         int updateFlag = 1;
         String preSql = "REPLACE INTO letter_rule (letter, min_score, max_score, placeholder)" +
