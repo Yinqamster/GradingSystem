@@ -28,7 +28,8 @@ public class AddCourse extends JFrame {
         this.courseList = courseList;
 
         // load ComBox
-        loadComboBox();
+        // test
+        //loadComboBox();
     }
 
     private void loadComboBox(){

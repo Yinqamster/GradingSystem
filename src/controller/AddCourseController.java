@@ -9,8 +9,15 @@ import java.util.Map;
 public class AddCourseController {
     public static Map<String, String> getChooseBreakdownItems(){
         // return items to add into breakdown comboBox, format: Map<breakdownID, name>
-        Map<String, String> itemMap = new HashMap(CourseService.getInstance().getAllCourseName());
-        itemMap.putAll(TemplateService.getInstance().getAllTemplateName());
+        Map<String, String> itemMap = new HashMap();
+        if(CourseService.getInstance().getAllCourseName() != null) {
+            //TODO 应该是courseID还是courseName？
+            itemMap = CourseService.getInstance().getAllCourseName();
+        }
+        if(TemplateService.getInstance().getAllTemplateName() != null) {
+            itemMap.putAll(TemplateService.getInstance().getAllTemplateName());
+        }
+
         return itemMap;
     }
 }

@@ -1,5 +1,6 @@
 package service;
 
+import db.GradingRuleDAO;
 import model.GradingRule;
 import utils.ErrCode;
 
@@ -21,11 +22,9 @@ public class GradingRuleService {
         return instance;
     }
 
-    public int addGradingRule(String name, double fullScore, double proportion, int parentId) {
-//        GradingRule gradingRule = new GradingRule(parentId, name, fullScore, proportion);
-
-        //TODO insert grading rule into database
-        return ErrCode.OK.getCode();
+    public int addGradingRule(String courseID, String name, double fullScore, double proportion, String parentId, int depth) {
+        GradingRule gradingRule = new GradingRule(parentId, depth, name, fullScore, proportion);
+        return GradingRuleDAO.getInstance().updateGradingRule(gradingRule, courseID);
     }
 
     public static List<GradingRule> getAllCategories(int depth){
