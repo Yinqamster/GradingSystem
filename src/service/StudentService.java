@@ -33,7 +33,7 @@ public class StudentService {
     public Map<String, Student> importStudent(String filename) {
         Map<String, Student> students = new HashMap<>();
         // TODO: read students from worksheet
-        /*the column of the first four cols should be
+        /*the column of the first five cols should be
          * student type   Undergraduate/Graduate
          * buid
          * first name
