@@ -67,14 +67,37 @@ public class LetterRuleDAO extends DAOImpl {
     }
 
     //TODO
-    public int addLetterRule(String courseId, String letter, double lower, double upper) {
+    public int updateBreakdownLetterRule(String courseId, String letter, double lower, double upper) {
+        int updateFlag = 1;
+        String updateLetterSql = "REPLACE INTO letter_rule (letter, min_score, max_score, " +
+                "fk_breakdown) values (?, ?, ?, ?)";
+        String updateBreakdownSql = "REPLACE INTO breakdown (break_down_id, fk_course) values (?, ?)";
+        try {
+            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(updateLetterSql);
+            preparedStatement.setObject(1, letter);
+            preparedStatement.setObject(2, lower);
+            preparedStatement.setObject(3, upper);
+            preparedStatement.setObject(4, courseId);
+            updateFlag *= preparedStatement.executeUpdate();
+            preparedStatement.close();
+            DBUtil.getConnection().close();
+            preparedStatement = DBUtil.getConnection().prepareStatement(updateBreakdownSql);
+            preparedStatement.setObject(1, courseId);
+            preparedStatement.setObject(2, courseId);
+            updateFlag *= preparedStatement.executeUpdate();
+            return updateFlag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
+        } catch (SQLException sqle) {
+            return ErrCode.UPDATEERROR.getCode();
+        }
+    }
 
-        return ErrCode.OK.getCode();
+    public int addBreakdownLetterRule(String courseId, String letter, double lower, double upper) {
+        return updateBreakdownLetterRule(courseId, letter, lower, upper);
     }
 
     //TODO
-    public int editLetterRule(String courseId, String letter, double lower, double upper) {
-        return ErrCode.OK.getCode();
+    public int editBreakdownLetterRule(String courseId, String letter, double lower, double upper) {
+        return updateBreakdownLetterRule(courseId, letter, lower, upper);
     }
 
     private int updateLetterMap(Map<String, double[]> mapLetter, String ID, String category) {
