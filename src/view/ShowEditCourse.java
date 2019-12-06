@@ -105,9 +105,9 @@ public class ShowEditCourse extends JFrame {
         //---- label2 ----
         label2.setText("Course Name*:");
         contentPane.add(label2);
-        label2.setBounds(new Rectangle(new Point(45, 75), label2.getPreferredSize()));
+        label2.setBounds(45, 75, 95, label2.getPreferredSize().height);
         contentPane.add(textField_courseName);
-        textField_courseName.setBounds(125, 70, 210, textField_courseName.getPreferredSize().height);
+        textField_courseName.setBounds(145, 70, 190, textField_courseName.getPreferredSize().height);
         contentPane.add(label3);
         label3.setBounds(45, 100, 75, label3.getPreferredSize().height);
 
@@ -116,7 +116,7 @@ public class ShowEditCourse extends JFrame {
         contentPane.add(label4);
         label4.setBounds(45, 105, 78, 15);
         contentPane.add(textField_section);
-        textField_section.setBounds(125, 100, 210, 21);
+        textField_section.setBounds(145, 100, 190, 21);
 
         //---- label5 ----
         label5.setText("Semester*:");
@@ -130,7 +130,7 @@ public class ShowEditCourse extends JFrame {
             "Summer"
         }));
         contentPane.add(comboBox_season);
-        comboBox_season.setBounds(125, 130, 100, comboBox_season.getPreferredSize().height);
+        comboBox_season.setBounds(145, 130, 90, comboBox_season.getPreferredSize().height);
 
         //---- comboBox_year ----
         comboBox_year.setModel(new DefaultComboBoxModel<>(new String[] {
@@ -143,21 +143,21 @@ public class ShowEditCourse extends JFrame {
             "2025"
         }));
         contentPane.add(comboBox_year);
-        comboBox_year.setBounds(235, 130, 100, 21);
+        comboBox_year.setBounds(245, 130, 90, comboBox_year.getPreferredSize().height);
         contentPane.add(hSpacer1);
         hSpacer1.setBounds(350, 70, 25, 30);
 
         //---- label6 ----
         label6.setText("Description:");
         contentPane.add(label6);
-        label6.setBounds(new Rectangle(new Point(45, 160), label6.getPreferredSize()));
+        label6.setBounds(45, 160, 90, label6.getPreferredSize().height);
 
         //======== scrollPane1 ========
         {
             scrollPane1.setViewportView(textArea_description);
         }
         contentPane.add(scrollPane1);
-        scrollPane1.setBounds(125, 160, 210, 95);
+        scrollPane1.setBounds(145, 160, 190, 95);
 
         //---- button_save ----
         button_save.setText("save");
@@ -179,14 +179,14 @@ public class ShowEditCourse extends JFrame {
             }
         });
         contentPane.add(button_cancel);
-        button_cancel.setBounds(225, 280, 70, 23);
+        button_cancel.setBounds(225, 280, button_cancel.getPreferredSize().width, 23);
         contentPane.add(vSpacer1);
         vSpacer1.setBounds(180, 305, vSpacer1.getPreferredSize().width, 25);
 
         //---- label_warning ----
         label_warning.setForeground(Color.red);
         contentPane.add(label_warning);
-        label_warning.setBounds(75, 260, 260, label_warning.getPreferredSize().height);
+        label_warning.setBounds(110, 260, 180, 15);
 
         {
             // compute preferred size
