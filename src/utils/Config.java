@@ -13,4 +13,9 @@ public class Config {
     public static final int BREAKDOWN = 1;
     public static final int TEMPLATE = 2;
 
+    //student type
+    public static final String UNDERGRADUATE = "Undergraduate";
+    public static final String GRADUATE = "Graduate";
+
+
 }

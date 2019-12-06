@@ -2,6 +2,7 @@ package service;
 
 import model.*;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -33,6 +34,7 @@ public class StudentService {
         Map<String, Student> students = new HashMap<>();
         // TODO: read students from worksheet
         /*the column of the first four cols should be
+         * student type   Undergraduate/Graduate
          * buid
          * first name
          * middle name
@@ -47,21 +49,35 @@ public class StudentService {
 
             int rolNum = sheet.getLastRowNum();
             int colNum = sheet.getRow(0).getLastCellNum();
+//            System.out.println(rolNum + " " + colNum);
 
             for(int i = 1; i <= rolNum; i++) {
                 Row row = sheet.getRow(i);
                 List<Object> elements = new ArrayList<>();
                 for(int j = 0; j < colNum; j++) {
                     Cell cell = row.getCell(j);
+
                     if(cell == null) {
+//                        System.out.println();
                         elements.add("");
                     }
                     else {
-                        elements.add(cell.getStringCellValue());
+                        if(cell.getCellTypeEnum() == CellType.NUMERIC) {
+//                            System.out.println(cell.getNumericCellValue());
+                            elements.add(cell.getNumericCellValue());
+                        }
+                        else if(cell.getCellTypeEnum() == CellType.STRING) {
+//                            System.out.println(cell.getStringCellValue());
+                            elements.add(cell.getStringCellValue());
+                        }
+//                        System.out.println(cell.getStringCellValue());
+
                     }
                 }
-                Name name = new Name(elements.get(1).toString(), elements.get(2).toString(), elements.get(3).toString());
-                Student student = new UndergraduateStudent(name, elements.get(0).toString());
+                Name name = new Name(elements.get(2).toString(), elements.get(3).toString(), elements.get(4).toString());
+                Student student = elements.get(0).toString().equals(Config.UNDERGRADUATE) ? new UndergraduateStudent(name, elements.get(1).toString())
+                        : new GraduateStudent(name, elements.get(1).toString());
+//                System.out.println(student.getBuid() + " " + student.getName().getFullName());
                 students.put(student.getBuid(), student);
             }
 
@@ -78,7 +94,8 @@ public class StudentService {
     public void printStudent(Map<String, Student> students) {
         System.out.println("student size: " + students.size());
         for(Student s : students.values()) {
-            System.out.print(s.getBuid());
+            System.out.print(s instanceof UndergraduateStudent ? Config.UNDERGRADUATE : Config.GRADUATE);
+            System.out.print(" " + s.getBuid());
             System.out.println(" " + s.getName().getFullName());
         }
     }
@@ -157,5 +174,9 @@ public class StudentService {
             // delete student from DB
             return StudentDAO.getInstance().deleteStudent(buid, courseId);
         }
+    }
+
+    public static void main(String args[]) {
+        StudentService.getInstance().importStudent("test.xlsx");
     }
 }
