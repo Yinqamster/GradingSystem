@@ -66,11 +66,13 @@ public class LetterRuleDAO extends DAOImpl {
         return letterResult;
     }
 
+    //TODO
     public int addLetterRule(String courseId, String letter, double lower, double upper) {
 
         return ErrCode.OK.getCode();
     }
 
+    //TODO
     public int editLetterRule(String courseId, String letter, double lower, double upper) {
         return ErrCode.OK.getCode();
     }

@@ -133,4 +133,10 @@ public class TemplateDAO extends BreakdownDAO{
         }
         return result;
     }
+
+    //TODO
+    public int addTemplate(String courseId, Template template) {
+
+        return ErrCode.OK.getCode();
+    }
 }
