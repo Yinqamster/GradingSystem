@@ -5,9 +5,9 @@ import java.util.Map;
 
 public class Course {
     private String name;
-    private String section;
+    private String section = "";
     private String semester;
-    private String description;
+    private String description = "";
     private Breakdown breakdown;
     //buid, student
     private Map<String, Student> students;

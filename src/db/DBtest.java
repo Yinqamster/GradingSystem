@@ -33,7 +33,7 @@ public class DBtest {
     }
 
     public void courseDAOTest() {
-        Course course = new Course("CS591P1", "A1", "GOOD CLASS");
+        Course course = new Course("CS591P1", "Fall", "GOOD CLASS");
         CourseDAO.getInstance().updateCourse(course);
     }
 

@@ -17,7 +17,6 @@ public class GradingRuleDAO {
     }
 
     private GradingRuleDAO() {
-
     }
 
     public int updateTemplateGradingRule(GradingRule gradingRule, String breakdownId) {
