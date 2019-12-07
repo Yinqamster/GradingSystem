@@ -27,9 +27,9 @@ public class GradingRuleService {
         return GradingRuleDAO.getInstance().updateBreakdownGradingRule(gradingRule, courseID);
     }
 
-    public static List<GradingRule> getAllCategories(int depth){
-        //TODO get the list of GradingRule given depth
-
-        return new ArrayList<>();
+    public GradingRule getGradingRuleByID(String GradingRuleID){
+        // TODO given GradingRuleID, return GradingRule
+        return new GradingRule();
     }
+
 }

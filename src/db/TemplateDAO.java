@@ -1,6 +1,5 @@
 package db;
 
-import com.sun.javafx.tools.packager.MakeAllParams;
 import model.Breakdown;
 import model.GradingRule;
 import model.Template;
