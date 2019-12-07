@@ -1,16 +1,15 @@
 package controller;
 
-import model.Breakdown;
-import model.Course;
 import model.GradingRule;
+import service.BreakdownService;
+import service.GradingRuleService;
 
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MainFrameController {
+public class StatisticsController {
     public static DefaultMutableTreeNode initBreakdownTree(DefaultMutableTreeNode rootNode, List<GradingRule> gradingRules){
         for(int i=0; i<gradingRules.size(); i++){
             String name = gradingRules.get(i).getName();
@@ -18,7 +17,7 @@ public class MainFrameController {
             String nodeText = "";
             if(gradingRules.get(i).getFullScore() == 0) {
                 // not leaf node
-               nodeText  = name + " - " + proportion;
+                nodeText  = name + " - " + proportion;
             }
             else{
                 // leaf node
@@ -44,5 +43,14 @@ public class MainFrameController {
             if(gr.getParentID() == null) grs.add(gr);
         }
         return grs;
+    }
+
+    public static String findGradingRuleID(List<GradingRule> grs,  String name, String parentName){
+        for(GradingRule gradingRule: grs){
+            if(gradingRule.getName().equals(name) && GradingRuleService.getInstance().getGradingRuleByID(gradingRule.getParentID()).getName().equals(parentName)){
+                return gradingRule.getId();
+            }
+        }
+        return "";
     }
 }

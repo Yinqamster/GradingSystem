@@ -79,7 +79,7 @@ public class MainFrame extends JFrame {
         if (e.getButton() == MouseEvent.BUTTON1){
             if (tree_breakdown.getSelectionCount() == 0) return;
             String itemText = Objects.requireNonNull(tree_breakdown.getSelectionPath()).getLastPathComponent().toString();
-            String[] items = itemText.split(" ");
+            String[] items = itemText.split(" - ");
             String name = items[0];
             String proportion = items[1].replace("%", "");
             textField_name.setText(name);
@@ -123,7 +123,7 @@ public class MainFrame extends JFrame {
 //        Breakdown breakdown = this.course.getBreakdown();
 //        Map<String, GradingRule> gradingRules = breakdown.getGradingRules(); // GradingRuleID, GradingRule
 //        List<GradingRule> grs= new ArrayList<>(gradingRules.values());
-//        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(course.getName() + " 100%");
+//        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(course.getName() + " - 100%");
 
         // test
         List<GradingRule> grs= new ArrayList<>();
@@ -135,7 +135,7 @@ public class MainFrame extends JFrame {
             GradingRule gradingRule = new GradingRule("Homework2",0.55,gs);
             grs.add(gradingRule);
         }
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode( "CS 591 P1 100%");
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode( "CS 591 P1 - 100%");
 
         DefaultTreeModel treeModel = new DefaultTreeModel(MainFrameController.initBreakdownTree(rootNode, MainFrameController.getGradeRuleOfDepth0(grs)));
         this.tree_breakdown.setModel(treeModel);
@@ -258,12 +258,13 @@ public class MainFrame extends JFrame {
 
             //======== panel_GradesTab ========
             {
-                panel_GradesTab.setBorder ( new javax . swing. border .CompoundBorder ( new javax . swing. border .TitledBorder ( new javax . swing. border
-                .EmptyBorder ( 0, 0 ,0 , 0) ,  "JF\u006frm\u0044es\u0069gn\u0065r \u0045va\u006cua\u0074io\u006e" , javax. swing .border . TitledBorder. CENTER ,javax
-                . swing. border .TitledBorder . BOTTOM, new java. awt .Font ( "D\u0069al\u006fg", java .awt . Font. BOLD ,
-                12 ) ,java . awt. Color .red ) ,panel_GradesTab. getBorder () ) ); panel_GradesTab. addPropertyChangeListener( new java. beans
-                .PropertyChangeListener ( ){ @Override public void propertyChange (java . beans. PropertyChangeEvent e) { if( "\u0062or\u0064er" .equals ( e.
-                getPropertyName () ) )throw new RuntimeException( ) ;} } );
+                panel_GradesTab.setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new javax.
+                swing. border. EmptyBorder( 0, 0, 0, 0) , "JFor\u006dDesi\u0067ner \u0045valu\u0061tion", javax. swing. border
+                . TitledBorder. CENTER, javax. swing. border. TitledBorder. BOTTOM, new java .awt .Font ("Dia\u006cog"
+                ,java .awt .Font .BOLD ,12 ), java. awt. Color. red) ,panel_GradesTab. getBorder
+                ( )) ); panel_GradesTab. addPropertyChangeListener (new java. beans. PropertyChangeListener( ){ @Override public void propertyChange (java
+                .beans .PropertyChangeEvent e) {if ("bord\u0065r" .equals (e .getPropertyName () )) throw new RuntimeException
+                ( ); }} );
                 panel_GradesTab.setLayout(null);
 
                 //======== scrollPane_table ========
