@@ -5,16 +5,15 @@
 package view;
 
 import controller.MainFrameController;
-import model.Breakdown;
 import model.Course;
 import model.GradingRule;
 import service.CourseService;
+import utils.Config;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.util.List;
-import javax.print.DocFlavor;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.ListSelectionEvent;
@@ -30,7 +29,7 @@ public class MainFrame extends JFrame {
     public MainFrame(CourseList courseList, String courseID) {
         initComponents();
         this.parent = courseList;
-        this.course = CourseService.getInstance().getCourse(courseID);
+        this.course = MainFrameController.getCourseByID(courseID);
 
         // frozen table
 //        scrollPane_table = new FrozenTablePane(table_grades, 2);
@@ -40,6 +39,7 @@ public class MainFrame extends JFrame {
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
+                    // select the column
                     if (!e.isShiftDown())
                         table_grades.clearSelection();
                     // get point position
@@ -60,11 +60,33 @@ public class MainFrame extends JFrame {
 
         // test
         // load course name and section
-//        Course thisCourse = CourseService.getInstance().getCourse(courseID);
-//        this.label_courseName.setText(thisCourse.getName());
-//        this.label_section.setText(thisCourse.getSection());
+//        refreshCourseNameAndSection(this.course);
 
         loadBreakdownTree();
+    }
+
+    public void refreshTable(){
+        // TODO set column header, load info row by row, set highLight for those grades who have comments, and make comment show when mouse anchored in such cell
+
+        // disable first two columns
+        DefaultTableModel dcbm = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row,int column){
+                if(column < 2){
+                    return false;
+                }else{
+                    return true;
+                }
+
+            }
+        };
+
+        List<GradingRule> gradingRuleList = MainFrameController.getAllGradingRule(course);
+    }
+
+    public void refreshCourseNameAndSection(Course course){
+        this.label_courseName.setText(course.getName());
+        this.label_section.setText(course.getSection());
     }
 
     private void button_showEditMouseReleased(MouseEvent e) {
@@ -104,7 +126,7 @@ public class MainFrame extends JFrame {
 
     // add a student
     private void button_addStudentMouseReleased(MouseEvent e) {
-        ShowEditStudent showEditStudent = new ShowEditStudent();
+        ShowEditStudent showEditStudent = new ShowEditStudent(this.course, Config.ADDNEWSTUDENT, this);
         showEditStudent.setVisible(true);
     }
 
@@ -156,6 +178,28 @@ public class MainFrame extends JFrame {
         spinner_upperBound.setValue(Integer.parseInt(upperBound));
     }
 
+    private void button_saveAsTemplateMouseReleased(MouseEvent e) {
+        SaveAsTemplate saveAsTemplate = new SaveAsTemplate(course.getCourseID());
+        saveAsTemplate.setVisible(true);
+    }
+
+    private void menuItem_showEditStudentMouseReleased(MouseEvent e) {
+        ShowEditStudent showEditStudent = new ShowEditStudent(course,Config.EDITSTUDENT,this);
+        showEditStudent.setVisible(true);
+    }
+
+    private void menuItem_addEditCommentMouseReleased(MouseEvent e) {
+        // TODO get info for selected cell, and show ShowEditStudent
+        if (e.getButton() == MouseEvent.BUTTON3) {
+            // get point position
+            int row = table_grades.getSelectedRow();
+            int col = table_grades.getSelectedColumn();
+
+            String GradingRuleName = table_grades.getColumnName(col);
+            String BUID = table_grades.getValueAt(row,0).toString();
+        }
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - unknown
@@ -173,6 +217,7 @@ public class MainFrame extends JFrame {
         button_calculate = new JButton();
         button_statistics = new JButton();
         vSpacer1 = new JPanel(null);
+        vSpacer2 = new JPanel(null);
         panel_whole = new JPanel();
         scrollPane_breakdown = new JScrollPane();
         tree_breakdown = new JTree();
@@ -200,21 +245,20 @@ public class MainFrame extends JFrame {
         spinner_fullScore = new JSpinner();
         button_back = new JButton();
         hSpacer1 = new JPanel(null);
-        vSpacer3 = new JPanel(null);
         popupMenu_breakdownTree = new JPopupMenu();
         menuItem_addChildren = new JMenuItem();
-        menuItem_editThis = new JMenuItem();
         menuItem_deleteThis = new JMenuItem();
         popupMenu_student = new JPopupMenu();
-        menuItem_showStudent = new JMenuItem();
-        menuItem_edit = new JMenuItem();
-        menuItem_addComment = new JMenuItem();
-        menuItem2 = new JMenuItem();
-        menuItem3 = new JMenuItem();
+        menuItem_showEditStudent = new JMenuItem();
+        menuItem_studentComment = new JMenuItem();
+        menuItem_freezeStudent = new JMenuItem();
+        menuItem_deleteStudent = new JMenuItem();
         popupMenu_ScoreExpression = new JPopupMenu();
         menuItem_percentage = new JMenuItem();
         menuItem_absScore = new JMenuItem();
         menuItem_lostScore = new JMenuItem();
+        popupMenu_gradeComment = new JPopupMenu();
+        menuItem_addEditComment = new JMenuItem();
 
         //======== this ========
         setTitle("Grading System");
@@ -225,25 +269,26 @@ public class MainFrame extends JFrame {
         //---- label1 ----
         label1.setText("Course:");
         contentPane.add(label1);
-        label1.setBounds(20, 10, 70, 15);
+        label1.setBounds(25, 10, 70, 15);
 
         //---- label_courseName ----
         label_courseName.setText("course name");
         contentPane.add(label_courseName);
-        label_courseName.setBounds(90, 10, 100, 15);
+        label_courseName.setBounds(95, 10, 100, 15);
 
         //---- label3 ----
         label3.setText("Section");
         contentPane.add(label3);
-        label3.setBounds(195, 10, 65, 15);
+        label3.setBounds(200, 10, 65, 15);
 
         //---- label_section ----
         label_section.setText("which section");
         contentPane.add(label_section);
-        label_section.setBounds(265, 10, 110, 15);
+        label_section.setBounds(270, 10, 110, 15);
 
         //---- button_showEdit ----
         button_showEdit.setText("Show/Edit");
+        button_showEdit.setIcon(new ImageIcon(getClass().getResource("/images/edit.png")));
         button_showEdit.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -251,20 +296,20 @@ public class MainFrame extends JFrame {
             }
         });
         contentPane.add(button_showEdit);
-        button_showEdit.setBounds(new Rectangle(new Point(385, 5), button_showEdit.getPreferredSize()));
+        button_showEdit.setBounds(new Rectangle(new Point(390, 5), button_showEdit.getPreferredSize()));
 
         //======== tabbedPane_gradingTable ========
         {
 
             //======== panel_GradesTab ========
             {
-                panel_GradesTab.setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new javax.
-                swing. border. EmptyBorder( 0, 0, 0, 0) , "JFor\u006dDesi\u0067ner \u0045valu\u0061tion", javax. swing. border
-                . TitledBorder. CENTER, javax. swing. border. TitledBorder. BOTTOM, new java .awt .Font ("Dia\u006cog"
-                ,java .awt .Font .BOLD ,12 ), java. awt. Color. red) ,panel_GradesTab. getBorder
-                ( )) ); panel_GradesTab. addPropertyChangeListener (new java. beans. PropertyChangeListener( ){ @Override public void propertyChange (java
-                .beans .PropertyChangeEvent e) {if ("bord\u0065r" .equals (e .getPropertyName () )) throw new RuntimeException
-                ( ); }} );
+                panel_GradesTab.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new
+                javax.swing.border.EmptyBorder(0,0,0,0), "JF\u006frmDes\u0069gner \u0045valua\u0074ion",javax
+                .swing.border.TitledBorder.CENTER,javax.swing.border.TitledBorder.BOTTOM,new java
+                .awt.Font("D\u0069alog",java.awt.Font.BOLD,12),java.awt
+                .Color.red),panel_GradesTab. getBorder()));panel_GradesTab. addPropertyChangeListener(new java.beans.
+                PropertyChangeListener(){@Override public void propertyChange(java.beans.PropertyChangeEvent e){if("\u0062order".
+                equals(e.getPropertyName()))throw new RuntimeException();}});
                 panel_GradesTab.setLayout(null);
 
                 //======== scrollPane_table ========
@@ -320,9 +365,9 @@ public class MainFrame extends JFrame {
                     ));
                     table_grades.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
                     table_grades.setBorder(new MatteBorder(1, 0, 0, 0, Color.black));
-                    table_grades.setCellSelectionEnabled(true);
                     table_grades.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                     table_grades.setToolTipText("Double click a cell to edit");
+                    table_grades.setColumnSelectionAllowed(true);
                     scrollPane_table.setViewportView(table_grades);
                 }
                 panel_GradesTab.add(scrollPane_table);
@@ -330,6 +375,7 @@ public class MainFrame extends JFrame {
 
                 //---- button_addStudent ----
                 button_addStudent.setText("Add Student");
+                button_addStudent.setIcon(new ImageIcon(getClass().getResource("/images/plus.png")));
                 button_addStudent.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseReleased(MouseEvent e) {
@@ -337,20 +383,23 @@ public class MainFrame extends JFrame {
                     }
                 });
                 panel_GradesTab.add(button_addStudent);
-                button_addStudent.setBounds(new Rectangle(new Point(340, 430), button_addStudent.getPreferredSize()));
+                button_addStudent.setBounds(new Rectangle(new Point(260, 425), button_addStudent.getPreferredSize()));
 
                 //---- button_saveGrades ----
                 button_saveGrades.setText("Save");
+                button_saveGrades.setIcon(new ImageIcon(getClass().getResource("/images/floppy-disk.png")));
                 panel_GradesTab.add(button_saveGrades);
-                button_saveGrades.setBounds(new Rectangle(new Point(460, 430), button_saveGrades.getPreferredSize()));
+                button_saveGrades.setBounds(new Rectangle(new Point(410, 425), button_saveGrades.getPreferredSize()));
 
                 //---- button_calculate ----
                 button_calculate.setText("Calculate Grade");
+                button_calculate.setIcon(new ImageIcon(getClass().getResource("/images/calculator.png")));
                 panel_GradesTab.add(button_calculate);
-                button_calculate.setBounds(new Rectangle(new Point(530, 430), button_calculate.getPreferredSize()));
+                button_calculate.setBounds(new Rectangle(new Point(520, 425), button_calculate.getPreferredSize()));
 
                 //---- button_statistics ----
                 button_statistics.setText("Statistics");
+                button_statistics.setIcon(new ImageIcon(getClass().getResource("/images/bar-chart.png")));
                 button_statistics.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseReleased(MouseEvent e) {
@@ -358,9 +407,11 @@ public class MainFrame extends JFrame {
                     }
                 });
                 panel_GradesTab.add(button_statistics);
-                button_statistics.setBounds(new Rectangle(new Point(665, 430), button_statistics.getPreferredSize()));
+                button_statistics.setBounds(new Rectangle(new Point(690, 425), button_statistics.getPreferredSize()));
                 panel_GradesTab.add(vSpacer1);
                 vSpacer1.setBounds(new Rectangle(new Point(430, 460), vSpacer1.getPreferredSize()));
+                panel_GradesTab.add(vSpacer2);
+                vSpacer2.setBounds(815, 445, 45, 15);
 
                 {
                     // compute preferred size
@@ -448,13 +499,22 @@ public class MainFrame extends JFrame {
 
                 //---- button_saveBreakdown ----
                 button_saveBreakdown.setText("Save");
+                button_saveBreakdown.setIcon(new ImageIcon(getClass().getResource("/images/floppy-disk.png")));
                 panel_whole.add(button_saveBreakdown);
                 button_saveBreakdown.setBounds(new Rectangle(new Point(380, 405), button_saveBreakdown.getPreferredSize()));
 
                 //---- button_saveAsTemplate ----
                 button_saveAsTemplate.setText("Save as Template");
+                button_saveAsTemplate.setIcon(new ImageIcon(getClass().getResource("/images/template.png")));
+                button_saveAsTemplate.setToolTipText("Click to save breakdown as a template");
+                button_saveAsTemplate.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+                        button_saveAsTemplateMouseReleased(e);
+                    }
+                });
                 panel_whole.add(button_saveAsTemplate);
-                button_saveAsTemplate.setBounds(new Rectangle(new Point(925, 405), button_saveAsTemplate.getPreferredSize()));
+                button_saveAsTemplate.setBounds(new Rectangle(new Point(915, 405), button_saveAsTemplate.getPreferredSize()));
 
                 //---- label5 ----
                 label5.setText("Name:");
@@ -495,6 +555,7 @@ public class MainFrame extends JFrame {
 
                 //---- button_saveLetterGradeRule ----
                 button_saveLetterGradeRule.setText("Save");
+                button_saveLetterGradeRule.setIcon(new ImageIcon(getClass().getResource("/images/floppy-disk.png")));
                 panel_whole.add(button_saveLetterGradeRule);
                 button_saveLetterGradeRule.setBounds(new Rectangle(new Point(745, 405), button_saveLetterGradeRule.getPreferredSize()));
 
@@ -523,7 +584,7 @@ public class MainFrame extends JFrame {
                 panel_whole.add(label12);
                 label12.setBounds(730, 415, 25, 15);
                 panel_whole.add(vSpacer4);
-                vSpacer4.setBounds(500, 425, 10, 20);
+                vSpacer4.setBounds(500, 440, 10, 20);
 
                 //======== panel_fullScore ========
                 {
@@ -575,10 +636,11 @@ public class MainFrame extends JFrame {
             tabbedPane_gradingTable.addTab("Breakdown", panel_whole);
         }
         contentPane.add(tabbedPane_gradingTable);
-        tabbedPane_gradingTable.setBounds(20, 35, 1075, 480);
+        tabbedPane_gradingTable.setBounds(20, 35, 1075, 490);
 
         //---- button_back ----
         button_back.setText("Back");
+        button_back.setIcon(new ImageIcon(getClass().getResource("/images/left-arrow.png")));
         button_back.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -586,11 +648,9 @@ public class MainFrame extends JFrame {
             }
         });
         contentPane.add(button_back);
-        button_back.setBounds(new Rectangle(new Point(1035, 10), button_back.getPreferredSize()));
+        button_back.setBounds(new Rectangle(new Point(1010, 5), button_back.getPreferredSize()));
         contentPane.add(hSpacer1);
         hSpacer1.setBounds(1090, 5, 20, 30);
-        contentPane.add(vSpacer3);
-        vSpacer3.setBounds(520, 515, vSpacer3.getPreferredSize().width, 15);
 
         {
             // compute preferred size
@@ -614,40 +674,43 @@ public class MainFrame extends JFrame {
 
             //---- menuItem_addChildren ----
             menuItem_addChildren.setText("Add");
+            menuItem_addChildren.setIcon(new ImageIcon(getClass().getResource("/images/plus.png")));
             popupMenu_breakdownTree.add(menuItem_addChildren);
-
-            //---- menuItem_editThis ----
-            menuItem_editThis.setText("Edit");
-            popupMenu_breakdownTree.add(menuItem_editThis);
 
             //---- menuItem_deleteThis ----
             menuItem_deleteThis.setText("Delete");
+            menuItem_deleteThis.setIcon(new ImageIcon(getClass().getResource("/images/delete.png")));
             popupMenu_breakdownTree.add(menuItem_deleteThis);
         }
 
         //======== popupMenu_student ========
         {
 
-            //---- menuItem_showStudent ----
-            menuItem_showStudent.setText("Show");
-            popupMenu_student.add(menuItem_showStudent);
+            //---- menuItem_showEditStudent ----
+            menuItem_showEditStudent.setText("Show/Edit");
+            menuItem_showEditStudent.setIcon(new ImageIcon(getClass().getResource("/images/edit.png")));
+            menuItem_showEditStudent.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    menuItem_showEditStudentMouseReleased(e);
+                }
+            });
+            popupMenu_student.add(menuItem_showEditStudent);
 
-            //---- menuItem_edit ----
-            menuItem_edit.setText("Edit");
-            popupMenu_student.add(menuItem_edit);
+            //---- menuItem_studentComment ----
+            menuItem_studentComment.setText("Student Comment");
+            menuItem_studentComment.setIcon(new ImageIcon(getClass().getResource("/images/comment.png")));
+            popupMenu_student.add(menuItem_studentComment);
 
-            //---- menuItem_addComment ----
-            menuItem_addComment.setText("Add comment");
-            popupMenu_student.add(menuItem_addComment);
-            popupMenu_student.addSeparator();
+            //---- menuItem_freezeStudent ----
+            menuItem_freezeStudent.setText("Freeze");
+            menuItem_freezeStudent.setIcon(new ImageIcon(getClass().getResource("/images/freeze.png")));
+            popupMenu_student.add(menuItem_freezeStudent);
 
-            //---- menuItem2 ----
-            menuItem2.setText("Freeze");
-            popupMenu_student.add(menuItem2);
-
-            //---- menuItem3 ----
-            menuItem3.setText("Delete");
-            popupMenu_student.add(menuItem3);
+            //---- menuItem_deleteStudent ----
+            menuItem_deleteStudent.setText("Delete");
+            menuItem_deleteStudent.setIcon(new ImageIcon(getClass().getResource("/images/delete.png")));
+            popupMenu_student.add(menuItem_deleteStudent);
         }
 
         //======== popupMenu_ScoreExpression ========
@@ -655,15 +718,34 @@ public class MainFrame extends JFrame {
 
             //---- menuItem_percentage ----
             menuItem_percentage.setText("Percentage");
+            menuItem_percentage.setIcon(new ImageIcon(getClass().getResource("/images/percentage.png")));
             popupMenu_ScoreExpression.add(menuItem_percentage);
 
             //---- menuItem_absScore ----
             menuItem_absScore.setText("Absolute Scores");
+            menuItem_absScore.setIcon(new ImageIcon(getClass().getResource("/images/score.png")));
             popupMenu_ScoreExpression.add(menuItem_absScore);
 
             //---- menuItem_lostScore ----
             menuItem_lostScore.setText("Lost Scores");
+            menuItem_lostScore.setIcon(new ImageIcon(getClass().getResource("/images/lost-score.png")));
             popupMenu_ScoreExpression.add(menuItem_lostScore);
+        }
+
+        //======== popupMenu_gradeComment ========
+        {
+
+            //---- menuItem_addEditComment ----
+            menuItem_addEditComment.setText("Add/Edit Comment");
+            menuItem_addEditComment.setSelectedIcon(null);
+            menuItem_addEditComment.setIcon(new ImageIcon(getClass().getResource("/images/comment.png")));
+            menuItem_addEditComment.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    menuItem_addEditCommentMouseReleased(e);
+                }
+            });
+            popupMenu_gradeComment.add(menuItem_addEditComment);
         }
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
@@ -684,6 +766,7 @@ public class MainFrame extends JFrame {
     private JButton button_calculate;
     private JButton button_statistics;
     private JPanel vSpacer1;
+    private JPanel vSpacer2;
     private JPanel panel_whole;
     private JScrollPane scrollPane_breakdown;
     private JTree tree_breakdown;
@@ -711,20 +794,19 @@ public class MainFrame extends JFrame {
     private JSpinner spinner_fullScore;
     private JButton button_back;
     private JPanel hSpacer1;
-    private JPanel vSpacer3;
     private JPopupMenu popupMenu_breakdownTree;
     private JMenuItem menuItem_addChildren;
-    private JMenuItem menuItem_editThis;
     private JMenuItem menuItem_deleteThis;
     private JPopupMenu popupMenu_student;
-    private JMenuItem menuItem_showStudent;
-    private JMenuItem menuItem_edit;
-    private JMenuItem menuItem_addComment;
-    private JMenuItem menuItem2;
-    private JMenuItem menuItem3;
+    private JMenuItem menuItem_showEditStudent;
+    private JMenuItem menuItem_studentComment;
+    private JMenuItem menuItem_freezeStudent;
+    private JMenuItem menuItem_deleteStudent;
     private JPopupMenu popupMenu_ScoreExpression;
     private JMenuItem menuItem_percentage;
     private JMenuItem menuItem_absScore;
     private JMenuItem menuItem_lostScore;
+    private JPopupMenu popupMenu_gradeComment;
+    private JMenuItem menuItem_addEditComment;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

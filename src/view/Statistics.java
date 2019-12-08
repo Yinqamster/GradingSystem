@@ -72,41 +72,49 @@ public class Statistics extends JFrame {
     private void tree_breakdownMouseReleased(MouseEvent e) {
         // left click on breakdown tree, get GradingRuleID for selected GradingRule and calculate statistics
         if (e.getButton() == MouseEvent.BUTTON1){
-            if (tree_breakdown.getSelectionCount() == 0) return;
-
-            // get GradingRuleID for selected GradingRule
-            String itemText = Objects.requireNonNull(tree_breakdown.getSelectionPath()).getLastPathComponent().toString();
-            String parentItemText = tree_breakdown.getSelectionPath().getParentPath().getLastPathComponent().toString();
-            String[] items = itemText.split(" - ");
-            String[] parentItems = parentItemText.split(" - ");
-            String name = items[0];
-            String parentName = parentItems[0];
-
-            Breakdown breakdown = this.course.getBreakdown();
-            Map<String, GradingRule> gradingRules = breakdown.getGradingRules(); // GradingRuleID, GradingRule
-            List<GradingRule> grs= new ArrayList<>(gradingRules.values());
-
-            String courseID = this.course.getCourseID();
-            String gradingRuleID = StatisticsController.findGradingRuleID(grs,name,parentName);
-
-            // calculate stats
-            String[] stats = new String[0]; //{mean, median, sd};
-            if(Objects.requireNonNull(comboBox_chooseStudent.getSelectedItem()).toString().equals("All Students")){
-                // calculate for all students
-                stats = ScoreService.getInstance().calculateStats(courseID,gradingRuleID, "All");
-            }else if(Objects.requireNonNull(comboBox_chooseStudent.getSelectedItem()).toString().equals("Graduate Student")){
-                // calculate for Graduate Students
-                stats = ScoreService.getInstance().calculateStats(courseID,gradingRuleID, Config.GRADUATE);
-            }else if(Objects.requireNonNull(comboBox_chooseStudent.getSelectedItem()).toString().equals("Undergraduate Student")){
-                // calculate for Undergraduate Students
-                stats = ScoreService.getInstance().calculateStats(courseID,gradingRuleID, Config.UNDERGRADUATE);
-            }
-
-            // set labels
-            label_mean.setText(stats[0]);
-            label_median.setText(stats[1]);
-            label_stddev.setText(stats[2]);
+            refreshStats();
         }
+    }
+
+    private void comboBox_chooseStudentItemStateChanged(ItemEvent e) {
+        refreshStats();
+    }
+
+    private void refreshStats(){
+        if (tree_breakdown.getSelectionCount() == 0) return;
+
+        // get GradingRuleID for selected GradingRule
+        String itemText = Objects.requireNonNull(tree_breakdown.getSelectionPath()).getLastPathComponent().toString();
+        String parentItemText = tree_breakdown.getSelectionPath().getParentPath().getLastPathComponent().toString();
+        String[] items = itemText.split(" - ");
+        String[] parentItems = parentItemText.split(" - ");
+        String name = items[0];
+        String parentName = parentItems[0];
+
+        Breakdown breakdown = this.course.getBreakdown();
+        Map<String, GradingRule> gradingRules = breakdown.getGradingRules(); // GradingRuleID, GradingRule
+        List<GradingRule> grs= new ArrayList<>(gradingRules.values());
+
+        String courseID = this.course.getCourseID();
+        String gradingRuleID = StatisticsController.findGradingRuleID(grs,name,parentName,courseID);
+
+        // calculate stats
+        String[] stats = new String[0]; //{mean, median, sd};
+        if(Objects.requireNonNull(comboBox_chooseStudent.getSelectedItem()).toString().equals("All Students")){
+            // calculate for all students
+            stats = ScoreService.getInstance().calculateStats(courseID,gradingRuleID, "All");
+        }else if(Objects.requireNonNull(comboBox_chooseStudent.getSelectedItem()).toString().equals("Graduate Student")){
+            // calculate for Graduate Students
+            stats = ScoreService.getInstance().calculateStats(courseID,gradingRuleID, Config.GRADUATE);
+        }else if(Objects.requireNonNull(comboBox_chooseStudent.getSelectedItem()).toString().equals("Undergraduate Student")){
+            // calculate for Undergraduate Students
+            stats = ScoreService.getInstance().calculateStats(courseID,gradingRuleID, Config.UNDERGRADUATE);
+        }
+
+        // set labels
+        label_mean.setText(stats[0]);
+        label_median.setText(stats[1]);
+        label_stddev.setText(stats[2]);
     }
 
     private void initComponents() {
@@ -207,6 +215,7 @@ public class Statistics extends JFrame {
             "Graduate Student",
             "Undergraduate Student"
         }));
+        comboBox_chooseStudent.addItemListener(e -> comboBox_chooseStudentItemStateChanged(e));
         contentPane.add(comboBox_chooseStudent);
         comboBox_chooseStudent.setBounds(180, 310, 175, comboBox_chooseStudent.getPreferredSize().height);
 

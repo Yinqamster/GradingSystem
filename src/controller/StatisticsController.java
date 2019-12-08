@@ -45,9 +45,9 @@ public class StatisticsController {
         return grs;
     }
 
-    public static String findGradingRuleID(List<GradingRule> grs,  String name, String parentName){
+    public static String findGradingRuleID(List<GradingRule> grs,  String name, String parentName, String courseID){
         for(GradingRule gradingRule: grs){
-            if(gradingRule.getName().equals(name) && GradingRuleService.getInstance().getGradingRuleByID(gradingRule.getParentID()).getName().equals(parentName)){
+            if(gradingRule.getName().equals(name) && GradingRuleService.getInstance().getGradingRuleByID(courseID, gradingRule.getParentID()).getName().equals(parentName)){
                 return gradingRule.getId();
             }
         }
