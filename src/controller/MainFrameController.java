@@ -3,6 +3,7 @@ package controller;
 import model.Breakdown;
 import model.Course;
 import model.GradingRule;
+import service.CourseService;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -44,5 +45,13 @@ public class MainFrameController {
             if(gr.getParentID() == null) grs.add(gr);
         }
         return grs;
+    }
+
+    public static Course getCourseByID(String courseID){
+        return CourseService.getInstance().getCourse(courseID);
+    }
+
+    public static List<GradingRule> getAllGradingRule(Course course){
+        return new ArrayList<>(course.getBreakdown().getGradingRules().values());
     }
 }

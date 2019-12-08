@@ -59,6 +59,7 @@ public class Login extends JFrame {
 
         //---- button_login ----
         button_login.setText("Login");
+        button_login.setIcon(new ImageIcon(getClass().getResource("/images/login.png")));
         button_login.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -66,10 +67,11 @@ public class Login extends JFrame {
             }
         });
         contentPane.add(button_login);
-        button_login.setBounds(new Rectangle(new Point(65, 115), button_login.getPreferredSize()));
+        button_login.setBounds(60, 115, 85, button_login.getPreferredSize().height);
 
         //---- button_exit ----
         button_exit.setText("Exit");
+        button_exit.setIcon(new ImageIcon(getClass().getResource("/images/exit.png")));
         button_exit.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -77,27 +79,27 @@ public class Login extends JFrame {
             }
         });
         contentPane.add(button_exit);
-        button_exit.setBounds(185, 115, 63, 23);
+        button_exit.setBounds(180, 115, 85, button_exit.getPreferredSize().height);
 
         //---- label1 ----
         label1.setText("Grading System");
         label1.setFont(new Font("Impact", Font.PLAIN, 30));
         contentPane.add(label1);
-        label1.setBounds(55, 5, 205, label1.getPreferredSize().height);
+        label1.setBounds(65, 5, 205, label1.getPreferredSize().height);
 
         //---- label2 ----
         label2.setText("Username:");
         contentPane.add(label2);
-        label2.setBounds(25, 60, 70, label2.getPreferredSize().height);
+        label2.setBounds(new Rectangle(new Point(30, 60), label2.getPreferredSize()));
 
         //---- label3 ----
         label3.setText("Password:");
         contentPane.add(label3);
-        label3.setBounds(25, 80, 65, 15);
+        label3.setBounds(new Rectangle(new Point(30, 85), label3.getPreferredSize()));
         contentPane.add(textField1);
         textField1.setBounds(105, 55, 185, textField1.getPreferredSize().height);
         contentPane.add(textField2);
-        textField2.setBounds(105, 80, 185, 21);
+        textField2.setBounds(105, 80, 185, textField2.getPreferredSize().height);
         contentPane.add(hSpacer4);
         hSpacer4.setBounds(new Rectangle(new Point(305, 10), hSpacer4.getPreferredSize()));
         contentPane.add(vSpacer1);
