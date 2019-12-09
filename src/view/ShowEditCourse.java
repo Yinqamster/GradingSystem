@@ -185,7 +185,7 @@ public class ShowEditCourse extends JFrame {
             }
         });
         contentPane.add(button_save);
-        button_save.setBounds(80, 280, 90, button_save.getPreferredSize().height);
+        button_save.setBounds(80, 280, 95, button_save.getPreferredSize().height);
 
         //---- button_cancel ----
         button_cancel.setText("cancel");
@@ -197,7 +197,7 @@ public class ShowEditCourse extends JFrame {
             }
         });
         contentPane.add(button_cancel);
-        button_cancel.setBounds(205, 280, 90, button_cancel.getPreferredSize().height);
+        button_cancel.setBounds(205, 280, 95, button_cancel.getPreferredSize().height);
         contentPane.add(vSpacer1);
         vSpacer1.setBounds(180, 305, vSpacer1.getPreferredSize().width, 25);
 

@@ -17,6 +17,7 @@ public class Breakdown {
 
     public Breakdown(Map<String, GradingRule> gradingRules,
                      Map<String, double[]> letterRule, String breakdownID) {
+        this();
         this.gradingRules = gradingRules;
         this.letterRule = letterRule;
         this.breakdownID = breakdownID;

@@ -20,6 +20,6 @@ public class Config {
     // ShowEditStudent Type
     public static final int ADDNEWSTUDENT = 0; // add a new student
     public static final int EDITSTUDENT = 1; // edit a saved student
-    public static final int ADDEDITCOMMENT = 2; // add or edit the comment for a certain grade of a certain student
-
+    public static final int EDITSTUDENTCOMMENT = 2; // edit a saved student
+    public static final int ADDEDITCOMMENT = 3; // add or edit the comment for a certain grade of a certain student
 }
