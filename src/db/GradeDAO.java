@@ -24,6 +24,26 @@ public class GradeDAO {
         return gradeDAO;
     }
 
+    public int updateFinalGrade(String buid, String courseid, double absoluate_score, double percentage_score,
+                                double deduction_score, String letterGrade) {
+        String updateSql = "UPDATE grade SET absolute_score = ?, percentage_score = ?, deduction_score = ?, letter_grade" +
+                " = ? WHERE fk_student = ? AND fk_course = ? AND name = ?";
+        try {
+            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(updateSql);
+            preparedStatement.setObject(1, absoluate_score);
+            preparedStatement.setObject(2, percentage_score);
+            preparedStatement.setObject(3, deduction_score);
+            preparedStatement.setObject(4, letterGrade);
+            preparedStatement.setObject(5, buid);
+            preparedStatement.setObject(6, courseid);
+            preparedStatement.setObject(7, "final");
+            int flag = preparedStatement.executeUpdate();
+            return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
+        } catch (SQLException sqle) {
+            return ErrCode.UPDATEERROR.getCode();
+        }
+    }
+
     public Map<String, Grade> getGradeList(String BUID, String courseId) {
         Map<String, Grade> result = new HashMap<>();
         String selectSql = "SELECT * FROM grade WHERE fk_student = ? and fk_course = ?";
@@ -55,8 +75,8 @@ public class GradeDAO {
     }
 
     public int upgradeGrade(String ruleId, String buid, Grade grade) {
-        String updateSql = "REPLACE INTO grade (fk_grading_rule, fk_student, absolute_score, percentage_score, deduction_score, comment)" +
-                "values (?, ?, ?, ?, ?, ?)";
+        String updateSql = "REPLACE INTO grade (fk_grading_rule, fk_student, absolute_score, percentage_score, deduction_score, comment, name)" +
+                "values (?, ?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(updateSql);
             preparedStatement.setObject(1, ruleId);
@@ -65,6 +85,7 @@ public class GradeDAO {
             preparedStatement.setObject(4, grade.getPercentage());
             preparedStatement.setObject(5, grade.getDeduction());
             preparedStatement.setObject(6, grade.getComment());
+            preparedStatement.setObject(7, grade.getRuleId());
             int flag = preparedStatement.executeUpdate();
             return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch(SQLException sqle) {
@@ -86,26 +107,4 @@ public class GradeDAO {
             return ErrCode.UPDATEERROR.getCode();
         }
     }
-
-//    public int updateGrade(GradingRule gradingRule) throws SQLException {
-//        String currentId = gradingRule.getId();
-//        String parentId = gradingRule.getParentID();
-//        String name = gradingRule.getName();
-//        double fullScore = gradingRule.getFullScore();
-//        double proportion = gradingRule.getProportion();
-//        String childId ="";
-//        List<GradingRule> gradingRuleList = gradingRule.getChildrenID();
-//        String updateSql = "REPLACE INTO grading_rule (name, full_score, proportion, " +
-//                "parent_id, child_id, current_id, grading_rule_id) values (?, ?, ?, ?, ?, ?, ?)";
-//        if(gradingRuleList.size() != 0) {
-//            for(int i = 0; i < gradingRuleList.size(); i++) {
-//                childId = gradingRuleList.get(i).getId();
-//                int returnValue = updateGrade(gradingRuleList.get(i));
-//            }
-//        }
-//        else {
-//
-//        }
-//        return 0;
-//    }
 }
