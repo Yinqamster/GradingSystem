@@ -13,9 +13,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.lang.Math;
 
 public class MainFrameController {
@@ -162,7 +160,47 @@ public class MainFrameController {
         return dtm;
     }
 
+
     public static List<GradingRule> sortGradingRuleList(List<GradingRule> gradingRuleList){
-        return new ArrayList<>();
+//        List<GradingRule> gradingRuleDepth0 = getGradeRuleOfDepth0(gradingRuleList);
+        List<GradingRule> results = new ArrayList<>();
+        for(GradingRule gradingRule : gradingRuleList) {
+            results.add(gradingRule);
+            if(gradingRule.getChildren() != null && gradingRule.getChildren().size() != 0) {
+                results.addAll(sortGradingRuleList(gradingRule.getChildren()));
+            }
+        }
+        return results;
     }
+
+    public static void main(String args[]) {
+
+        List<GradingRule> gradingRules = new ArrayList<>();
+        GradingRule homework = new GradingRule("1", "", "Homework", 0.0, 0.0);
+        GradingRule Assignment = new GradingRule("2", "", "Assignment", 0.0, 0.0);
+        GradingRule Exam = new GradingRule("3", "", "Exam", 0.0, 0.0);
+        GradingRule Project = new GradingRule("4", "", "Project", 0.0, 0.0);
+
+        homework.getChildren().add(new GradingRule("5", "1", "Homework1", 0.0, 0.0));
+        homework.getChildren().add(new GradingRule("6", "1", "Homework2", 0.0, 0.0));
+
+        Assignment.getChildren().add(new GradingRule("7", "2", "Assignment1", 0.0, 0.0));
+
+        Exam.getChildren().add(new GradingRule("8", "3", "Midterm", 0.0, 0.0));
+        Exam.getChildren().add(new GradingRule("9", "3", "Final", 0.0, 0.0));
+        Exam.getChildren().get(0).getChildren().add(new GradingRule("10", "8", "Written", 0.0, 0.0));
+        Exam.getChildren().get(0).getChildren().add(new GradingRule("12", "8", "Code", 0.0, 0.0));
+
+        gradingRules.add(homework);
+        gradingRules.add(Assignment);
+        gradingRules.add(Exam);
+        gradingRules.add(Project);
+
+        List<GradingRule> result = sortGradingRuleList(gradingRules);
+
+        for(GradingRule gradingRule : result) {
+            System.out.println(gradingRule.getName());
+        }
+    }
+
 }

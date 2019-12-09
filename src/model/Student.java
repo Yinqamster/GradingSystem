@@ -20,12 +20,14 @@ public abstract class Student {
     }
 
     public Student(Name name, String buid) {
+        this();
         this.name = name;
         this.buid = buid;
     }
 
     public Student(Name name, String buid, int status, double bonus,
                    String comment, Map<String, Grade> grades) {
+        this();
         this.name = name;
         this.buid = buid;
         this.status = status;
@@ -34,6 +36,7 @@ public abstract class Student {
         this.grades = grades;
     }
     public Student(Name name, String buid, String comment) {
+        this();
         this.name = name;
         this.buid = buid;
         this.comment = comment;
@@ -41,6 +44,7 @@ public abstract class Student {
 
     public Student(Name name, String buid, int status, double bonus,
                    Map<String, Grade> grades) {
+        this();
         this.name = name;
         this.buid = buid;
         this.status = status;
