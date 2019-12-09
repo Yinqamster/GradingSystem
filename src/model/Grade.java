@@ -5,7 +5,7 @@ public class Grade {
     private double absolute;
     private double percentage;
     private double deduction;
-    private String comment;
+    private String comment = "";
 
     public Grade(){
 

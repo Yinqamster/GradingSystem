@@ -55,8 +55,8 @@ public class GradeDAO {
     }
 
     public int upgradeGrade(String ruleId, String buid, Grade grade) {
-        String updateSql = "REPLACE INTO grade (fk_grading_rule, fk_student, absolute_score, percentage_score, deduction_score)" +
-                "values (?, ?, ?, ?, ?)";
+        String updateSql = "REPLACE INTO grade (fk_grading_rule, fk_student, absolute_score, percentage_score, deduction_score, comment)" +
+                "values (?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(updateSql);
             preparedStatement.setObject(1, ruleId);
@@ -64,6 +64,7 @@ public class GradeDAO {
             preparedStatement.setObject(3, grade.getAbsolute());
             preparedStatement.setObject(4, grade.getPercentage());
             preparedStatement.setObject(5, grade.getDeduction());
+            preparedStatement.setObject(6, grade.getComment());
             int flag = preparedStatement.executeUpdate();
             return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch(SQLException sqle) {
@@ -71,7 +72,20 @@ public class GradeDAO {
         }
     }
 
-
+    public int updateGrade(String ruleId, String buid, String comment) {
+        String updateSql = "REPLACE INTO grade(fk_grading_rule, fk_student, comment) values " +
+                "(?, ?, ?)";
+        try {
+            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(updateSql);
+            preparedStatement.setObject(1, ruleId);
+            preparedStatement.setObject(2, buid);
+            preparedStatement.setObject(3, comment);
+            int flag = preparedStatement.executeUpdate();
+            return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
+        } catch (SQLException sqle) {
+            return ErrCode.UPDATEERROR.getCode();
+        }
+    }
 
 //    public int updateGrade(GradingRule gradingRule) throws SQLException {
 //        String currentId = gradingRule.getId();

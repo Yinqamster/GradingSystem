@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BreakdownDAO extends DAOImpl{
+public class BreakdownDAO{
     public static BreakdownDAO breakdownDAO = new BreakdownDAO();
 
     public BreakdownDAO() {
