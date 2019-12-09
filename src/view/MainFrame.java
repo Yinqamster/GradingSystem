@@ -7,8 +7,10 @@ package view;
 import controller.MainFrameController;
 import model.Course;
 import model.GradingRule;
+import model.Student;
 import service.CourseService;
 import utils.Config;
+import utils.ErrCode;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -26,6 +28,7 @@ import javax.swing.tree.*;
 public class MainFrame extends JFrame {
     private CourseList parent;
     private Course course;
+
     public MainFrame(CourseList courseList, String courseID) {
         initComponents();
         this.parent = courseList;
@@ -58,33 +61,33 @@ public class MainFrame extends JFrame {
             }
         });
 
+
         // test
         // load course name and section
-//        refreshCourseNameAndSection(this.course);
-
+        //refreshCourseNameAndSection(this.course);
         loadBreakdownTree();
+        loadLetterRuleTree();
     }
 
-    public void refreshTable(){
-        // TODO set column header, load info row by row, set highLight for those grades who have comments, and make comment show when mouse anchored in such cell
+    public void refreshTable() {
+        // TODO set column header, load info row by row, set highLight for those grades who have comments, and make comment show when mouse anchored in such cell,
+        //  Disable frozen students
 
         // disable first two columns
-        DefaultTableModel dcbm = new DefaultTableModel(){
-            @Override
-            public boolean isCellEditable(int row,int column){
-                if(column < 2){
-                    return false;
-                }else{
-                    return true;
-                }
-
-            }
-        };
-
+        DefaultTableModel dtm = (DefaultTableModel) table_grades.getModel();
         List<GradingRule> gradingRuleList = MainFrameController.getAllGradingRule(course);
+
+
+
+
+
+
+
+
+
     }
 
-    public void refreshCourseNameAndSection(Course course){
+    public void refreshCourseNameAndSection(Course course) {
         this.label_courseName.setText(course.getName());
         this.label_section.setText(course.getSection());
     }
@@ -98,7 +101,7 @@ public class MainFrame extends JFrame {
 
     private void tree_breakdownMouseReleased(MouseEvent e) {
         // left click on breakdown tree, show information
-        if (e.getButton() == MouseEvent.BUTTON1){
+        if (e.getButton() == MouseEvent.BUTTON1) {
             if (tree_breakdown.getSelectionCount() == 0) return;
             String itemText = Objects.requireNonNull(tree_breakdown.getSelectionPath()).getLastPathComponent().toString();
             String[] items = itemText.split(" - ");
@@ -107,18 +110,28 @@ public class MainFrame extends JFrame {
             textField_name.setText(name);
             spinner_percentage.setValue(Integer.parseInt(proportion));
 
-            if(items.length == 3) {// not leaf node
+            if (items.length == 3) {// not leaf node
                 panel_fullScore.setVisible(true);
                 String fullScore = items[2];
                 spinner_fullScore.setValue(Integer.parseInt(fullScore));
-            }else {
+            } else {
                 panel_fullScore.setVisible(false);
             }
+
+            // root node, set disable
+            if(tree_breakdown.getSelectionPath().getPathCount() == 1){
+                textField_name.setEnabled(false);
+                spinner_percentage.setEnabled(false);
+            }else {
+                textField_name.setEnabled(true);
+                spinner_percentage.setEnabled(true);
+            }
+
         }
         // right button on breakdown tree
         if (e.getButton() == MouseEvent.BUTTON3) {
             //popupMenu show in JTree
-            if (tree_breakdown.getSelectionCount() == 0) return;
+            if (tree_breakdown.getSelectionCount() == 0 || tree_breakdown.getSelectionPath().getPathCount() >= 4) return;
             int i = tree_breakdown.getClosestRowForLocation(e.getX(), e.getY());
             popupMenu_breakdownTree.show(tree_breakdown, e.getX(), e.getY());
         }
@@ -140,7 +153,7 @@ public class MainFrame extends JFrame {
         statistics.setVisible(true);
     }
 
-    private void loadBreakdownTree(){
+    public void loadBreakdownTree() {
         // test
 //        Breakdown breakdown = this.course.getBreakdown();
 //        Map<String, GradingRule> gradingRules = breakdown.getGradingRules(); // GradingRuleID, GradingRule
@@ -148,26 +161,52 @@ public class MainFrame extends JFrame {
 //        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(course.getName() + " - 100%");
 
         // test
-        List<GradingRule> grs= new ArrayList<>();
-        for(int i=0; i<5; i++){
-            List<GradingRule> gs= new ArrayList<>();
-            List<GradingRule> gs0= new ArrayList<>();
+        List<GradingRule> grs = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            List<GradingRule> gs = new ArrayList<>();
+            List<GradingRule> gs0 = new ArrayList<>();
             gs0.add(new GradingRule("Homework3", 100, 0.33));
-            gs.add(new GradingRule("Homework1",0.21, gs0));
-            GradingRule gradingRule = new GradingRule("Homework2",0.55,gs);
+            gs.add(new GradingRule("Homework1", 150, 0.21, gs0));
+            GradingRule gradingRule = new GradingRule("Homework2", 0.55, gs);
             grs.add(gradingRule);
         }
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode( "CS 591 P1 - 100%");
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("CS 591 P1 - 100%");
+        // --------------------------------------------
 
         DefaultTreeModel treeModel = new DefaultTreeModel(MainFrameController.initBreakdownTree(rootNode, MainFrameController.getGradeRuleOfDepth0(grs)));
         this.tree_breakdown.setModel(treeModel);
+    }
+
+    public void loadLetterRuleTree() {
+        //test
+        //Map<String, double[]> letterRule = course.getBreakdown().getLetterRule();
+
+        //test
+        Map<String, double[]> letterRule = new HashMap<>();
+        letterRule.put("A", new double[]{0, 0});
+        letterRule.put("A-", new double[]{0, 0});
+        letterRule.put("B+", new double[]{0, 0});
+        letterRule.put("B", new double[]{0, 0});
+        letterRule.put("B-", new double[]{0, 0});
+        letterRule.put("C+", new double[]{0, 0});
+        letterRule.put("C", new double[]{0, 0});
+        letterRule.put("C-", new double[]{0, 20});
+        letterRule.put("D+", new double[]{0, 0});
+        letterRule.put("D", new double[]{0, 0});
+        letterRule.put("D-", new double[]{0, 0});
+        letterRule.put("F", new double[]{0, 0});
+        // -------------------------------------------------------
+
+        ListModel lm = list_letterGradeRule.getModel();
+        DefaultListModel dlm = MainFrameController.refreshLM(lm, letterRule);
+        list_letterGradeRule.setModel(dlm);
     }
 
     private void list_letterGradeRuleValueChanged(ListSelectionEvent e) {
         String item = list_letterGradeRule.getSelectedValue();
         String[] ss = item.split("  ");
         String letterName = ss[0];
-        String Bound = ss[1].replace(" ","").replace("%","");
+        String Bound = ss[1].replace(" ", "").replace("%", "");
         String[] bounds = Bound.split("-");
         String lowerBound = bounds[0];
         String upperBound = bounds[1];
@@ -184,20 +223,156 @@ public class MainFrame extends JFrame {
     }
 
     private void menuItem_showEditStudentMouseReleased(MouseEvent e) {
-        ShowEditStudent showEditStudent = new ShowEditStudent(course,Config.EDITSTUDENT,this);
+        int row = table_grades.getSelectedRow();
+        String BUID = table_grades.getValueAt(row, 0).toString();
+        Student student = MainFrameController.getStudent(BUID, course.getCourseID());
+
+        ShowEditStudent showEditStudent = new ShowEditStudent(course, Config.EDITSTUDENT, student, this);
         showEditStudent.setVisible(true);
     }
 
     private void menuItem_addEditCommentMouseReleased(MouseEvent e) {
-        // TODO get info for selected cell, and show ShowEditStudent
+        // get point position
+        int row = table_grades.getSelectedRow();
+        int col = table_grades.getSelectedColumn();
+
+        String GradingRuleName = table_grades.getColumnName(col);
+        GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(GradingRuleName, course);
+        String BUID = table_grades.getValueAt(row, 0).toString();
+        Student student = MainFrameController.getStudent(BUID, course.getCourseID());
+
+        ShowEditStudent showEditStudent = new ShowEditStudent(course, Config.ADDEDITCOMMENT, student, gr.getId(), this);
+        showEditStudent.setVisible(true);
+    }
+
+    private void menuItem_studentCommentMouseReleased(MouseEvent e) {
+        int row = table_grades.getSelectedRow();
+        String BUID = table_grades.getValueAt(row, 0).toString();
+        Student student = MainFrameController.getStudent(BUID, course.getCourseID());
+
+        ShowEditStudent showEditStudent = new ShowEditStudent(course, Config.EDITSTUDENTCOMMENT, student, this);
+        showEditStudent.setVisible(true);
+    }
+
+    private void menuItem_freezeStudentMouseReleased(MouseEvent e) {
+        int row = table_grades.getSelectedRow();
+        String BUID = table_grades.getValueAt(row, 0).toString();
+
+        // alert window
+        int n = JOptionPane.showConfirmDialog(null, "Freeze this student?", "Warning", JOptionPane.YES_NO_OPTION);//n=0/1
+        if (n == 0) {
+            // freeze student
+            MainFrameController.freezeStudent(BUID, course.getCourseID());
+            refreshTable();
+        }
+    }
+
+    private void menuItem_deleteStudentMouseReleased(MouseEvent e) {
+        int row = table_grades.getSelectedRow();
+        String BUID = table_grades.getValueAt(row, 0).toString();
+
+        // alert window
+        int n = JOptionPane.showConfirmDialog(null, "Delete this student?", "Warning", JOptionPane.YES_NO_OPTION);//n=0/1
+        if (n == 0) {
+            // delete student
+            MainFrameController.deleteStudent(BUID, course.getCourseID());
+            refreshTable();
+        }
+    }
+
+    private void table_gradesMouseReleased(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON3) {
             // get point position
-            int row = table_grades.getSelectedRow();
-            int col = table_grades.getSelectedColumn();
+            int row = table_grades.rowAtPoint(e.getPoint());
+            int col = table_grades.columnAtPoint(e.getPoint());
+            // set the cell close to mouse as selected cell
+            table_grades.changeSelection(row, col, false, false);
 
-            String GradingRuleName = table_grades.getColumnName(col);
-            String BUID = table_grades.getValueAt(row,0).toString();
+            // if not first two columns, then show popupMenu
+            if (col != 0 && col != 1) {
+                popupMenu_gradeComment.show(table_grades, e.getX(), e.getY());
+            } else {
+                popupMenu_student.show(table_grades, e.getX(), e.getY());
+            }
         }
+
+        if(e.getButton() == MouseEvent.BUTTON1){
+            int col = table_grades.columnAtPoint(e.getPoint());
+            if(col <= 1){
+                table_grades.changeSelection(-1,-1,false,false);
+            }
+        }
+    }
+
+    private void button_saveBreakdownMouseReleased(MouseEvent e) {
+        // select nothing
+        if(tree_breakdown.getSelectionCount() == 0) return;
+
+        if(isGradingRuleValid()) {
+            String ruleName = textField_name.getText();
+            double percentage = Double.parseDouble(spinner_percentage.getValue().toString())/100;
+            double fullScore = Double.parseDouble(spinner_fullScore.getValue().toString());
+
+            if (Objects.requireNonNull(tree_breakdown.getSelectionPath()).getPathCount() == 1) {
+                // depth == 0, set parentID as null
+                MainFrameController.updateGradingRule(course.getCourseID(), ruleName, fullScore, percentage, null, 0);
+            } else {
+                // depth != 0
+                String parentText = Objects.requireNonNull(tree_breakdown.getSelectionPath()).getLastPathComponent().toString();
+                String parentName = parentText.split(" - ")[0];
+                String parentRuleID = MainFrameController.getGradingRuleByNameAndCourse(parentName, course).getId();
+                int depth = Objects.requireNonNull(tree_breakdown.getSelectionPath()).getPathCount() - 1;
+                MainFrameController.updateGradingRule(course.getCourseID(), ruleName, fullScore, percentage, parentRuleID, depth);
+            }
+            // refresh tree
+            loadBreakdownTree();
+            JOptionPane.showMessageDialog(this, "Breakdown updated");
+        }else{
+            JOptionPane.showMessageDialog(this, ErrCode.TEXTFIELDEMPTY.getDescription());
+        }
+    }
+
+    public boolean isGradingRuleValid(){
+        if(textField_name.getText().isEmpty()) return false;
+        else return true;
+    }
+
+    private void menuItem_addChildrenMouseReleased(MouseEvent e) {
+        if (Objects.requireNonNull(tree_breakdown.getSelectionPath()).getPathCount() == 1) {
+            // depth == 0, set parentID as null
+            AddChild addChild = new AddChild(this,course,null,0);
+            addChild.setVisible(true);
+        } else {
+            // depth != 0
+            String parentText = Objects.requireNonNull(tree_breakdown.getSelectionPath()).getLastPathComponent().toString();
+            String parentName = parentText.split(" - ")[0];
+            String parentRuleID = MainFrameController.getGradingRuleByNameAndCourse(parentName, course).getId();
+            int depth = Objects.requireNonNull(tree_breakdown.getSelectionPath()).getPathCount() - 1;
+            AddChild addChild = new AddChild(this,course,parentRuleID,depth);
+            addChild.setVisible(true);
+        }
+    }
+
+    private void button_saveLetterGradeRuleMouseReleased(MouseEvent e) {
+        String letterName = label_letterGrade.getText();
+        double lowerBound = Double.parseDouble(spinner_lowerBound.getValue().toString());
+        double upperBound = Double.parseDouble(spinner_upperBound.getValue().toString());
+        // if never select
+        if (letterName.length() > 2) return;
+        Map<String, double[]> letterRuleMap = course.getBreakdown().getLetterRule();
+        if (MainFrameController.isLetterRuleValid(letterRuleMap, letterName, lowerBound, upperBound)) {
+            // update letterRule
+            MainFrameController.editLetterRule(course.getCourseID(), letterName, lowerBound, upperBound);
+            JOptionPane.showMessageDialog(this, "Letter Rule updated");
+            // refresh JList
+            loadLetterRuleTree();
+        } else {
+            JOptionPane.showMessageDialog(this, "Some grading range overlapped\nPlease check.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void button1MouseReleased(MouseEvent e) {
+        // TODO rerfresh everything in mainFrame
     }
 
     private void initComponents() {
@@ -245,9 +420,10 @@ public class MainFrame extends JFrame {
         spinner_fullScore = new JSpinner();
         button_back = new JButton();
         hSpacer1 = new JPanel(null);
+        vSpacer3 = new JPanel(null);
+        button1 = new JButton();
         popupMenu_breakdownTree = new JPopupMenu();
         menuItem_addChildren = new JMenuItem();
-        menuItem_deleteThis = new JMenuItem();
         popupMenu_student = new JPopupMenu();
         menuItem_showEditStudent = new JMenuItem();
         menuItem_studentComment = new JMenuItem();
@@ -303,13 +479,12 @@ public class MainFrame extends JFrame {
 
             //======== panel_GradesTab ========
             {
-                panel_GradesTab.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new
-                javax.swing.border.EmptyBorder(0,0,0,0), "JF\u006frmDes\u0069gner \u0045valua\u0074ion",javax
-                .swing.border.TitledBorder.CENTER,javax.swing.border.TitledBorder.BOTTOM,new java
-                .awt.Font("D\u0069alog",java.awt.Font.BOLD,12),java.awt
-                .Color.red),panel_GradesTab. getBorder()));panel_GradesTab. addPropertyChangeListener(new java.beans.
-                PropertyChangeListener(){@Override public void propertyChange(java.beans.PropertyChangeEvent e){if("\u0062order".
-                equals(e.getPropertyName()))throw new RuntimeException();}});
+                panel_GradesTab.setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new javax. swing. border
+                . EmptyBorder( 0, 0, 0, 0) , "JFor\u006dDesi\u0067ner \u0045valu\u0061tion", javax. swing. border. TitledBorder. CENTER, javax
+                . swing. border. TitledBorder. BOTTOM, new java .awt .Font ("Dia\u006cog" ,java .awt .Font .BOLD ,
+                12 ), java. awt. Color. red) ,panel_GradesTab. getBorder( )) ); panel_GradesTab. addPropertyChangeListener (new java. beans
+                . PropertyChangeListener( ){ @Override public void propertyChange (java .beans .PropertyChangeEvent e) {if ("bord\u0065r" .equals (e .
+                getPropertyName () )) throw new RuntimeException( ); }} );
                 panel_GradesTab.setLayout(null);
 
                 //======== scrollPane_table ========
@@ -318,56 +493,70 @@ public class MainFrame extends JFrame {
                     //---- table_grades ----
                     table_grades.setModel(new DefaultTableModel(
                         new Object[][] {
-                            {"U73344054", "Jun Li", null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {"U42186937", "Jiatong Hao", null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {"U48621793", "Jiaqian Sun", null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {"U31787103", "Qi Yin", null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                            {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                            {"U73344054", "Jun Li"},
+                            {"U42186937", "Jiatong Hao"},
+                            {"U48621793", "Jiaqian Sun"},
+                            {"U31787103", "Qi Yin"},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
+                            {null, null},
                         },
                         new String[] {
-                            "BUID", "Name", null, null, null, null, null, null, null, null, null, null, null, null, null, null
+                            "BUID", "Name"
                         }
-                    ));
+                    ) {
+                        boolean[] columnEditable = new boolean[] {
+                            false, false
+                        };
+                        @Override
+                        public boolean isCellEditable(int rowIndex, int columnIndex) {
+                            return columnEditable[columnIndex];
+                        }
+                    });
                     table_grades.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
                     table_grades.setBorder(new MatteBorder(1, 0, 0, 0, Color.black));
-                    table_grades.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                    table_grades.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                     table_grades.setToolTipText("Double click a cell to edit");
                     table_grades.setColumnSelectionAllowed(true);
+                    table_grades.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseReleased(MouseEvent e) {
+                            table_gradesMouseReleased(e);
+                        }
+                    });
                     scrollPane_table.setViewportView(table_grades);
                 }
                 panel_GradesTab.add(scrollPane_table);
@@ -500,8 +689,14 @@ public class MainFrame extends JFrame {
                 //---- button_saveBreakdown ----
                 button_saveBreakdown.setText("Save");
                 button_saveBreakdown.setIcon(new ImageIcon(getClass().getResource("/images/floppy-disk.png")));
+                button_saveBreakdown.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+                        button_saveBreakdownMouseReleased(e);
+                    }
+                });
                 panel_whole.add(button_saveBreakdown);
-                button_saveBreakdown.setBounds(new Rectangle(new Point(380, 405), button_saveBreakdown.getPreferredSize()));
+                button_saveBreakdown.setBounds(new Rectangle(new Point(440, 355), button_saveBreakdown.getPreferredSize()));
 
                 //---- button_saveAsTemplate ----
                 button_saveAsTemplate.setText("Save as Template");
@@ -514,75 +709,81 @@ public class MainFrame extends JFrame {
                     }
                 });
                 panel_whole.add(button_saveAsTemplate);
-                button_saveAsTemplate.setBounds(new Rectangle(new Point(915, 405), button_saveAsTemplate.getPreferredSize()));
+                button_saveAsTemplate.setBounds(new Rectangle(new Point(915, 425), button_saveAsTemplate.getPreferredSize()));
 
                 //---- label5 ----
-                label5.setText("Name:");
+                label5.setText("Name*:");
                 panel_whole.add(label5);
                 label5.setBounds(145, 360, 60, label5.getPreferredSize().height);
                 panel_whole.add(textField_name);
-                textField_name.setBounds(225, 360, 135, textField_name.getPreferredSize().height);
+                textField_name.setBounds(225, 355, 135, textField_name.getPreferredSize().height);
 
                 //---- label6 ----
-                label6.setText("Percentage:");
+                label6.setText("Proportion:");
                 panel_whole.add(label6);
                 label6.setBounds(145, 385, 80, label6.getPreferredSize().height);
 
                 //---- spinner_percentage ----
                 spinner_percentage.setModel(new SpinnerNumberModel(0, 0, 100, 1));
                 panel_whole.add(spinner_percentage);
-                spinner_percentage.setBounds(225, 385, 135, spinner_percentage.getPreferredSize().height);
+                spinner_percentage.setBounds(225, 380, 135, spinner_percentage.getPreferredSize().height);
 
                 //---- label8 ----
                 label8.setText("Letter Grade:");
                 panel_whole.add(label8);
-                label8.setBounds(new Rectangle(new Point(530, 365), label8.getPreferredSize()));
+                label8.setBounds(new Rectangle(new Point(540, 360), label8.getPreferredSize()));
 
                 //---- label_letterGrade ----
                 label_letterGrade.setText("Choose One Letter Grade Above");
                 panel_whole.add(label_letterGrade);
-                label_letterGrade.setBounds(615, 365, label_letterGrade.getPreferredSize().width, 16);
+                label_letterGrade.setBounds(625, 360, label_letterGrade.getPreferredSize().width, 16);
 
                 //---- label9 ----
                 label9.setText("Lower Bound:");
                 panel_whole.add(label9);
-                label9.setBounds(530, 390, 85, 15);
+                label9.setBounds(540, 385, 85, 15);
 
                 //---- label10 ----
                 label10.setText("Upper Bound:");
                 panel_whole.add(label10);
-                label10.setBounds(530, 415, 85, 15);
+                label10.setBounds(540, 410, 85, 15);
 
                 //---- button_saveLetterGradeRule ----
                 button_saveLetterGradeRule.setText("Save");
                 button_saveLetterGradeRule.setIcon(new ImageIcon(getClass().getResource("/images/floppy-disk.png")));
+                button_saveLetterGradeRule.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+                        button_saveLetterGradeRuleMouseReleased(e);
+                    }
+                });
                 panel_whole.add(button_saveLetterGradeRule);
-                button_saveLetterGradeRule.setBounds(new Rectangle(new Point(745, 405), button_saveLetterGradeRule.getPreferredSize()));
+                button_saveLetterGradeRule.setBounds(new Rectangle(new Point(810, 355), button_saveLetterGradeRule.getPreferredSize()));
 
                 //---- spinner_lowerBound ----
                 spinner_lowerBound.setModel(new SpinnerNumberModel(0, 0, 100, 1));
                 panel_whole.add(spinner_lowerBound);
-                spinner_lowerBound.setBounds(615, 385, 110, spinner_lowerBound.getPreferredSize().height);
+                spinner_lowerBound.setBounds(625, 380, 110, spinner_lowerBound.getPreferredSize().height);
 
                 //---- spinner_upperBound ----
                 spinner_upperBound.setModel(new SpinnerNumberModel(0, 0, 100, 1));
                 panel_whole.add(spinner_upperBound);
-                spinner_upperBound.setBounds(615, 410, 110, 22);
+                spinner_upperBound.setBounds(625, 410, 110, 22);
 
                 //---- label4 ----
                 label4.setText("%");
                 panel_whole.add(label4);
-                label4.setBounds(new Rectangle(new Point(365, 390), label4.getPreferredSize()));
+                label4.setBounds(365, 385, 20, label4.getPreferredSize().height);
 
                 //---- label11 ----
                 label11.setText("%");
                 panel_whole.add(label11);
-                label11.setBounds(730, 390, 25, 15);
+                label11.setBounds(740, 385, 25, 15);
 
                 //---- label12 ----
                 label12.setText("%");
                 panel_whole.add(label12);
-                label12.setBounds(730, 415, 25, 15);
+                label12.setBounds(740, 410, 25, 15);
                 panel_whole.add(vSpacer4);
                 vSpacer4.setBounds(500, 440, 10, 20);
 
@@ -593,12 +794,12 @@ public class MainFrame extends JFrame {
                     //---- label7 ----
                     label7.setText("Full Score:");
                     panel_fullScore.add(label7);
-                    label7.setBounds(5, 5, 70, label7.getPreferredSize().height);
+                    label7.setBounds(5, 0, 70, label7.getPreferredSize().height);
 
                     //---- spinner_fullScore ----
                     spinner_fullScore.setModel(new SpinnerNumberModel(0, 0, null, 1));
                     panel_fullScore.add(spinner_fullScore);
-                    spinner_fullScore.setBounds(85, 5, 135, spinner_fullScore.getPreferredSize().height);
+                    spinner_fullScore.setBounds(85, 0, 135, spinner_fullScore.getPreferredSize().height);
 
                     {
                         // compute preferred size
@@ -651,6 +852,19 @@ public class MainFrame extends JFrame {
         button_back.setBounds(new Rectangle(new Point(1010, 5), button_back.getPreferredSize()));
         contentPane.add(hSpacer1);
         hSpacer1.setBounds(1090, 5, 20, 30);
+        contentPane.add(vSpacer3);
+        vSpacer3.setBounds(500, 525, 45, 15);
+
+        //---- button1 ----
+        button1.setIcon(new ImageIcon(getClass().getResource("/images/refresh.png")));
+        button1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                button1MouseReleased(e);
+            }
+        });
+        contentPane.add(button1);
+        button1.setBounds(965, 5, 35, button1.getPreferredSize().height);
 
         {
             // compute preferred size
@@ -675,12 +889,13 @@ public class MainFrame extends JFrame {
             //---- menuItem_addChildren ----
             menuItem_addChildren.setText("Add");
             menuItem_addChildren.setIcon(new ImageIcon(getClass().getResource("/images/plus.png")));
+            menuItem_addChildren.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    menuItem_addChildrenMouseReleased(e);
+                }
+            });
             popupMenu_breakdownTree.add(menuItem_addChildren);
-
-            //---- menuItem_deleteThis ----
-            menuItem_deleteThis.setText("Delete");
-            menuItem_deleteThis.setIcon(new ImageIcon(getClass().getResource("/images/delete.png")));
-            popupMenu_breakdownTree.add(menuItem_deleteThis);
         }
 
         //======== popupMenu_student ========
@@ -700,16 +915,34 @@ public class MainFrame extends JFrame {
             //---- menuItem_studentComment ----
             menuItem_studentComment.setText("Student Comment");
             menuItem_studentComment.setIcon(new ImageIcon(getClass().getResource("/images/comment.png")));
+            menuItem_studentComment.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    menuItem_studentCommentMouseReleased(e);
+                }
+            });
             popupMenu_student.add(menuItem_studentComment);
 
             //---- menuItem_freezeStudent ----
             menuItem_freezeStudent.setText("Freeze");
             menuItem_freezeStudent.setIcon(new ImageIcon(getClass().getResource("/images/freeze.png")));
+            menuItem_freezeStudent.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    menuItem_freezeStudentMouseReleased(e);
+                }
+            });
             popupMenu_student.add(menuItem_freezeStudent);
 
             //---- menuItem_deleteStudent ----
             menuItem_deleteStudent.setText("Delete");
             menuItem_deleteStudent.setIcon(new ImageIcon(getClass().getResource("/images/delete.png")));
+            menuItem_deleteStudent.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    menuItem_deleteStudentMouseReleased(e);
+                }
+            });
             popupMenu_student.add(menuItem_deleteStudent);
         }
 
@@ -794,9 +1027,10 @@ public class MainFrame extends JFrame {
     private JSpinner spinner_fullScore;
     private JButton button_back;
     private JPanel hSpacer1;
+    private JPanel vSpacer3;
+    private JButton button1;
     private JPopupMenu popupMenu_breakdownTree;
     private JMenuItem menuItem_addChildren;
-    private JMenuItem menuItem_deleteThis;
     private JPopupMenu popupMenu_student;
     private JMenuItem menuItem_showEditStudent;
     private JMenuItem menuItem_studentComment;

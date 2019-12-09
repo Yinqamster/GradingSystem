@@ -16,7 +16,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 /**
- * @author unknown
+ * @author Jun Li
  */
 public class ShowEditStudent extends JFrame {
     private MainFrame parent;
@@ -36,7 +36,7 @@ public class ShowEditStudent extends JFrame {
         label_whichGradingRule.setText("");
     }
 
-    // use this when edit student
+    // use this when edit student or edit student's comment
     public ShowEditStudent(Course course, int type, Student student, MainFrame mainFrame) {
         initComponents();
         this.parent = mainFrame;
@@ -52,6 +52,15 @@ public class ShowEditStudent extends JFrame {
         textField_buid.setText(student.getBuid());
         comboBox_program.setSelectedItem(ShowEditStudentController.getYearOfStudent(student));
         textArea_comment.setText(student.getComment());
+
+        if(type == Config.EDITSTUDENTCOMMENT){
+            textField_firstName.setEnabled(false);
+            textField_middleName.setEnabled(false);
+            textField_lastName.setEnabled(false);
+            textField_buid.setEnabled(false);
+            comboBox_program.setEnabled(false);
+            this.setTitle("Edit Student's Comment");
+        }
     }
 
     // use this when comment on a certain grade of a certain student
@@ -70,7 +79,7 @@ public class ShowEditStudent extends JFrame {
         textField_lastName.setText(student.getName().getLastName());
         textField_buid.setText(student.getBuid());
         comboBox_program.setSelectedItem(ShowEditStudentController.getYearOfStudent(student));
-        textArea_comment.setText(student.getComment());
+        textArea_comment.setText(ShowEditStudentController.getCommentForGrade(GradingRuleID,student));
 
         textField_firstName.setEnabled(false);
         textField_middleName.setEnabled(false);
@@ -214,7 +223,7 @@ public class ShowEditStudent extends JFrame {
             }
         });
         contentPane.add(button_save);
-        button_save.setBounds(60, 370, 90, button_save.getPreferredSize().height);
+        button_save.setBounds(60, 370, 95, button_save.getPreferredSize().height);
 
         //---- button_cancel ----
         button_cancel.setText("cancel");
@@ -226,14 +235,14 @@ public class ShowEditStudent extends JFrame {
             }
         });
         contentPane.add(button_cancel);
-        button_cancel.setBounds(205, 370, 90, button_cancel.getPreferredSize().height);
+        button_cancel.setBounds(205, 370, 95, button_cancel.getPreferredSize().height);
         contentPane.add(vSpacer1);
         vSpacer1.setBounds(160, 395, vSpacer1.getPreferredSize().width, 25);
 
         //---- label_warning ----
         label_warning.setForeground(Color.red);
         contentPane.add(label_warning);
-        label_warning.setBounds(new Rectangle(new Point(80, 350), label_warning.getPreferredSize()));
+        label_warning.setBounds(80, 350, 200, 15);
         contentPane.add(hSpacer1);
         hSpacer1.setBounds(325, 30, 25, hSpacer1.getPreferredSize().height);
         contentPane.add(label_whichGradingRule);

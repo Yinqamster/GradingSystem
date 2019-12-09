@@ -1,13 +1,15 @@
 package controller;
 
-import model.GradingRule;
-import model.GraduateStudent;
-import model.Student;
-import model.UndergraduateStudent;
+import model.*;
 import service.GradingRuleService;
 import service.ScoreService;
 import service.StudentService;
 import utils.Config;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ShowEditStudentController {
     public static String getYearOfStudent(Student student){
@@ -34,5 +36,10 @@ public class ShowEditStudentController {
 
     public static int addStudent(String firstname, String midname, String lastname, String buid, String year, String comment, String courseId){
         return StudentService.getInstance().addStudent(firstname, midname, lastname, buid, year, comment, courseId);
+    }
+
+    public static String getCommentForGrade(String ruleID, Student student){
+        Map<String,Grade> gs = student.getGrades();
+        return gs.get(ruleID).getComment();
     }
 }
