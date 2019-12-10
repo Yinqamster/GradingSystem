@@ -61,16 +61,57 @@ new FormModel {
 						name: "scrollPane_table"
 						add( new FormComponent( "javax.swing.JTable" ) {
 							name: "table_grades"
-							"model": new com.jformdesigner.model.SwingTableModel( new java.util.Vector, new java.util.Vector {
+							"model": new com.jformdesigner.model.SwingTableModel( new java.util.Vector {
+								add( new java.util.Vector {
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+								} )
+								add( new java.util.Vector {
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+								} )
+								add( new java.util.Vector {
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+								} )
+								add( new java.util.Vector {
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+								} )
+							}, new java.util.Vector {
 								add( "BUID" )
 								add( "Name" )
+								add( null )
+								add( null )
+								add( null )
 							}, new java.util.Vector {
+								add( null )
+								add( null )
+								add( null )
 								add( null )
 								add( null )
 							}, new java.util.Vector {
 								add( false )
 								add( false )
+								add( null )
+								add( null )
+								add( null )
 							}, new java.util.Vector {
+								add( null )
+								add( null )
+								add( null )
 								add( null )
 								add( null )
 							} )
@@ -131,7 +172,7 @@ new FormModel {
 					add( new FormComponent( "com.jformdesigner.designer.wrapper.VSpacer" ) {
 						name: "vSpacer2"
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 815
+						"x": 820
 						"y": 445
 						"height": 15
 						"width": 45
@@ -409,7 +450,7 @@ new FormModel {
 				"width": 45
 				"height": 15
 				"x": 500
-				"y": 525
+				"y": 535
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "button_refresh"
@@ -470,16 +511,19 @@ new FormModel {
 				name: "menuItem_percentage"
 				"text": "Percentage"
 				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/percentage.png" )
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "menuItem_percentageMouseReleased", true ) )
 			} )
 			add( new FormComponent( "javax.swing.JMenuItem" ) {
 				name: "menuItem_absScore"
 				"text": "Absolute Scores"
 				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/score.png" )
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "menuItem_absScoreMouseReleased", true ) )
 			} )
 			add( new FormComponent( "javax.swing.JMenuItem" ) {
 				name: "menuItem_lostScore"
 				"text": "Lost Scores"
 				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/lost-score.png" )
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "menuItem_lostScoreMouseReleased", true ) )
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 330, 620 )

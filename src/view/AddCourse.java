@@ -33,8 +33,8 @@ public class AddCourse extends JFrame {
         this.courseList = courseList;
 
         // test
-//        // load ComBox
-//        loadComboBox();
+        // load ComBox
+        loadComboBox();
     }
 
     private void loadComboBox(){
@@ -71,8 +71,7 @@ public class AddCourse extends JFrame {
             String breakdownID = AddCourseController.getBreakdownID(item, this.breakdownID_item);
             if(breakdownID.isEmpty()){
                 // error
-                label_warning.setText(ErrCode.ADDCOURSEFAIL.getDescription());
-                return;
+                breakdownID = null;
             }
 
             String courseName = this.textField_name.getText();
