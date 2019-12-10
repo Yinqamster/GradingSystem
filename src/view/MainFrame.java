@@ -5,6 +5,7 @@
 package view;
 
 import controller.MainFrameController;
+import model.Breakdown;
 import model.Course;
 import model.GradingRule;
 import model.Student;
@@ -62,9 +63,8 @@ public class MainFrame extends JFrame {
         });
 
 
-        // test
         // load course name and section
-        //refreshCourseNameAndSection(this.course);
+        refreshCourseNameAndSection(this.course);
         loadBreakdownTree();
         loadLetterRuleTree();
     }
@@ -170,22 +170,22 @@ public class MainFrame extends JFrame {
 
     public void loadBreakdownTree() {
         // test
-//        Breakdown breakdown = this.course.getBreakdown();
-//        Map<String, GradingRule> gradingRules = breakdown.getGradingRules(); // GradingRuleID, GradingRule
-//        List<GradingRule> grs= new ArrayList<>(gradingRules.values());
-//        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(course.getName() + " - 100%");
+        Breakdown breakdown = this.course.getBreakdown();
+        Map<String, GradingRule> gradingRules = breakdown.getGradingRules(); // GradingRuleID, GradingRule
+        List<GradingRule> grs= new ArrayList<>(gradingRules.values());
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(course.getName() + " - 100%");
 
         // test
-        List<GradingRule> grs = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            List<GradingRule> gs = new ArrayList<>();
-            List<GradingRule> gs0 = new ArrayList<>();
-            gs0.add(new GradingRule("Homework3", 100, 0.33));
-            gs.add(new GradingRule("Homework1", 150, 0.21, gs0));
-            GradingRule gradingRule = new GradingRule("Homework2", 0.55, gs);
-            grs.add(gradingRule);
-        }
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("CS 591 P1 - 100%");
+//        List<GradingRule> grs = new ArrayList<>();
+//        for (int i = 0; i < 5; i++) {
+//            List<GradingRule> gs = new ArrayList<>();
+//            List<GradingRule> gs0 = new ArrayList<>();
+//            gs0.add(new GradingRule("Homework3", 100, 0.33));
+//            gs.add(new GradingRule("Homework1", 150, 0.21, gs0));
+//            GradingRule gradingRule = new GradingRule("Homework2", 0.55, gs);
+//            grs.add(gradingRule);
+//        }
+//        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("CS 591 P1 - 100%");
         // --------------------------------------------
 
         DefaultTreeModel treeModel = new DefaultTreeModel(MainFrameController.initBreakdownTree(rootNode, MainFrameController.getGradeRuleOfDepth0(grs)));
@@ -194,22 +194,20 @@ public class MainFrame extends JFrame {
 
     public void loadLetterRuleTree() {
         //test
-        //Map<String, double[]> letterRule = course.getBreakdown().getLetterRule();
+        Map<String, double[]> letterRule = course.getBreakdown().getLetterRule();
 
         //test
-        Map<String, double[]> letterRule = new HashMap<>();
-        letterRule.put("A", new double[]{0, 0});
-        letterRule.put("A-", new double[]{0, 0});
-        letterRule.put("B+", new double[]{0, 0});
-        letterRule.put("B", new double[]{0, 0});
-        letterRule.put("B-", new double[]{0, 0});
-        letterRule.put("C+", new double[]{0, 0});
-        letterRule.put("C", new double[]{0, 0});
-        letterRule.put("C-", new double[]{0, 20});
-        letterRule.put("D+", new double[]{0, 0});
-        letterRule.put("D", new double[]{0, 0});
-        letterRule.put("D-", new double[]{0, 0});
-        letterRule.put("F", new double[]{0, 0});
+//        Map<String, double[]> letterRule = new HashMap<>();
+//        letterRule.put("A", new double[]{0, 0});
+//        letterRule.put("A-", new double[]{0, 0});
+//        letterRule.put("B+", new double[]{0, 0});
+//        letterRule.put("B", new double[]{0, 0});
+//        letterRule.put("B-", new double[]{0, 0});
+//        letterRule.put("C+", new double[]{0, 0});
+//        letterRule.put("C", new double[]{0, 0});
+//        letterRule.put("C-", new double[]{0, 20});
+//        letterRule.put("D", new double[]{0, 0});
+//        letterRule.put("F", new double[]{0, 0});
         // -------------------------------------------------------
 
         ListModel lm = list_letterGradeRule.getModel();
@@ -446,14 +444,52 @@ public class MainFrame extends JFrame {
 
     private void menuItem_percentageMouseReleased(MouseEvent e) {
         // TODO add your code here
+        // get column
+        int col  = table_grades.columnAtPoint(e.getPoint());
+        String gradeName = table_grades.getColumnName(col);
+        GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(gradeName,course);
+        String ruleID = gr.getId();
+        for(int row=0; row<table_grades.getRowCount(); row++){
+            String BUID = table_grades.getValueAt(row,0).toString();
+            Student student = MainFrameController.getStudent(BUID,course.getCourseID());
+            double percentage = student.getGrades().get(ruleID).getPercentage();
+            String item = (int)(percentage*100) + "%";
+            // set value for (row,col)
+            table_grades.setValueAt(item,row,col);
+        }
     }
 
     private void menuItem_absScoreMouseReleased(MouseEvent e) {
         // TODO add your code here
+        int col  = table_grades.columnAtPoint(e.getPoint());
+        String gradeName = table_grades.getColumnName(col);
+        GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(gradeName,course);
+        String ruleID = gr.getId();
+        for(int row=0; row<table_grades.getRowCount(); row++){
+            String BUID = table_grades.getValueAt(row,0).toString();
+            Student student = MainFrameController.getStudent(BUID,course.getCourseID());
+            double abs = student.getGrades().get(ruleID).getAbsolute();
+            int item = (int)(abs);
+            // set value for (row,col)
+            table_grades.setValueAt(item,row,col);
+        }
     }
 
     private void menuItem_lostScoreMouseReleased(MouseEvent e) {
         // TODO add your code here
+        // get column
+        int col  = table_grades.columnAtPoint(e.getPoint());
+        String gradeName = table_grades.getColumnName(col);
+        GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(gradeName,course);
+        String ruleID = gr.getId();
+        for(int row=0; row<table_grades.getRowCount(); row++){
+            String BUID = table_grades.getValueAt(row,0).toString();
+            Student student = MainFrameController.getStudent(BUID,course.getCourseID());
+            double lost = student.getGrades().get(ruleID).getDeduction();
+            int item = (int) lost;
+            // set value for (row,col)
+            table_grades.setValueAt(item,row,col);
+        }
     }
 
 

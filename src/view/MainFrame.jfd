@@ -450,7 +450,7 @@ new FormModel {
 				"width": 45
 				"height": 15
 				"x": 500
-				"y": 525
+				"y": 535
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "button_refresh"
