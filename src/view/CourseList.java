@@ -7,9 +7,11 @@ package view;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import javax.swing.*;
 
+import controller.CourseListController;
 import service.CourseService;
 
 import model.Course;
@@ -36,21 +38,30 @@ public class CourseList extends JFrame{
     private void button_addMouseReleased(MouseEvent e) {
         AddCourse addCourse = new AddCourse(this);
         addCourse.setVisible(true);
-        this.setEnabled(false);
     }
 
     private void button_openMouseReleased(MouseEvent e) {
         if(list_courseList.getSelectedIndex() == -1){
             // select nothing
-            // test
-            MainFrame mainFrame = new MainFrame(this, "");
-            mainFrame.setVisible(true);
-            this.setVisible(false);
             return;
         }else{
-            // todo 1. get selected course's courseID 2. open a new MainFrame with this courseID 3. make this frame invisible
+            // if course lists history courses, cannot open
+            if(button_history_current.getText().equals("History")) return;
+
             // test
             MainFrame mainFrame = new MainFrame(this, "");
+            // ----------------------
+
+            // test
+//            String item = list_courseList.getSelectedValue();
+//            String[] items = item.split("Section: ");
+//            String courseName = items[0].substring(0,items[0].length()-1); // remove the space in the end
+//            String section = items[1];
+//
+//            List<Course> coursesThisSemester = CourseService.getInstance().getCourseListBySemester(currentSemester);
+//            String courseID = CourseListController.getCourseID(courseName,section,coursesThisSemester);
+//            MainFrame mainFrame = new MainFrame(this, courseID);
+
             mainFrame.setVisible(true);
             this.setVisible(false);
         }
@@ -61,49 +72,65 @@ public class CourseList extends JFrame{
         if(list_courseList.getSelectedIndex() == -1){
             // select nothing
             return;
+        }else if(button_history_current.getText().equals("History")){
+            // cannot delete previous courses
+            return;
         }
         // alert window
         int n = JOptionPane.showConfirmDialog(null, "Delete this course?", "Warning",JOptionPane.YES_NO_OPTION);//n=0/1
         if(n == 0){
             // delete this course
             int selectedIndex = list_courseList.getSelectedIndex();
-//            Course selectedCourse = courses.get(selectedIndex);
-//            CourseService.deleteCourse(selectedCourse.getCourseID());
+//            test
 //            Course selectedCourse = this.coursesVector.get(selectedIndex);
-//            CourseService.deleteCourse(selectedCourse.getCourseID());
+//            CourseListController.deleteCourse(selectedCourse.getCourseID());
             refreshList();
         }
     }
 
     // refresh list_courseList, show courses this semester
-    private void refreshList() {
+    public void refreshList() {
         this.coursesVector.clear();
-        ArrayList<Course> courses_this_semester = new ArrayList<Course>(CourseService.getInstance().getCourseListBySemester(currentSemester));
         DefaultListModel<String> dlm = new DefaultListModel<>();
-        for (Course course : courses_this_semester) {
-            this.coursesVector.add(course);
-            String item = course.getName() + " Section: " + course.getSection();
-            dlm.addElement(item);
-        }
-
-//        //test
-//        coursesVector.add(new Course("CS591 P1", "Fall 2019",""));
-//        coursesVector.add(new Course("CS591 P1", "Fall 2019",""));
-//        coursesVector.add(new Course("CS591 P1", "Fall 2019",""));
-//        for(Course course:coursesVector){
-//            String item = course.getName() + " Section: " + course.getSemester();
+        // test
+//        ArrayList<Course> courses_this_semester = new ArrayList<Course>(CourseService.getInstance().getCourseListBySemester(currentSemester));
+//        for (Course course : courses_this_semester) {
+//            this.coursesVector.add(course);
+//            String item = course.getName() + " Section: " + course.getSection();
 //            dlm.addElement(item);
 //        }
+
+        //test
+        coursesVector.add(new Course("CS591 P1", "Fall 2019",""));
+        coursesVector.add(new Course("CS591 P1", "Fall 2019",""));
+        coursesVector.add(new Course("CS591 P1", "Fall 2019",""));
+        for(Course course:coursesVector){
+            String item = course.getName() + " Section: " + course.getSemester();
+            dlm.addElement(item);
+        }
 
         this.list_courseList.setModel(dlm);
     }
 
     private void button_history_currentMouseReleased(MouseEvent e) {
         if (button_history_current.getText().equals("History")) {
-            // todo: show all courses, change button text to "Current", reset courses Vector
+            //test
+//            List<Course> allCoursesList = CourseService.getInstance().getAllCourses();
+//            DefaultListModel<String> dlm = new DefaultListModel<>();
+//            for (Course course : allCoursesList) {
+//                this.coursesVector.clear();
+//                this.coursesVector.add(course);
+//                String item = course.getName() + " Section: " + course.getSection();
+//                dlm.addElement(item);
+//            }
+//            this.list_courseList.setModel(dlm);
+            button_add.setEnabled(false);
+            button_delete.setEnabled(false);
             button_history_current.setText("Current");
             label_which_semester.setText("All Courses");
         } else {
+            button_add.setEnabled(true);
+            button_delete.setEnabled(true);
             button_history_current.setText("History");
             label_which_semester.setText(currentSemester);
             refreshList();
@@ -181,6 +208,8 @@ public class CourseList extends JFrame{
         //---- button_open ----
         button_open.setText("Open");
         button_open.setForeground(Color.black);
+        button_open.setIcon(new ImageIcon(getClass().getResource("/images/open-magazine.png")));
+        button_open.setHorizontalAlignment(SwingConstants.LEFT);
         button_open.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -188,11 +217,13 @@ public class CourseList extends JFrame{
             }
         });
         contentPane.add(button_open);
-        button_open.setBounds(250, 55, 85, 24);
+        button_open.setBounds(240, 55, 100, button_open.getPreferredSize().height);
 
         //---- button_delete ----
         button_delete.setText("Delete");
         button_delete.setForeground(Color.black);
+        button_delete.setIcon(new ImageIcon(getClass().getResource("/images/delete.png")));
+        button_delete.setHorizontalAlignment(SwingConstants.LEFT);
         button_delete.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -200,11 +231,13 @@ public class CourseList extends JFrame{
             }
         });
         contentPane.add(button_delete);
-        button_delete.setBounds(250, 85, 85, 24);
+        button_delete.setBounds(240, 85, 100, button_delete.getPreferredSize().height);
 
         //---- button_add ----
         button_add.setText("Add");
         button_add.setForeground(Color.black);
+        button_add.setHorizontalAlignment(SwingConstants.LEFT);
+        button_add.setIcon(new ImageIcon(getClass().getResource("/images/plus.png")));
         button_add.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -212,11 +245,13 @@ public class CourseList extends JFrame{
             }
         });
         contentPane.add(button_add);
-        button_add.setBounds(250, 115, 85, 24);
+        button_add.setBounds(240, 115, 100, button_add.getPreferredSize().height);
 
         //---- button_history_current ----
         button_history_current.setText("History");
         button_history_current.setForeground(Color.black);
+        button_history_current.setHorizontalAlignment(SwingConstants.LEFT);
+        button_history_current.setIcon(new ImageIcon(getClass().getResource("/images/history.png")));
         button_history_current.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -224,7 +259,7 @@ public class CourseList extends JFrame{
             }
         });
         contentPane.add(button_history_current);
-        button_history_current.setBounds(250, 145, 85, button_history_current.getPreferredSize().height);
+        button_history_current.setBounds(240, 145, 100, button_history_current.getPreferredSize().height);
 
         {
             // compute preferred size

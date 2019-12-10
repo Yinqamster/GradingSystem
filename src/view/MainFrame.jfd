@@ -1,0 +1,500 @@
+JFDML JFormDesigner: "7.0.0.6.255" Java: "11.0.4" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+			name: "this"
+			"title": "Grading System"
+			"iconImage": new com.jformdesigner.model.SwingIcon( 0, "/images/icon.png" )
+			"$locationPolicy": 1
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label1"
+				"text": "Course:"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 70
+				"height": 15
+				"x": 25
+				"y": 10
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label_courseName"
+				"text": "course name"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 100
+				"height": 15
+				"x": 95
+				"y": 10
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label3"
+				"text": "Section"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 65
+				"height": 15
+				"x": 200
+				"y": 10
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label_section"
+				"text": "which section"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 110
+				"height": 15
+				"x": 270
+				"y": 10
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button_showEdit"
+				"text": "Show/Edit"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/edit.png" )
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "button_showEditMouseReleased", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 390
+				"y": 5
+			} )
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "tabbedPane_gradingTable"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+					name: "panel_GradesTab"
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane_table"
+						add( new FormComponent( "javax.swing.JTable" ) {
+							name: "table_grades"
+							"model": new com.jformdesigner.model.SwingTableModel( new java.util.Vector, new java.util.Vector {
+								add( "BUID" )
+								add( "Name" )
+							}, new java.util.Vector {
+								add( null )
+								add( null )
+							}, new java.util.Vector {
+								add( false )
+								add( false )
+							}, new java.util.Vector {
+								add( null )
+								add( null )
+							} )
+							"autoResizeMode": 0
+							"border": new javax.swing.border.MatteBorder( 1, 0, 0, 0, sfield java.awt.Color black )
+							"selectionMode": 1
+							"columnSelectionAllowed": true
+							addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "table_gradesMouseReleased", true ) )
+						} )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 0
+						"y": 0
+						"width": 1065
+						"height": 415
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "button_addStudent"
+						"text": "Add Student"
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/plus.png" )
+						addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "button_addStudentMouseReleased", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 260
+						"y": 425
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "button_saveGrades"
+						"text": "Save"
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/floppy-disk.png" )
+						addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "button_saveGradesMouseReleased", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 410
+						"y": 425
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "button_calculate"
+						"text": "Calculate Grade"
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/calculator.png" )
+						addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "button_calculateMouseReleased", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 520
+						"y": 425
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "button_statistics"
+						"text": "Statistics"
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/bar-chart.png" )
+						addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "button_statisticsMouseReleased", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 690
+						"y": 425
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.VSpacer" ) {
+						name: "vSpacer1"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 430
+						"y": 460
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.VSpacer" ) {
+						name: "vSpacer2"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 815
+						"y": 445
+						"height": 15
+						"width": 45
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Grades"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+					name: "panel_whole"
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane_breakdown"
+						add( new FormComponent( "javax.swing.JTree" ) {
+							name: "tree_breakdown"
+							"model": new javax.swing.tree.DefaultTreeModel( new javax.swing.tree.DefaultMutableTreeNode {
+								userObject: "CS591 P1 100%"
+								add( new javax.swing.tree.DefaultMutableTreeNode {
+									userObject: "Homework 50%"
+									add( new javax.swing.tree.DefaultMutableTreeNode {
+										userObject: "TicTacToe 25% 100"
+									} )
+									add( new javax.swing.tree.DefaultMutableTreeNode {
+										userObject: "MyFancyBank 25% 100"
+									} )
+								} )
+								add( new javax.swing.tree.DefaultMutableTreeNode {
+									userObject: "Exam 50%"
+									add( new javax.swing.tree.DefaultMutableTreeNode {
+										userObject: "Midterm 35%"
+										add( new javax.swing.tree.DefaultMutableTreeNode {
+											userObject: "Written 20% 50"
+										} )
+										add( new javax.swing.tree.DefaultMutableTreeNode {
+											userObject: "Practicum 15% 133"
+										} )
+									} )
+									add( new javax.swing.tree.DefaultMutableTreeNode {
+										userObject: "Final 15% 100"
+									} )
+								} )
+							} )
+							"toolTipText": "select a node and right click on it"
+							addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "tree_breakdownMouseReleased", true ) )
+						} )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 10
+						"y": 10
+						"width": 510
+						"height": 340
+					} )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane_letterGrade"
+						add( new FormComponent( "javax.swing.JList" ) {
+							name: "list_letterGradeRule"
+							"model": new javax.swing.DefaultListModel {
+								addElement( "A   93% - 100%" )
+								addElement( "A-  90% - 92%" )
+								addElement( "B+  87% - 89%" )
+								addElement( "B   83% - 86%" )
+								addElement( "B-  80% - 82%" )
+								addElement( "C+  77% - 79%" )
+								addElement( "C   73% - 76%" )
+								addElement( "C-  70% - 72%" )
+								addElement( "D+  67% - 69%" )
+								addElement( "D   63% - 66%" )
+								addElement( "D-  60% - 62%" )
+								addElement( "F   0% - 69%" )
+							}
+							"toolTipText": "Select a Row to Edit "
+							addEvent( new FormEvent( "javax.swing.event.ListSelectionListener", "valueChanged", "list_letterGradeRuleValueChanged", true ) )
+						} )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 530
+						"y": 10
+						"width": 530
+						"height": 340
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "button_saveBreakdown"
+						"text": "Save"
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/floppy-disk.png" )
+						addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "button_saveBreakdownMouseReleased", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 440
+						"y": 355
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "button_saveAsTemplate"
+						"text": "Save as Template"
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/template.png" )
+						"toolTipText": "Click to save breakdown as a template"
+						addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "button_saveAsTemplateMouseReleased", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 915
+						"y": 425
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label5"
+						"text": "Name*:"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 145
+						"y": 360
+						"width": 60
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "textField_name"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 225
+						"y": 355
+						"width": 135
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label6"
+						"text": "Proportion:"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 145
+						"y": 385
+						"width": 80
+					} )
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "spinner_percentage"
+						"model": new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 225
+						"y": 380
+						"width": 135
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label8"
+						"text": "Letter Grade:"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 540
+						"y": 360
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label_letterGrade"
+						"text": "Choose One Letter Grade Above"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 625
+						"y": 360
+						"height": 16
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label9"
+						"text": "Lower Bound:"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 540
+						"y": 385
+						"height": 15
+						"width": 85
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label10"
+						"text": "Upper Bound:"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"width": 85
+						"height": 15
+						"x": 540
+						"y": 410
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "button_saveLetterGradeRule"
+						"text": "Save"
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/floppy-disk.png" )
+						addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "button_saveLetterGradeRuleMouseReleased", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 810
+						"y": 355
+					} )
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "spinner_lowerBound"
+						"model": new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 625
+						"y": 380
+						"width": 110
+					} )
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "spinner_upperBound"
+						"model": new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"width": 110
+						"height": 22
+						"x": 625
+						"y": 410
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label4"
+						"text": "%"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 365
+						"y": 385
+						"width": 20
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label11"
+						"text": "%"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"width": 25
+						"height": 15
+						"x": 740
+						"y": 385
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label12"
+						"text": "%"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"width": 25
+						"height": 15
+						"x": 740
+						"y": 410
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.VSpacer" ) {
+						name: "vSpacer4"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"width": 10
+						"height": 20
+						"x": 500
+						"y": 440
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+						name: "panel_fullScore"
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label7"
+							"text": "Full Score:"
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+							"x": 5
+							"y": 0
+							"width": 70
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "spinner_fullScore"
+							"model": new javax.swing.SpinnerNumberModel {
+								minimum: 0
+							}
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+							"x": 85
+							"y": 0
+							"width": 135
+						} )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 140
+						"y": 410
+						"width": 220
+						"height": 30
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Breakdown"
+				} )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 20
+				"y": 35
+				"width": 1075
+				"height": 490
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button_back"
+				"text": "Back"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/left-arrow.png" )
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "button_backMouseReleased", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 1010
+				"y": 5
+			} )
+			add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+				name: "hSpacer1"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 20
+				"height": 30
+				"x": 1090
+				"y": 5
+			} )
+			add( new FormComponent( "com.jformdesigner.designer.wrapper.VSpacer" ) {
+				name: "vSpacer3"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 45
+				"height": 15
+				"x": 500
+				"y": 525
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button_refresh"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/refresh.png" )
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "button_refreshMouseReleased", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 965
+				"y": 5
+				"width": 35
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 10, 20 )
+			"size": new java.awt.Dimension( 1110, 575 )
+		} )
+		add( new FormContainer( "javax.swing.JPopupMenu", new FormLayoutManager( class javax.swing.JPopupMenu ) ) {
+			name: "popupMenu_breakdownTree"
+			add( new FormComponent( "javax.swing.JMenuItem" ) {
+				name: "menuItem_addChildren"
+				"text": "Add"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/plus.png" )
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "menuItem_addChildrenMouseReleased", true ) )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 15, 630 )
+		} )
+		add( new FormContainer( "javax.swing.JPopupMenu", new FormLayoutManager( class javax.swing.JPopupMenu ) ) {
+			name: "popupMenu_student"
+			add( new FormComponent( "javax.swing.JMenuItem" ) {
+				name: "menuItem_showEditStudent"
+				"text": "Show/Edit"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/edit.png" )
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "menuItem_showEditStudentMouseReleased", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JMenuItem" ) {
+				name: "menuItem_studentComment"
+				"text": "Student Comment"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/comment.png" )
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "menuItem_studentCommentMouseReleased", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JMenuItem" ) {
+				name: "menuItem_freezeStudent"
+				"text": "Freeze"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/freeze.png" )
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "menuItem_freezeStudentMouseReleased", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JMenuItem" ) {
+				name: "menuItem_deleteStudent"
+				"text": "Delete"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/delete.png" )
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "menuItem_deleteStudentMouseReleased", true ) )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 145, 620 )
+		} )
+		add( new FormContainer( "javax.swing.JPopupMenu", new FormLayoutManager( class javax.swing.JPopupMenu ) ) {
+			name: "popupMenu_ScoreExpression"
+			add( new FormComponent( "javax.swing.JMenuItem" ) {
+				name: "menuItem_percentage"
+				"text": "Percentage"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/percentage.png" )
+			} )
+			add( new FormComponent( "javax.swing.JMenuItem" ) {
+				name: "menuItem_absScore"
+				"text": "Absolute Scores"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/score.png" )
+			} )
+			add( new FormComponent( "javax.swing.JMenuItem" ) {
+				name: "menuItem_lostScore"
+				"text": "Lost Scores"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/lost-score.png" )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 330, 620 )
+		} )
+		add( new FormContainer( "javax.swing.JPopupMenu", new FormLayoutManager( class javax.swing.JPopupMenu ) ) {
+			name: "popupMenu_gradeComment"
+			add( new FormComponent( "javax.swing.JMenuItem" ) {
+				name: "menuItem_addEditComment"
+				"text": "Add/Edit Comment"
+				"selectedIcon": sfield com.jformdesigner.model.FormObject NULL_VALUE
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/comment.png" )
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "menuItem_addEditCommentMouseReleased", true ) )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 520, 625 )
+		} )
+	}
+}

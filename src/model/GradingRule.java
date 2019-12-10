@@ -13,7 +13,7 @@ public class GradingRule {
     private double proportion;
 
     public GradingRule(){
-        new ArrayList<>();
+        children = new ArrayList<>();
     }
 
     public void setChildrenID(List<GradingRule> children) {
@@ -21,6 +21,7 @@ public class GradingRule {
     }
 
     public GradingRule(String parentID, int depth, String name, double fullScore, double proportion) {
+        this();
         this.parentID = parentID;
         this.depth = depth;
         this.name = name;
@@ -29,6 +30,7 @@ public class GradingRule {
     }
 
     public GradingRule(String ID, String parentID, String name, double fullScore, double proportion) {
+        this();
         this.parentID = parentID;
         this.id = ID;
         this.name = name;
@@ -37,6 +39,7 @@ public class GradingRule {
     }
 
     public GradingRule(String parentID, String name, double fullScore, double proportion) {
+        this();
         this.parentID = parentID;
         this.name = name;
         this.fullScore = fullScore;
@@ -44,6 +47,7 @@ public class GradingRule {
     }
 
     public GradingRule(String ID, String parentID, String name, double proportion) {
+        this();
         this.parentID = parentID;
         this.id = ID;
         this.name = name;
@@ -52,6 +56,7 @@ public class GradingRule {
     }
 
     public GradingRule(String parentID, String name, double proportion) {
+        this();
         this.parentID = parentID;
         this.name = name;
         this.fullScore = 0.0;
@@ -59,12 +64,14 @@ public class GradingRule {
     }
 
     public GradingRule(String name, double proportion) {
+        this();
         this.name = name;
         this.fullScore = 0.0;
         this.proportion = proportion;
     }
 
     public GradingRule(String name, double fullScore, double proportion) {
+        this();
         this.name = name;
         this.fullScore = fullScore;
         this.proportion = proportion;

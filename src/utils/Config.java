@@ -17,5 +17,9 @@ public class Config {
     public static final String UNDERGRADUATE = "Undergraduate";
     public static final String GRADUATE = "Graduate";
 
-
+    // ShowEditStudent Type
+    public static final int ADDNEWSTUDENT = 0; // add a new student
+    public static final int EDITSTUDENT = 1; // edit a saved student
+    public static final int EDITSTUDENTCOMMENT = 2; // edit a saved student
+    public static final int ADDEDITCOMMENT = 3; // add or edit the comment for a certain grade of a certain student
 }

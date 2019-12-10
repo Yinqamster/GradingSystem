@@ -4,6 +4,7 @@
 
 package view;
 
+import controller.ShowEditCourseController;
 import model.Course;
 import service.CourseService;
 import utils.ErrCode;
@@ -17,9 +18,22 @@ import javax.swing.*;
  */
 public class ShowEditCourse extends JFrame {
     private Course course;
-    public ShowEditCourse(String courseID) {
+    MainFrame parent;
+    public ShowEditCourse(MainFrame parent, String courseID) {
         initComponents();
-        this.course = CourseService.getInstance().getCourse(courseID);
+        this.parent = parent;
+        this.course = ShowEditCourseController.getCourseByID(courseID);
+
+        loadInfo();
+    }
+
+    //test
+    public ShowEditCourse() {
+        initComponents();
+    }
+    // -------------------------
+
+    private void loadInfo(){
         this.textField_courseName.setText(course.getName());
         this.textField_section.setText(course.getSection());
         this.textArea_description.setText(course.getDescription());
@@ -53,7 +67,14 @@ public class ShowEditCourse extends JFrame {
             String semester = comboBox_season.getSelectedItem().toString() + " " + comboBox_year.getSelectedItem().toString();
             String description = textArea_description.getText();
 
-            // todo: update course
+            ShowEditCourseController.updateCourse(name,section,semester,description,course.getCourseID());
+
+            // show message box
+            JOptionPane.showMessageDialog(this, "Course updated.");
+            // refresh course information in mainframe
+            parent.refreshCourseNameAndSection(this.course);
+
+            this.dispose();
         }else{
             label_warning.setText(ErrCode.TEXTFIELDEMPTY.getDescription());
         }
@@ -161,6 +182,7 @@ public class ShowEditCourse extends JFrame {
 
         //---- button_save ----
         button_save.setText("save");
+        button_save.setIcon(new ImageIcon(getClass().getResource("/images/floppy-disk.png")));
         button_save.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -168,10 +190,11 @@ public class ShowEditCourse extends JFrame {
             }
         });
         contentPane.add(button_save);
-        button_save.setBounds(new Rectangle(new Point(100, 280), button_save.getPreferredSize()));
+        button_save.setBounds(80, 280, 95, button_save.getPreferredSize().height);
 
         //---- button_cancel ----
         button_cancel.setText("cancel");
+        button_cancel.setIcon(new ImageIcon(getClass().getResource("/images/cancel.png")));
         button_cancel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -179,7 +202,7 @@ public class ShowEditCourse extends JFrame {
             }
         });
         contentPane.add(button_cancel);
-        button_cancel.setBounds(225, 280, button_cancel.getPreferredSize().width, 23);
+        button_cancel.setBounds(205, 280, 95, button_cancel.getPreferredSize().height);
         contentPane.add(vSpacer1);
         vSpacer1.setBounds(180, 305, vSpacer1.getPreferredSize().width, 25);
 

@@ -6,12 +6,16 @@ package view;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import com.intellij.uiDesigner.core.*;
 import controller.AddCourseController;
+import controller.CourseListController;
 import model.Course;
 import service.CourseService;
 import utils.ErrCode;
@@ -20,26 +24,27 @@ import utils.ErrCode;
  * @author Jun Li
  */
 public class AddCourse extends JFrame {
-    // breakdownID, name
-    private Map<String,String> breakdownID_Name = new HashMap<>();
+    // breakdownID, itemString
+    private Map<String,String> breakdownID_item = new HashMap<>();
     private CourseList courseList;
+    private String filepath = "";
     public AddCourse(CourseList courseList) {
         initComponents();
         this.courseList = courseList;
 
-        // load ComBox
         // test
-        //loadComboBox();
+//        // load ComBox
+//        loadComboBox();
     }
 
     private void loadComboBox(){
         DefaultComboBoxModel comboBoxModel = (DefaultComboBoxModel) comboBox_chooseTemplate.getModel();
 
-        this.breakdownID_Name.clear();
-        this.breakdownID_Name.putAll(AddCourseController.getChooseBreakdownItems());
+        this.breakdownID_item.clear();
+        this.breakdownID_item.putAll(AddCourseController.getChooseBreakdownItems());
 
-        for(String name : breakdownID_Name.values()){
-            comboBoxModel.addElement(name);
+        for(String itemString : breakdownID_item.values()){
+            comboBoxModel.addElement(itemString);
         }
         comboBox_chooseTemplate.setModel(comboBoxModel);
     }
@@ -60,13 +65,58 @@ public class AddCourse extends JFrame {
     private void button_saveMouseReleased(MouseEvent e) {
         // check validation of every textField
         if(textFiledsAreValid()){
-            // todo add a new course
-            label_warning.setText(ErrCode.OK.getDescription());
+            // information preparation
+            String item = this.comboBox_chooseTemplate.getSelectedItem().toString();
+            int type = AddCourseController.getItemType(item);
+            String breakdownID = AddCourseController.getBreakdownID(item, this.breakdownID_item);
+            if(breakdownID.isEmpty()){
+                // error
+                label_warning.setText(ErrCode.ADDCOURSEFAIL.getDescription());
+                return;
+            }
+
+            String courseName = this.textField_name.getText();
+            String section = this.textField_section.getText();
+            String semester = comboBox_season.getSelectedItem().toString() + " " + comboBox_year.getSelectedItem().toString();
+            String description = textArea_description.getText();
+
+            // add course and import students if applicable
+            AddCourseController.addCourse(courseName,section,semester,description,breakdownID,filepath,type);
+
+            // show message box
+            JOptionPane.showMessageDialog(this, "Course added.");
+            // refresh courseList
+            courseList.refreshList();
+
+            this.dispose();
         }else label_warning.setText(ErrCode.TEXTFIELDEMPTY.getDescription());
     }
 
     private void thisWindowClosing(WindowEvent e) {
         this.courseList.setEnabled(true);
+    }
+
+    private void button_selectfileMouseReleased(MouseEvent e) {
+        // select file, xlsx file only
+        final JFileChooser fc = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel Worksheet", "xlsx");
+        fc.setFileFilter(filter);
+
+        int returnVal = fc.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+
+            //set filepath
+            try {
+                this.filepath = file.getCanonicalPath();
+            }catch (Exception exception){
+                this.filepath = "";
+            }
+
+            // get filename and set label
+            String filename = file.getName();
+            this.label_filename.setText(filename);
+        }
     }
 
     private void initComponents() {
@@ -177,7 +227,7 @@ public class AddCourse extends JFrame {
             scrollPane1.setViewportView(textArea_description);
         }
         contentPane.add(scrollPane1);
-        scrollPane1.setBounds(165, 160, 180, 60);
+        scrollPane1.setBounds(165, 160, 180, 80);
 
         //---- label7 ----
         label7.setText("Grade Breakdown:*");
@@ -201,9 +251,16 @@ public class AddCourse extends JFrame {
         label8.setBounds(40, 295, 120, label8.getPreferredSize().height);
 
         //---- button_selectfile ----
-        button_selectfile.setText("select file");
+        button_selectfile.setText("select");
         button_selectfile.setForeground(Color.black);
         button_selectfile.setBackground(Color.white);
+        button_selectfile.setIcon(new ImageIcon(getClass().getResource("/images/data-storage.png")));
+        button_selectfile.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                button_selectfileMouseReleased(e);
+            }
+        });
         contentPane.add(button_selectfile);
         button_selectfile.setBounds(new Rectangle(new Point(165, 290), button_selectfile.getPreferredSize()));
 
@@ -211,12 +268,13 @@ public class AddCourse extends JFrame {
         label_filename.setText("filename.xlsx");
         label_filename.setForeground(Color.black);
         contentPane.add(label_filename);
-        label_filename.setBounds(new Rectangle(new Point(265, 295), label_filename.getPreferredSize()));
+        label_filename.setBounds(260, 295, 80, label_filename.getPreferredSize().height);
 
         //---- button_save ----
-        button_save.setText("save");
+        button_save.setText(" Save");
         button_save.setForeground(Color.black);
         button_save.setBackground(Color.white);
+        button_save.setIcon(new ImageIcon(getClass().getResource("/images/floppy-disk.png")));
         button_save.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -224,12 +282,13 @@ public class AddCourse extends JFrame {
             }
         });
         contentPane.add(button_save);
-        button_save.setBounds(75, 350, 88, 25);
+        button_save.setBounds(75, 350, 100, button_save.getPreferredSize().height);
 
         //---- button_cancel ----
-        button_cancel.setText("cancel");
+        button_cancel.setText(" Cancel");
         button_cancel.setForeground(Color.black);
         button_cancel.setBackground(Color.white);
+        button_cancel.setIcon(new ImageIcon(getClass().getResource("/images/cancel.png")));
         button_cancel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -237,7 +296,7 @@ public class AddCourse extends JFrame {
             }
         });
         contentPane.add(button_cancel);
-        button_cancel.setBounds(240, 350, 88, 25);
+        button_cancel.setBounds(210, 350, 100, button_cancel.getPreferredSize().height);
 
         //---- label_title ----
         label_title.setText("Add a Course");
@@ -246,7 +305,7 @@ public class AddCourse extends JFrame {
         contentPane.add(label_title);
         label_title.setBounds(115, 5, label_title.getPreferredSize().width, 45);
         contentPane.add(hSpacer2);
-        hSpacer2.setBounds(355, 0, 40, 375);
+        hSpacer2.setBounds(355, 0, 30, 375);
 
         //---- label_warning ----
         label_warning.setForeground(Color.red);

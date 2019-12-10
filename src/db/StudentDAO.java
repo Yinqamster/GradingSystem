@@ -158,6 +158,21 @@ public class StudentDAO {
         }
     }
 
+    public int addStudent(String courseId, String studentId){
+        int updateFlag = 1;
+        String updateSql = "REPLACE INTO course_student_relationship (course_id, student_id) " +
+                "values (?, ?)";
+        try {
+            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(updateSql);
+            preparedStatement.setObject(1, courseId);
+            preparedStatement.setObject(2, studentId);
+            updateFlag *= preparedStatement.executeUpdate();
+            return updateFlag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
+        } catch(SQLException sqle) {
+            return ErrCode.UPDATEERROR.getCode();
+        }
+    }
+
 
     public Student freezeStudent(String buid, String courseId) {
         try {

@@ -39,7 +39,7 @@ public class TemplateService {
         for(Map.Entry<String, Template> m : templateMap.entrySet()) {
             result.put(m.getValue().getBreakdownID(), m.getValue().getName());
         }
-        return new HashMap<>();
+        return result;
     }
 
     public Template getTemplateById(String templateId) {

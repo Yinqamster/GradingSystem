@@ -2,6 +2,7 @@ package service;
 
 import model.*;
 import utils.ErrCode;
+import db.GradeDAO;
 
 import java.util.*;
 import java.text.DecimalFormat;
@@ -45,11 +46,28 @@ public class ScoreService {
                 grade.setAbsolute(absolute);
                 grade.setPercentage(absolute / rule.getFullScore());
                 grade.setDeduction(rule.getFullScore() - absolute);
-                // TODO: update student grade in DB
+                // update student grade in DB
+                GradeDAO.getInstance().upgradeGrade(ruleId, buid, grade);
             }
         }
 
         return ErrCode.OK.getCode();
+    }
+
+    public int updateGradeComment(String courseId, String buid, String ruleId, String comment) {
+        // get course, student and grade
+        Course course = courseService.getCourse(courseId);
+        if (course == null) {
+            return ErrCode.COURSENOTEXIST.getCode();
+        }
+        Student student = course.getStudents().get(buid);
+        if (student == null) {
+            return ErrCode.STUDENTNOTEXIST.getCode();
+        }
+        Grade grade = student.getGrades().get(ruleId);
+
+        grade.setComment(comment);
+        return GradeDAO.getInstance().updateGrade(ruleId, buid, comment);
     }
 
     // calculate and update any composite score, i.e. grade that is made up of sub-grades
@@ -68,6 +86,10 @@ public class ScoreService {
         // calculate score for each student
         for (String buid : students.keySet()) {
             Student student = students.get(buid);
+            double totalPercentage = 0;
+            double totalAbsolute = 0;
+            double totalDeduction = 0;
+
             Map<String, Grade> grades = student.getGrades();
             for (String ruleId : grades.keySet()) {
                 Grade grade = grades.get(ruleId);
@@ -76,8 +98,20 @@ public class ScoreService {
                 grade.setAbsolute(absolute);
                 grade.setPercentage(absolute / fullScore);
                 grade.setDeduction(fullScore - absolute);
-                // TODO: update this grade in DB
+
+                // update this grade in DB
+                GradeDAO.getInstance().upgradeGrade(ruleId, buid, grade);
+
+                // add to final score if this is a category
+                GradingRule rule = breakdown.getGradingRules().get(ruleId);
+                if (rule.getParentID() == "") {
+                    totalPercentage += (absolute / fullScore);
+                    totalAbsolute += absolute;
+                    totalDeduction += (fullScore - absolute);
+                }
             }
+            // update final grade for this student
+            calculateFinalGrade(buid, courseId, breakdown, student, totalAbsolute, totalPercentage, totalDeduction);
         }
 
         return ErrCode.OK.getCode();
@@ -97,6 +131,28 @@ public class ScoreService {
             absolute += calculateScore(breakdown, subRule.getId(), grades);
         }
         return absolute;
+    }
+
+
+    // calculate and update the final grade for a student
+    private void calculateFinalGrade(String buid, String courseId, Breakdown breakdown, Student student, double absolute, double percentage, double deduction) {
+        // calculate letter grade
+        Map<String, double[]> letterRule = breakdown.getLetterRule();
+        String letterGrade = "";
+        double toAbsolute = percentage * 100;
+        for (String letter : letterRule.keySet()) {
+            if (toAbsolute <= letterRule.get(letter)[0] && toAbsolute >= letterRule.get(letter)[1]) {
+                letterGrade = letter;
+                break;
+            }
+        }
+
+        // update final grade for student
+        FinalGrade finalGrade = student.getFinalGrade();
+        finalGrade.setPercentage(percentage);
+        finalGrade.setLetterGrade(letterGrade);
+        // update final grade in DB
+        GradeDAO.getInstance().updateFinalGrade(buid, courseId, absolute, percentage, deduction, letterGrade);
     }
 
     public String[] calculateStats(String courseId, String ruleId, String studentType) {

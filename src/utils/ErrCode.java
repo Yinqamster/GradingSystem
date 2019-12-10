@@ -14,6 +14,8 @@ public enum ErrCode {
 
     // views
     TEXTFIELDEMPTY("Please fill in all textfields with *.", 301),
+    ADDCOURSEFAIL("Fail to add course", 302),
+    NAMENOTUNIQUE("Name is not unique",303),
 
     //grading rule service
     DELETEGRADINGRULEERROR("There is an error while deleting grading rule", 401),

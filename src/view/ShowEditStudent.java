@@ -4,6 +4,11 @@
 
 package view;
 
+import controller.ShowEditCourseController;
+import controller.ShowEditStudentController;
+import model.Course;
+import model.Student;
+import utils.Config;
 import utils.ErrCode;
 
 import java.awt.*;
@@ -11,17 +16,96 @@ import java.awt.event.*;
 import javax.swing.*;
 
 /**
- * @author unknown
+ * @author Jun Li
  */
 public class ShowEditStudent extends JFrame {
-    public ShowEditStudent() {
+    private MainFrame parent;
+    private Course course;
+    private int type;
+    private Student student;
+    private String GradingRuleID;
+
+    // use this when add student
+    public ShowEditStudent(Course course, int type, MainFrame mainFrame) {
         initComponents();
+        this.parent = mainFrame;
+        this.course = course;
+        this.type = type;
+
+        this.setTitle("Add Student");
+        label_whichGradingRule.setText("");
+    }
+
+    // use this when edit student or edit student's comment
+    public ShowEditStudent(Course course, int type, Student student, MainFrame mainFrame) {
+        initComponents();
+        this.parent = mainFrame;
+        this.course = course;
+        this.type = type;
+        this.student = student;
+
+        this.setTitle("Edit Student");
+        label_whichGradingRule.setText("");
+        textField_firstName.setText(student.getName().getFirstName());
+        textField_middleName.setText(student.getName().getMiddleName());
+        textField_lastName.setText(student.getName().getLastName());
+        textField_buid.setText(student.getBuid());
+        comboBox_program.setSelectedItem(ShowEditStudentController.getYearOfStudent(student));
+        textArea_comment.setText(student.getComment());
+
+        if(type == Config.EDITSTUDENTCOMMENT){
+            textField_firstName.setEnabled(false);
+            textField_middleName.setEnabled(false);
+            textField_lastName.setEnabled(false);
+            textField_buid.setEnabled(false);
+            comboBox_program.setEnabled(false);
+            this.setTitle("Edit Student's Comment");
+        }
+    }
+
+    // use this when comment on a certain grade of a certain student
+    public ShowEditStudent(Course course, int type, Student student, String GradingRuleID, MainFrame mainFrame) {
+        initComponents();
+        this.parent = mainFrame;
+        this.course = course;
+        this.type = type;
+        this.student = student;
+        this.GradingRuleID = GradingRuleID;
+
+        this.setTitle("Add/Edit Comment for a Grade");
+        label_whichGradingRule.setText(ShowEditStudentController.getGradingRuleByID(course.getCourseID(), GradingRuleID).getName());
+        textField_firstName.setText(student.getName().getFirstName());
+        textField_middleName.setText(student.getName().getMiddleName());
+        textField_lastName.setText(student.getName().getLastName());
+        textField_buid.setText(student.getBuid());
+        comboBox_program.setSelectedItem(ShowEditStudentController.getYearOfStudent(student));
+        textArea_comment.setText(ShowEditStudentController.getCommentForGrade(GradingRuleID,student));
+
+        textField_firstName.setEnabled(false);
+        textField_middleName.setEnabled(false);
+        textField_lastName.setEnabled(false);
+        textField_buid.setEnabled(false);
+        comboBox_program.setEnabled(false);
     }
 
     private void button_saveMouseReleased(MouseEvent e) {
-        // TODO check valid for every compulsory blanks, if valid , then save and refresh the table
         if(checkValid()){
-            // TODO save and refresh the table
+            String firstName = textField_firstName.getText();
+            String middleName = textField_middleName.getText();
+            String lastName = textField_lastName.getText();
+            String BUID = textField_buid.getText();
+            String year = comboBox_program.getSelectedItem().toString();
+            String comment = textArea_comment.getText();
+
+            if(type == Config.ADDNEWSTUDENT){
+                ShowEditStudentController.addStudent(firstName,middleName,lastName,BUID,year,comment,course.getCourseID());
+            }else if(type == Config.EDITSTUDENT){
+                ShowEditStudentController.updateStudent(firstName,middleName,lastName,BUID,comment,course.getCourseID());
+            }else if(type == Config.ADDEDITCOMMENT){
+                ShowEditStudentController.updateGradeComment(course.getCourseID(),BUID,GradingRuleID,comment);
+            }
+            // refresh table
+            parent.refreshTable();
         }else{
             this.label_warning.setText(ErrCode.TEXTFIELDEMPTY.getDescription());
         }
@@ -56,7 +140,6 @@ public class ShowEditStudent extends JFrame {
         label6 = new JLabel();
         comboBox_program = new JComboBox<>();
         label7 = new JLabel();
-        comboBox_whichAssignment = new JComboBox();
         scrollPane1 = new JScrollPane();
         textArea_comment = new JTextArea();
         button_save = new JButton();
@@ -64,6 +147,7 @@ public class ShowEditStudent extends JFrame {
         vSpacer1 = new JPanel(null);
         label_warning = new JLabel();
         hSpacer1 = new JPanel(null);
+        label_whichGradingRule = new JLabel();
 
         //======== this ========
         setIconImage(new ImageIcon(getClass().getResource("/images/icon.png")).getImage());
@@ -121,8 +205,6 @@ public class ShowEditStudent extends JFrame {
         label7.setText("Comment:");
         contentPane.add(label7);
         label7.setBounds(45, 215, 78, 15);
-        contentPane.add(comboBox_whichAssignment);
-        comboBox_whichAssignment.setBounds(125, 210, 180, 21);
 
         //======== scrollPane1 ========
         {
@@ -133,6 +215,7 @@ public class ShowEditStudent extends JFrame {
 
         //---- button_save ----
         button_save.setText("save");
+        button_save.setIcon(new ImageIcon(getClass().getResource("/images/floppy-disk.png")));
         button_save.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -140,10 +223,11 @@ public class ShowEditStudent extends JFrame {
             }
         });
         contentPane.add(button_save);
-        button_save.setBounds(new Rectangle(new Point(80, 370), button_save.getPreferredSize()));
+        button_save.setBounds(60, 370, 95, button_save.getPreferredSize().height);
 
         //---- button_cancel ----
         button_cancel.setText("cancel");
+        button_cancel.setIcon(new ImageIcon(getClass().getResource("/images/cancel.png")));
         button_cancel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -151,16 +235,18 @@ public class ShowEditStudent extends JFrame {
             }
         });
         contentPane.add(button_cancel);
-        button_cancel.setBounds(205, 370, 70, button_cancel.getPreferredSize().height);
+        button_cancel.setBounds(205, 370, 95, button_cancel.getPreferredSize().height);
         contentPane.add(vSpacer1);
         vSpacer1.setBounds(160, 395, vSpacer1.getPreferredSize().width, 25);
 
         //---- label_warning ----
         label_warning.setForeground(Color.red);
         contentPane.add(label_warning);
-        label_warning.setBounds(new Rectangle(new Point(80, 350), label_warning.getPreferredSize()));
+        label_warning.setBounds(80, 350, 200, 15);
         contentPane.add(hSpacer1);
         hSpacer1.setBounds(325, 30, 25, hSpacer1.getPreferredSize().height);
+        contentPane.add(label_whichGradingRule);
+        label_whichGradingRule.setBounds(new Rectangle(new Point(125, 215), label_whichGradingRule.getPreferredSize()));
 
         {
             // compute preferred size
@@ -195,7 +281,6 @@ public class ShowEditStudent extends JFrame {
     private JLabel label6;
     private JComboBox<String> comboBox_program;
     private JLabel label7;
-    private JComboBox comboBox_whichAssignment;
     private JScrollPane scrollPane1;
     private JTextArea textArea_comment;
     private JButton button_save;
@@ -203,5 +288,6 @@ public class ShowEditStudent extends JFrame {
     private JPanel vSpacer1;
     private JLabel label_warning;
     private JPanel hSpacer1;
+    private JLabel label_whichGradingRule;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

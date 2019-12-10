@@ -1,0 +1,129 @@
+JFDML JFormDesigner: "7.0.0.6.255" Java: "11.0.4" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+			name: "this"
+			"title": "Add"
+			"$locationPolicy": 1
+			"iconImage": new com.jformdesigner.model.SwingIcon( 0, "/images/icon.png" )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button_saveBreakdown"
+				"text": "Save"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/floppy-disk.png" )
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "button_saveBreakdownMouseReleased", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 95
+				"height": 25
+				"x": 50
+				"y": 140
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label5"
+				"text": "Name*:"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 60
+				"height": 15
+				"x": 40
+				"y": 40
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "textField_name"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 135
+				"height": 21
+				"x": 125
+				"y": 40
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label6"
+				"text": "Proportion:"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 80
+				"height": 15
+				"x": 40
+				"y": 70
+			} )
+			add( new FormComponent( "javax.swing.JSpinner" ) {
+				name: "spinner_percentage"
+				"model": new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 135
+				"height": 22
+				"x": 125
+				"y": 70
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label4"
+				"text": "%"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 20
+				"height": 15
+				"x": 265
+				"y": 75
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label7"
+				"text": "Full Score:"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 40
+				"y": 100
+				"width": 70
+			} )
+			add( new FormComponent( "javax.swing.JSpinner" ) {
+				name: "spinner_fullScore"
+				"model": new javax.swing.SpinnerNumberModel {
+					minimum: 0
+				}
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 125
+				"y": 100
+				"width": 135
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label1"
+				"text": "Category:"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 40
+				"y": 15
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label_parentName"
+				"text": "parent name"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 125
+				"y": 15
+				"width": 135
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button1"
+				"text": "Cancel"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/cancel.png" )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 170
+				"y": 140
+				"width": 95
+			} )
+			add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+				name: "hSpacer1"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 280
+				"y": 10
+				"width": 25
+				"height": 35
+			} )
+			add( new FormComponent( "com.jformdesigner.designer.wrapper.VSpacer" ) {
+				name: "vSpacer1"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 275
+				"y": 155
+				"height": 30
+				"width": 30
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 5, 0 )
+			"size": new java.awt.Dimension( 310, 215 )
+		} )
+	}
+}
