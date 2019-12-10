@@ -4,11 +4,13 @@
 
 package view;
 
+import com.sun.deploy.security.ValidationState;
 import controller.MainFrameController;
 import model.Course;
 import model.GradingRule;
 import model.Student;
 import service.CourseService;
+import sun.plugin2.message.Message;
 import utils.Config;
 import utils.ErrCode;
 
@@ -70,21 +72,36 @@ public class MainFrame extends JFrame {
     }
 
     public void refreshTable() {
-        // TODO set column header, load info row by row, set highLight for those grades who have comments, and make comment show when mouse anchored in such cell,
-        //  Disable frozen students
-
         // disable first two columns
         DefaultTableModel dtm = (DefaultTableModel) table_grades.getModel();
         List<GradingRule> gradingRuleList = MainFrameController.getAllGradingRule(course);
 
+        dtm = MainFrameController.initTableData(dtm,course);
+        table_grades.setModel(dtm);
 
+        // disable frozen students
+        table_grades = new JTable(dtm){
+            @Override
+            // Disable frozen students
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
+                Component comp = super.prepareRenderer(renderer, row, col);
+                String BUID = getModel().getValueAt(row, 0).toString(); // get BUID
+                Student student = MainFrameController.getStudent(BUID,course.getCourseID()); // get student
+                if (student.getStatus() == Config.FREEZE) {
+                    comp.setEnabled(false);
+                }
 
-
-
-
-
-
-
+                // set highLight for those grades who have comments
+                if(col >= 2){
+                    String ruleName = table_grades.getColumnName(col); // get GradingRule name
+                    String ruleID = MainFrameController.getGradingRuleByNameAndCourse(ruleName,course).getName();
+                    if(student.getGrades().get(ruleID).getComment() != null && !student.getGrades().get(ruleID).getComment().isEmpty()){
+                        comp.setBackground(Color.ORANGE);
+                    }
+                }
+                return comp;
+            }
+        };
     }
 
     public void refreshCourseNameAndSection(Course course) {
@@ -371,9 +388,64 @@ public class MainFrame extends JFrame {
         }
     }
 
-    private void button1MouseReleased(MouseEvent e) {
-        // TODO rerfresh everything in mainFrame
+    private void button_refreshMouseReleased(MouseEvent e) {
+        refreshCourseNameAndSection(course);
+        refreshTable();
+        loadBreakdownTree();
+        loadLetterRuleTree();
     }
+
+    private void button_calculateMouseReleased(MouseEvent e) {
+        MainFrameController.calculateScores(course.getCourseID());
+        refreshTable();
+    }
+
+    private void button_saveGradesMouseReleased(MouseEvent e) {
+        for(int row=0; row < table_grades.getRowCount(); row++) {
+            Map<String, Double> scores = new HashMap<>();
+            String BUID = table_grades.getValueAt(row,0).toString();
+            for(int col=2; col < table_grades.getColumnCount(); col++) {
+                String ruleName = table_grades.getColumnName(col);
+                GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(ruleName, course);
+                String ruleID = gr.getName();
+                double fullScore = gr.getFullScore();
+                String item = table_grades.getValueAt(row, col).toString();
+                double absolute=0;
+                if (gr.getChildren().size() == 0) {
+                    if (item.contains("-")) {
+                        // lost scores
+                        double value = Double.parseDouble(item);
+                        absolute = fullScore + value;
+                        if(absolute<0){
+                            JOptionPane.showMessageDialog(this,"ERROR!!!\nSome score is lower than 0.","Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                    } else if (item.contains("%")) {
+                        // percentage
+                    } else {
+                        // absolute scores
+                        double value = Double.parseDouble(item);
+                        if(value>fullScore){
+                            // some score exceeds full score
+                            JOptionPane.showMessageDialog(this,"ERROR!!!\nSome score exceeds full score","Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }else {
+                            absolute = value;
+                        }
+                    }
+                }else continue;
+
+                scores.put(ruleID,absolute);
+            }
+
+            // update scores
+            MainFrameController.updateRowScore(course.getCourseID(),BUID,scores);
+        }
+
+        refreshTable();
+        JOptionPane.showMessageDialog(this,"Grades saved.");
+    }
+
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
@@ -421,7 +493,7 @@ public class MainFrame extends JFrame {
         button_back = new JButton();
         hSpacer1 = new JPanel(null);
         vSpacer3 = new JPanel(null);
-        button1 = new JButton();
+        button_refresh = new JButton();
         popupMenu_breakdownTree = new JPopupMenu();
         menuItem_addChildren = new JMenuItem();
         popupMenu_student = new JPopupMenu();
@@ -479,12 +551,12 @@ public class MainFrame extends JFrame {
 
             //======== panel_GradesTab ========
             {
-                panel_GradesTab.setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new javax. swing. border
-                . EmptyBorder( 0, 0, 0, 0) , "JFor\u006dDesi\u0067ner \u0045valu\u0061tion", javax. swing. border. TitledBorder. CENTER, javax
-                . swing. border. TitledBorder. BOTTOM, new java .awt .Font ("Dia\u006cog" ,java .awt .Font .BOLD ,
-                12 ), java. awt. Color. red) ,panel_GradesTab. getBorder( )) ); panel_GradesTab. addPropertyChangeListener (new java. beans
-                . PropertyChangeListener( ){ @Override public void propertyChange (java .beans .PropertyChangeEvent e) {if ("bord\u0065r" .equals (e .
-                getPropertyName () )) throw new RuntimeException( ); }} );
+                panel_GradesTab.setBorder ( new javax . swing. border .CompoundBorder ( new javax . swing. border .TitledBorder ( new javax . swing. border .EmptyBorder
+                ( 0, 0 ,0 , 0) ,  "JF\u006frmD\u0065sig\u006eer \u0045val\u0075ati\u006fn" , javax. swing .border . TitledBorder. CENTER ,javax . swing. border
+                .TitledBorder . BOTTOM, new java. awt .Font ( "Dia\u006cog", java .awt . Font. BOLD ,12 ) ,java . awt
+                . Color .red ) ,panel_GradesTab. getBorder () ) ); panel_GradesTab. addPropertyChangeListener( new java. beans .PropertyChangeListener ( ){ @Override public void
+                propertyChange (java . beans. PropertyChangeEvent e) { if( "\u0062ord\u0065r" .equals ( e. getPropertyName () ) )throw new RuntimeException( )
+                ;} } );
                 panel_GradesTab.setLayout(null);
 
                 //======== scrollPane_table ========
@@ -493,46 +565,6 @@ public class MainFrame extends JFrame {
                     //---- table_grades ----
                     table_grades.setModel(new DefaultTableModel(
                         new Object[][] {
-                            {"U73344054", "Jun Li"},
-                            {"U42186937", "Jiatong Hao"},
-                            {"U48621793", "Jiaqian Sun"},
-                            {"U31787103", "Qi Yin"},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
-                            {null, null},
                         },
                         new String[] {
                             "BUID", "Name"
@@ -549,7 +581,6 @@ public class MainFrame extends JFrame {
                     table_grades.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
                     table_grades.setBorder(new MatteBorder(1, 0, 0, 0, Color.black));
                     table_grades.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-                    table_grades.setToolTipText("Double click a cell to edit");
                     table_grades.setColumnSelectionAllowed(true);
                     table_grades.addMouseListener(new MouseAdapter() {
                         @Override
@@ -577,12 +608,24 @@ public class MainFrame extends JFrame {
                 //---- button_saveGrades ----
                 button_saveGrades.setText("Save");
                 button_saveGrades.setIcon(new ImageIcon(getClass().getResource("/images/floppy-disk.png")));
+                button_saveGrades.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+                        button_saveGradesMouseReleased(e);
+                    }
+                });
                 panel_GradesTab.add(button_saveGrades);
                 button_saveGrades.setBounds(new Rectangle(new Point(410, 425), button_saveGrades.getPreferredSize()));
 
                 //---- button_calculate ----
                 button_calculate.setText("Calculate Grade");
                 button_calculate.setIcon(new ImageIcon(getClass().getResource("/images/calculator.png")));
+                button_calculate.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+                        button_calculateMouseReleased(e);
+                    }
+                });
                 panel_GradesTab.add(button_calculate);
                 button_calculate.setBounds(new Rectangle(new Point(520, 425), button_calculate.getPreferredSize()));
 
@@ -855,16 +898,16 @@ public class MainFrame extends JFrame {
         contentPane.add(vSpacer3);
         vSpacer3.setBounds(500, 525, 45, 15);
 
-        //---- button1 ----
-        button1.setIcon(new ImageIcon(getClass().getResource("/images/refresh.png")));
-        button1.addMouseListener(new MouseAdapter() {
+        //---- button_refresh ----
+        button_refresh.setIcon(new ImageIcon(getClass().getResource("/images/refresh.png")));
+        button_refresh.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                button1MouseReleased(e);
+                button_refreshMouseReleased(e);
             }
         });
-        contentPane.add(button1);
-        button1.setBounds(965, 5, 35, button1.getPreferredSize().height);
+        contentPane.add(button_refresh);
+        button_refresh.setBounds(965, 5, 35, button_refresh.getPreferredSize().height);
 
         {
             // compute preferred size
@@ -1028,7 +1071,7 @@ public class MainFrame extends JFrame {
     private JButton button_back;
     private JPanel hSpacer1;
     private JPanel vSpacer3;
-    private JButton button1;
+    private JButton button_refresh;
     private JPopupMenu popupMenu_breakdownTree;
     private JMenuItem menuItem_addChildren;
     private JPopupMenu popupMenu_student;

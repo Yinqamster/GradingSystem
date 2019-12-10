@@ -40,7 +40,7 @@ public class StatisticsController {
     public static List<GradingRule> getGradeRuleOfDepth0(List<GradingRule> gradingRules){
         List<GradingRule> grs = new ArrayList<>();
         for(GradingRule gr : gradingRules){
-            if(gr.getParentID() == null) grs.add(gr);
+            if(gr.getParentID() == null || gr.getParentID().isEmpty()) grs.add(gr);
         }
         return grs;
     }
