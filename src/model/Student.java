@@ -13,39 +13,49 @@ public abstract class Student {
     private double bonus;
     private String comment;
     private Map<String, Grade> grades;
+    private FinalGrade finalGrade;
 
     public Student(){
         grades = new HashMap<>();
         status = Config.ACTIVE;
+        finalGrade = new FinalGrade("final", 0, 0, 0, "", "");
     }
 
     public Student(Name name, String buid) {
+        this();
         this.name = name;
         this.buid = buid;
+        this.finalGrade = new FinalGrade("final", 0, 0, 0, "", "");
     }
 
     public Student(Name name, String buid, int status, double bonus,
                    String comment, Map<String, Grade> grades) {
+        this();
         this.name = name;
         this.buid = buid;
         this.status = status;
         this.bonus = bonus;
         this.comment = comment;
         this.grades = grades;
+        this.finalGrade = new FinalGrade("final", 0, 0, 0, "", "");
     }
     public Student(Name name, String buid, String comment) {
+        this();
         this.name = name;
         this.buid = buid;
         this.comment = comment;
+        this.finalGrade = new FinalGrade("final", 0, 0, 0, "", "");
     }
 
     public Student(Name name, String buid, int status, double bonus,
                    Map<String, Grade> grades) {
+        this();
         this.name = name;
         this.buid = buid;
         this.status = status;
         this.bonus = bonus;
         this.grades = grades;
+        this.finalGrade = new FinalGrade("final", 0, 0, 0, "", "");
     }
 
     public Name getName() {
@@ -94,6 +104,14 @@ public abstract class Student {
 
     public void setGrades(Map<String, Grade> grades) {
         this.grades = grades;
+    }
+
+    public FinalGrade getFinalGrade() {
+        return finalGrade;
+    }
+
+    public void setFinalGrade(FinalGrade finalGrade) {
+        this.finalGrade = finalGrade;
     }
 
     public String toString() {

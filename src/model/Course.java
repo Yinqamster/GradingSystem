@@ -41,6 +41,7 @@ public class Course {
     }
 
     public Course(String name, String section, String semester, String description, Map<String, Student> studentMap) {
+        this();
         this.students = studentMap;
         this.name = name;
         this.section = section;
