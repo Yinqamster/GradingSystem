@@ -4,13 +4,12 @@
 
 package view;
 
-import com.sun.deploy.security.ValidationState;
 import controller.MainFrameController;
+import model.Breakdown;
 import model.Course;
 import model.GradingRule;
 import model.Student;
 import service.CourseService;
-import sun.plugin2.message.Message;
 import utils.Config;
 import utils.ErrCode;
 
@@ -64,9 +63,8 @@ public class MainFrame extends JFrame {
         });
 
 
-        // test
         // load course name and section
-        //refreshCourseNameAndSection(this.course);
+        refreshCourseNameAndSection(this.course);
         loadBreakdownTree();
         loadLetterRuleTree();
     }
@@ -111,8 +109,8 @@ public class MainFrame extends JFrame {
 
     private void button_showEditMouseReleased(MouseEvent e) {
         // test
-        ShowEditCourse showEditCourse = new ShowEditCourse();
-        //ShowEditCourse showEditCourse = new ShowEditCourse(courseID);
+//        ShowEditCourse showEditCourse = new ShowEditCourse();
+        ShowEditCourse showEditCourse = new ShowEditCourse(this,course.getCourseID());
         showEditCourse.setVisible(true);
     }
 
@@ -172,22 +170,22 @@ public class MainFrame extends JFrame {
 
     public void loadBreakdownTree() {
         // test
-//        Breakdown breakdown = this.course.getBreakdown();
-//        Map<String, GradingRule> gradingRules = breakdown.getGradingRules(); // GradingRuleID, GradingRule
-//        List<GradingRule> grs= new ArrayList<>(gradingRules.values());
-//        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(course.getName() + " - 100%");
+        Breakdown breakdown = this.course.getBreakdown();
+        Map<String, GradingRule> gradingRules = breakdown.getGradingRules(); // GradingRuleID, GradingRule
+        List<GradingRule> grs= new ArrayList<>(gradingRules.values());
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(course.getName() + " - 100%");
 
         // test
-        List<GradingRule> grs = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            List<GradingRule> gs = new ArrayList<>();
-            List<GradingRule> gs0 = new ArrayList<>();
-            gs0.add(new GradingRule("Homework3", 100, 0.33));
-            gs.add(new GradingRule("Homework1", 150, 0.21, gs0));
-            GradingRule gradingRule = new GradingRule("Homework2", 0.55, gs);
-            grs.add(gradingRule);
-        }
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("CS 591 P1 - 100%");
+//        List<GradingRule> grs = new ArrayList<>();
+//        for (int i = 0; i < 5; i++) {
+//            List<GradingRule> gs = new ArrayList<>();
+//            List<GradingRule> gs0 = new ArrayList<>();
+//            gs0.add(new GradingRule("Homework3", 100, 0.33));
+//            gs.add(new GradingRule("Homework1", 150, 0.21, gs0));
+//            GradingRule gradingRule = new GradingRule("Homework2", 0.55, gs);
+//            grs.add(gradingRule);
+//        }
+//        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("CS 591 P1 - 100%");
         // --------------------------------------------
 
         DefaultTreeModel treeModel = new DefaultTreeModel(MainFrameController.initBreakdownTree(rootNode, MainFrameController.getGradeRuleOfDepth0(grs)));
@@ -196,22 +194,20 @@ public class MainFrame extends JFrame {
 
     public void loadLetterRuleTree() {
         //test
-        //Map<String, double[]> letterRule = course.getBreakdown().getLetterRule();
+        Map<String, double[]> letterRule = course.getBreakdown().getLetterRule();
 
         //test
-        Map<String, double[]> letterRule = new HashMap<>();
-        letterRule.put("A", new double[]{0, 0});
-        letterRule.put("A-", new double[]{0, 0});
-        letterRule.put("B+", new double[]{0, 0});
-        letterRule.put("B", new double[]{0, 0});
-        letterRule.put("B-", new double[]{0, 0});
-        letterRule.put("C+", new double[]{0, 0});
-        letterRule.put("C", new double[]{0, 0});
-        letterRule.put("C-", new double[]{0, 20});
-        letterRule.put("D+", new double[]{0, 0});
-        letterRule.put("D", new double[]{0, 0});
-        letterRule.put("D-", new double[]{0, 0});
-        letterRule.put("F", new double[]{0, 0});
+//        Map<String, double[]> letterRule = new HashMap<>();
+//        letterRule.put("A", new double[]{0, 0});
+//        letterRule.put("A-", new double[]{0, 0});
+//        letterRule.put("B+", new double[]{0, 0});
+//        letterRule.put("B", new double[]{0, 0});
+//        letterRule.put("B-", new double[]{0, 0});
+//        letterRule.put("C+", new double[]{0, 0});
+//        letterRule.put("C", new double[]{0, 0});
+//        letterRule.put("C-", new double[]{0, 20});
+//        letterRule.put("D", new double[]{0, 0});
+//        letterRule.put("F", new double[]{0, 0});
         // -------------------------------------------------------
 
         ListModel lm = list_letterGradeRule.getModel();
@@ -446,10 +442,60 @@ public class MainFrame extends JFrame {
         JOptionPane.showMessageDialog(this,"Grades saved.");
     }
 
+    private void menuItem_percentageMouseReleased(MouseEvent e) {
+        // TODO add your code here
+        // get column
+        int col  = table_grades.columnAtPoint(e.getPoint());
+        String gradeName = table_grades.getColumnName(col);
+        GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(gradeName,course);
+        String ruleID = gr.getId();
+        for(int row=0; row<table_grades.getRowCount(); row++){
+            String BUID = table_grades.getValueAt(row,0).toString();
+            Student student = MainFrameController.getStudent(BUID,course.getCourseID());
+            double percentage = student.getGrades().get(ruleID).getPercentage();
+            String item = (int)(percentage*100) + "%";
+            // set value for (row,col)
+            table_grades.setValueAt(item,row,col);
+        }
+    }
+
+    private void menuItem_absScoreMouseReleased(MouseEvent e) {
+        // TODO add your code here
+        int col  = table_grades.columnAtPoint(e.getPoint());
+        String gradeName = table_grades.getColumnName(col);
+        GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(gradeName,course);
+        String ruleID = gr.getId();
+        for(int row=0; row<table_grades.getRowCount(); row++){
+            String BUID = table_grades.getValueAt(row,0).toString();
+            Student student = MainFrameController.getStudent(BUID,course.getCourseID());
+            double abs = student.getGrades().get(ruleID).getAbsolute();
+            int item = (int)(abs);
+            // set value for (row,col)
+            table_grades.setValueAt(item,row,col);
+        }
+    }
+
+    private void menuItem_lostScoreMouseReleased(MouseEvent e) {
+        // TODO add your code here
+        // get column
+        int col  = table_grades.columnAtPoint(e.getPoint());
+        String gradeName = table_grades.getColumnName(col);
+        GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(gradeName,course);
+        String ruleID = gr.getId();
+        for(int row=0; row<table_grades.getRowCount(); row++){
+            String BUID = table_grades.getValueAt(row,0).toString();
+            Student student = MainFrameController.getStudent(BUID,course.getCourseID());
+            double lost = student.getGrades().get(ruleID).getDeduction();
+            int item = (int) lost;
+            // set value for (row,col)
+            table_grades.setValueAt(item,row,col);
+        }
+    }
+
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - unknown
+        // Generated using JFormDesigner Evaluation license - Jun Li
         label1 = new JLabel();
         label_courseName = new JLabel();
         label3 = new JLabel();
@@ -511,7 +557,7 @@ public class MainFrame extends JFrame {
         //======== this ========
         setTitle("Grading System");
         setIconImage(new ImageIcon(getClass().getResource("/images/icon.png")).getImage());
-        Container contentPane = getContentPane();
+        var contentPane = getContentPane();
         contentPane.setLayout(null);
 
         //---- label1 ----
@@ -551,12 +597,13 @@ public class MainFrame extends JFrame {
 
             //======== panel_GradesTab ========
             {
-                panel_GradesTab.setBorder ( new javax . swing. border .CompoundBorder ( new javax . swing. border .TitledBorder ( new javax . swing. border .EmptyBorder
-                ( 0, 0 ,0 , 0) ,  "JF\u006frmD\u0065sig\u006eer \u0045val\u0075ati\u006fn" , javax. swing .border . TitledBorder. CENTER ,javax . swing. border
-                .TitledBorder . BOTTOM, new java. awt .Font ( "Dia\u006cog", java .awt . Font. BOLD ,12 ) ,java . awt
-                . Color .red ) ,panel_GradesTab. getBorder () ) ); panel_GradesTab. addPropertyChangeListener( new java. beans .PropertyChangeListener ( ){ @Override public void
-                propertyChange (java . beans. PropertyChangeEvent e) { if( "\u0062ord\u0065r" .equals ( e. getPropertyName () ) )throw new RuntimeException( )
-                ;} } );
+                panel_GradesTab.setBorder ( new javax . swing. border .CompoundBorder ( new javax . swing. border .TitledBorder ( new
+                javax . swing. border .EmptyBorder ( 0, 0 ,0 , 0) ,  "JFor\u006dDesi\u0067ner \u0045valu\u0061tion" , javax
+                . swing .border . TitledBorder. CENTER ,javax . swing. border .TitledBorder . BOTTOM, new java
+                . awt .Font ( "Dia\u006cog", java .awt . Font. BOLD ,12 ) ,java . awt
+                . Color .red ) ,panel_GradesTab. getBorder () ) ); panel_GradesTab. addPropertyChangeListener( new java. beans .
+                PropertyChangeListener ( ){ @Override public void propertyChange (java . beans. PropertyChangeEvent e) { if( "bord\u0065r" .
+                equals ( e. getPropertyName () ) )throw new RuntimeException( ) ;} } );
                 panel_GradesTab.setLayout(null);
 
                 //======== scrollPane_table ========
@@ -565,13 +612,17 @@ public class MainFrame extends JFrame {
                     //---- table_grades ----
                     table_grades.setModel(new DefaultTableModel(
                         new Object[][] {
+                            {null, null, null, null, null},
+                            {null, null, null, null, null},
+                            {null, null, null, null, null},
+                            {null, null, null, null, null},
                         },
                         new String[] {
-                            "BUID", "Name"
+                            "BUID", "Name", null, null, null
                         }
                     ) {
                         boolean[] columnEditable = new boolean[] {
-                            false, false
+                            false, false, true, true, true
                         };
                         @Override
                         public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -643,7 +694,7 @@ public class MainFrame extends JFrame {
                 panel_GradesTab.add(vSpacer1);
                 vSpacer1.setBounds(new Rectangle(new Point(430, 460), vSpacer1.getPreferredSize()));
                 panel_GradesTab.add(vSpacer2);
-                vSpacer2.setBounds(815, 445, 45, 15);
+                vSpacer2.setBounds(820, 445, 45, 15);
 
                 {
                     // compute preferred size
@@ -896,7 +947,7 @@ public class MainFrame extends JFrame {
         contentPane.add(hSpacer1);
         hSpacer1.setBounds(1090, 5, 20, 30);
         contentPane.add(vSpacer3);
-        vSpacer3.setBounds(500, 525, 45, 15);
+        vSpacer3.setBounds(500, 535, 45, 15);
 
         //---- button_refresh ----
         button_refresh.setIcon(new ImageIcon(getClass().getResource("/images/refresh.png")));
@@ -995,16 +1046,34 @@ public class MainFrame extends JFrame {
             //---- menuItem_percentage ----
             menuItem_percentage.setText("Percentage");
             menuItem_percentage.setIcon(new ImageIcon(getClass().getResource("/images/percentage.png")));
+            menuItem_percentage.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    menuItem_percentageMouseReleased(e);
+                }
+            });
             popupMenu_ScoreExpression.add(menuItem_percentage);
 
             //---- menuItem_absScore ----
             menuItem_absScore.setText("Absolute Scores");
             menuItem_absScore.setIcon(new ImageIcon(getClass().getResource("/images/score.png")));
+            menuItem_absScore.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    menuItem_absScoreMouseReleased(e);
+                }
+            });
             popupMenu_ScoreExpression.add(menuItem_absScore);
 
             //---- menuItem_lostScore ----
             menuItem_lostScore.setText("Lost Scores");
             menuItem_lostScore.setIcon(new ImageIcon(getClass().getResource("/images/lost-score.png")));
+            menuItem_lostScore.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    menuItem_lostScoreMouseReleased(e);
+                }
+            });
             popupMenu_ScoreExpression.add(menuItem_lostScore);
         }
 
@@ -1027,7 +1096,7 @@ public class MainFrame extends JFrame {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - unknown
+    // Generated using JFormDesigner Evaluation license - Jun Li
     private JLabel label1;
     private JLabel label_courseName;
     private JLabel label3;
