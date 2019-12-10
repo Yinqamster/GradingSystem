@@ -3,6 +3,7 @@ package service;
 import db.BreakdownDAO;
 import db.LetterRuleDAO;
 import model.Breakdown;
+import model.GradingRule;
 import utils.ErrCode;
 
 import java.util.HashMap;
@@ -40,6 +41,20 @@ public class BreakdownService {
 
     public Breakdown getBreakdownByID(String breakdownID) {
         return BreakdownDAO.getInstance().getBreakdown(breakdownID);
+    }
+
+    public int checkBreakdown(String breakdownID) {
+        Breakdown breakdown = getBreakdownByID(breakdownID);
+        if(breakdown == null) {
+            return ErrCode.BREAKDOWNNOTEXIST.getCode();
+        }
+        if(breakdown.getGradingRules() == null || breakdown.getGradingRules().size() == 0) {
+            return ErrCode.GRADINGRULEEMPTY.getCode();
+        }
+        Map<String, GradingRule> gradingRules = breakdown.getGradingRules();
+//        while(gradingRules)
+
+        return ErrCode.OK.getCode();
     }
 
 

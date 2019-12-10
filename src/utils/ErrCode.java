@@ -19,6 +19,7 @@ public enum ErrCode {
 
     //grading rule service
     DELETEGRADINGRULEERROR("There is an error while deleting grading rule", 401),
+    GRADINGRULEEMPTY("Grading rules are empty", 402),
 
     //database error
     UPDATEERROR("There is an error while updating table", 501),
