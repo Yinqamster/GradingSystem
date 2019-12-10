@@ -53,7 +53,7 @@ public class CourseList extends JFrame{
             // ----------------------
 
             // test
-            String item = list_courseList.getSelectedValue();
+            String item = list_courseList.getSelectedValue().toString();
             String[] items = item.split("Section: ");
             String courseName = items[0].substring(0,items[0].length()-1); // remove the space in the end
             String section = items[1];
@@ -94,6 +94,7 @@ public class CourseList extends JFrame{
         DefaultListModel<String> dlm = new DefaultListModel<>();
         // test
         ArrayList<Course> courses_this_semester = new ArrayList<Course>(CourseService.getInstance().getCourseListBySemester(currentSemester));
+        if(courses_this_semester.isEmpty()) return;;
         for (Course course : courses_this_semester) {
             this.coursesVector.add(course);
             String item = course.getName() + " Section: " + course.getSection();
@@ -143,10 +144,10 @@ public class CourseList extends JFrame{
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - unknown
+        // Generated using JFormDesigner Evaluation license - Jun Li
         label_title = new JLabel();
         scrollPane_courses = new JScrollPane();
-        list_courseList = new JList<>();
+        list_courseList = new JList();
         label_which_semester = new JLabel();
         vSpacer1 = new JPanel(null);
         button_open = new JButton();
@@ -164,7 +165,7 @@ public class CourseList extends JFrame{
                 thisWindowClosing(e);
             }
         });
-        Container contentPane = getContentPane();
+        var contentPane = getContentPane();
         contentPane.setLayout(null);
 
         //---- label_title ----
@@ -181,17 +182,6 @@ public class CourseList extends JFrame{
             list_courseList.setBackground(Color.white);
             list_courseList.setForeground(Color.black);
             list_courseList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            list_courseList.setModel(new AbstractListModel<String>() {
-                String[] values = {
-                    "CS591 P1 Section A1",
-                    "CS112 Section A1",
-                    "CS112 Section A2"
-                };
-                @Override
-                public int getSize() { return values.length; }
-                @Override
-                public String getElementAt(int i) { return values[i]; }
-            });
             scrollPane_courses.setViewportView(list_courseList);
         }
         contentPane.add(scrollPane_courses);
@@ -281,10 +271,10 @@ public class CourseList extends JFrame{
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - unknown
+    // Generated using JFormDesigner Evaluation license - Jun Li
     private JLabel label_title;
     private JScrollPane scrollPane_courses;
-    private JList<String> list_courseList;
+    private JList list_courseList;
     private JLabel label_which_semester;
     private JPanel vSpacer1;
     private JButton button_open;

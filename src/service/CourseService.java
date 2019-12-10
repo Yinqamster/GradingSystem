@@ -29,14 +29,13 @@ public class CourseService {
         return instance;
     }
 
-    public int addCourse(String name, String section, String semester, String description, String templateName, String filename, int type){
+    public int addCourse(String name, String section, String semester, String description, String templateName, String filename, int type) {
         Course course = new Course(name, section, semester, description);
-        if(templateName != null && !templateName.isEmpty()) {
+        if (templateName != null && !templateName.isEmpty()) {
             Breakdown breakdown = new Breakdown();
-            if(type == Config.TEMPLATE) {
+            if (type == Config.TEMPLATE) {
                 breakdown = TemplateService.getInstance().getTemplateMap().get(templateName);
-            }
-            else if(type == Config.BREAKDOWN){
+            } else if (type == Config.BREAKDOWN) {
                 breakdown = BreakdownService.getInstance().getBreakdownByID(templateName);
             }
             course.setBreakdown(breakdown);
@@ -56,9 +55,11 @@ public class CourseService {
                         return resStu;
                     }
                 }
-            } else {
-                return res;
             }
+        }
+        else {
+            return res;
+        }
         return ErrCode.OK.getCode();
     }
 
