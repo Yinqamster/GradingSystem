@@ -54,11 +54,6 @@ public class ShowEditCourse extends JFrame {
         }
     }
 
-    //test
-    public ShowEditCourse() {
-        initComponents();
-    }
-
     private void button_saveMouseReleased(MouseEvent e) {
         if(checkValid()) {
             // if all textfileds with * has text
