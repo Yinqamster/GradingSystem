@@ -109,8 +109,8 @@ public class MainFrame extends JFrame {
 
     private void button_showEditMouseReleased(MouseEvent e) {
         // test
-        ShowEditCourse showEditCourse = new ShowEditCourse();
-        //ShowEditCourse showEditCourse = new ShowEditCourse(courseID);
+//        ShowEditCourse showEditCourse = new ShowEditCourse();
+        ShowEditCourse showEditCourse = new ShowEditCourse(this,course.getCourseID());
         showEditCourse.setVisible(true);
     }
 

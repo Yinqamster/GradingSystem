@@ -45,21 +45,20 @@ public class CourseService {
             course.setStudents(studentService.importStudent(filename));
         }
 
-        //add student to db
-        int res = CourseDAO.getInstance().addCourse(course);
-        if(res == ErrCode.OK.getCode()) {
-            String courseId = CourseDAO.getInstance().getCourse(semester, name, section).getCourseID();
-            course.setCourseID(courseId);
-            for(Student s : course.getStudents().values()) {
-                int resStu = StudentDAO.getInstance().addStudent(courseId, s);
-                if(resStu != ErrCode.OK.getCode()) {
-                    return resStu;
+            //add student to db
+            int res = CourseDAO.getInstance().addCourse(course);
+            if (res == ErrCode.OK.getCode()) {
+                String courseId = CourseDAO.getInstance().getCourse(semester, name, section).getCourseID();
+                course.setCourseID(courseId);
+                for (Student s : course.getStudents().values()) {
+                    int resStu = StudentDAO.getInstance().addStudent(courseId, s);
+                    if (resStu != ErrCode.OK.getCode()) {
+                        return resStu;
+                    }
                 }
+            } else {
+                return res;
             }
-        }
-        else {
-            return res;
-        }
         return ErrCode.OK.getCode();
     }
 

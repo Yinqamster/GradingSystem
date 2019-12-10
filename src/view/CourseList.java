@@ -49,18 +49,18 @@ public class CourseList extends JFrame{
             if(button_history_current.getText().equals("History")) return;
 
             // test
-            MainFrame mainFrame = new MainFrame(this, "");
+//            MainFrame mainFrame = new MainFrame(this, "");
             // ----------------------
 
             // test
-//            String item = list_courseList.getSelectedValue();
-//            String[] items = item.split("Section: ");
-//            String courseName = items[0].substring(0,items[0].length()-1); // remove the space in the end
-//            String section = items[1];
-//
-//            List<Course> coursesThisSemester = CourseService.getInstance().getCourseListBySemester(currentSemester);
-//            String courseID = CourseListController.getCourseID(courseName,section,coursesThisSemester);
-//            MainFrame mainFrame = new MainFrame(this, courseID);
+            String item = list_courseList.getSelectedValue();
+            String[] items = item.split("Section: ");
+            String courseName = items[0].substring(0,items[0].length()-1); // remove the space in the end
+            String section = items[1];
+
+            List<Course> coursesThisSemester = CourseService.getInstance().getCourseListBySemester(currentSemester);
+            String courseID = CourseListController.getCourseID(courseName,section,coursesThisSemester);
+            MainFrame mainFrame = new MainFrame(this, courseID);
 
             mainFrame.setVisible(true);
             this.setVisible(false);
@@ -82,8 +82,8 @@ public class CourseList extends JFrame{
             // delete this course
             int selectedIndex = list_courseList.getSelectedIndex();
 //            test
-//            Course selectedCourse = this.coursesVector.get(selectedIndex);
-//            CourseListController.deleteCourse(selectedCourse.getCourseID());
+            Course selectedCourse = this.coursesVector.get(selectedIndex);
+            CourseListController.deleteCourse(selectedCourse.getCourseID());
             refreshList();
         }
     }
@@ -93,21 +93,21 @@ public class CourseList extends JFrame{
         this.coursesVector.clear();
         DefaultListModel<String> dlm = new DefaultListModel<>();
         // test
-//        ArrayList<Course> courses_this_semester = new ArrayList<Course>(CourseService.getInstance().getCourseListBySemester(currentSemester));
-//        for (Course course : courses_this_semester) {
-//            this.coursesVector.add(course);
-//            String item = course.getName() + " Section: " + course.getSection();
-//            dlm.addElement(item);
-//        }
-
-        //test
-        coursesVector.add(new Course("CS591 P1", "Fall 2019",""));
-        coursesVector.add(new Course("CS591 P1", "Fall 2019",""));
-        coursesVector.add(new Course("CS591 P1", "Fall 2019",""));
-        for(Course course:coursesVector){
-            String item = course.getName() + " Section: " + course.getSemester();
+        ArrayList<Course> courses_this_semester = new ArrayList<Course>(CourseService.getInstance().getCourseListBySemester(currentSemester));
+        for (Course course : courses_this_semester) {
+            this.coursesVector.add(course);
+            String item = course.getName() + " Section: " + course.getSection();
             dlm.addElement(item);
         }
+
+        //test
+//        coursesVector.add(new Course("CS591 P1", "Fall 2019",""));
+//        coursesVector.add(new Course("CS591 P1", "Fall 2019",""));
+//        coursesVector.add(new Course("CS591 P1", "Fall 2019",""));
+//        for(Course course:coursesVector){
+//            String item = course.getName() + " Section: " + course.getSemester();
+//            dlm.addElement(item);
+//        }
 
         this.list_courseList.setModel(dlm);
     }
@@ -115,15 +115,15 @@ public class CourseList extends JFrame{
     private void button_history_currentMouseReleased(MouseEvent e) {
         if (button_history_current.getText().equals("History")) {
             //test
-//            List<Course> allCoursesList = CourseService.getInstance().getAllCourses();
-//            DefaultListModel<String> dlm = new DefaultListModel<>();
-//            for (Course course : allCoursesList) {
-//                this.coursesVector.clear();
-//                this.coursesVector.add(course);
-//                String item = course.getName() + " Section: " + course.getSection();
-//                dlm.addElement(item);
-//            }
-//            this.list_courseList.setModel(dlm);
+            List<Course> allCoursesList = CourseService.getInstance().getAllCourses();
+            DefaultListModel<String> dlm = new DefaultListModel<>();
+            for (Course course : allCoursesList) {
+                this.coursesVector.clear();
+                this.coursesVector.add(course);
+                String item = course.getName() + " Section: " + course.getSection();
+                dlm.addElement(item);
+            }
+            this.list_courseList.setModel(dlm);
             button_add.setEnabled(false);
             button_delete.setEnabled(false);
             button_history_current.setText("Current");

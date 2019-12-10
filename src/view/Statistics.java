@@ -43,22 +43,22 @@ public class Statistics extends JFrame {
 
     private void loadBreakdownTree(){
         // test
-//        Breakdown breakdown = this.course.getBreakdown();
-//        Map<String, GradingRule> gradingRules = breakdown.getGradingRules(); // GradingRuleID, GradingRule
-//        List<GradingRule> grs= new ArrayList<>(gradingRules.values());
-//        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(course.getName() + " 100%");
+        Breakdown breakdown = this.course.getBreakdown();
+        Map<String, GradingRule> gradingRules = breakdown.getGradingRules(); // GradingRuleID, GradingRule
+        List<GradingRule> grs= new ArrayList<>(gradingRules.values());
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(course.getName() + " 100%");
 
         // test
-        List<GradingRule> grs= new ArrayList<>();
-        for(int i=0; i<5; i++){
-            List<GradingRule> gs= new ArrayList<>();
-            List<GradingRule> gs0= new ArrayList<>();
-            gs0.add(new GradingRule("Homework3", 100, 0.33));
-            gs.add(new GradingRule("Homework1",0.21, gs0));
-            GradingRule gradingRule = new GradingRule("Homework2",0.55,gs);
-            grs.add(gradingRule);
-        }
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode( "CS 591 P1 100%");
+//        List<GradingRule> grs= new ArrayList<>();
+//        for(int i=0; i<5; i++){
+//            List<GradingRule> gs= new ArrayList<>();
+//            List<GradingRule> gs0= new ArrayList<>();
+//            gs0.add(new GradingRule("Homework3", 100, 0.33));
+//            gs.add(new GradingRule("Homework1",0.21, gs0));
+//            GradingRule gradingRule = new GradingRule("Homework2",0.55,gs);
+//            grs.add(gradingRule);
+//        }
+//        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode( "CS 591 P1 100%");
         // -----------------------------
 
         DefaultTreeModel treeModel = new DefaultTreeModel(StatisticsController.initBreakdownTree(rootNode, StatisticsController.getGradeRuleOfDepth0(grs)));
