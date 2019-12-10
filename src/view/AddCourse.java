@@ -120,7 +120,7 @@ public class AddCourse extends JFrame {
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - Jun Li
+        // Generated using JFormDesigner Evaluation license - unknown
         label3 = new JLabel();
         textField_name = new JTextField();
         label4 = new JLabel();
@@ -152,7 +152,7 @@ public class AddCourse extends JFrame {
                 thisWindowClosing(e);
             }
         });
-        var contentPane = getContentPane();
+        Container contentPane = getContentPane();
         contentPane.setLayout(null);
 
         //---- label3 ----
@@ -333,7 +333,7 @@ public class AddCourse extends JFrame {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - Jun Li
+    // Generated using JFormDesigner Evaluation license - unknown
     private JLabel label3;
     private JTextField textField_name;
     private JLabel label4;
