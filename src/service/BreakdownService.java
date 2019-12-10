@@ -28,13 +28,13 @@ public class BreakdownService {
 
     // TODO for test-----------------
     public int editLetterRule(String courseId, String letter, double lower, double upper) {
-        return 0;
-        //return LetterRuleDAO.getInstance().editLetterRule(courseId, letter, lower, upper);
+
+        return LetterRuleDAO.getInstance().editBreakdownLetterRule(courseId, letter, lower, upper);
     }
 
     public int addLetterRule(String courseId, String letter, double lower, double upper) {
-        return 0;
-        //return LetterRuleDAO.getInstance().addLetterRule(courseId, letter, lower, upper);
+//        return 0;
+        return LetterRuleDAO.getInstance().addBreakdownLetterRule(courseId, letter, lower, upper);
     }
     // TODO --------------------------------------------------
 

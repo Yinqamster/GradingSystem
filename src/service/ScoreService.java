@@ -40,6 +40,7 @@ public class ScoreService {
         // update score
         for (String ruleId : scores.keySet()) {
             GradingRule rule = breakdown.getGradingRules().get(ruleId);
+            // only update scores that is not composite
             if (rule.getChildren() == null || rule.getChildren().size() == 0) {
                 Grade grade = student.getGrades().get(ruleId);
                 double absolute = scores.get(ruleId);
@@ -67,9 +68,7 @@ public class ScoreService {
         Grade grade = student.getGrades().get(ruleId);
 
         grade.setComment(comment);
-        // TODO: update grade comment in DB
-
-        return ErrCode.OK.getCode();
+        return GradeDAO.getInstance().updateGrade(ruleId, buid, comment);
     }
 
     // calculate and update any composite score, i.e. grade that is made up of sub-grades
@@ -88,36 +87,83 @@ public class ScoreService {
         // calculate score for each student
         for (String buid : students.keySet()) {
             Student student = students.get(buid);
+            double totalPercentage = 0;
+            double totalAbsolute = 0;
+            double totalDeduction = 0;
+
             Map<String, Grade> grades = student.getGrades();
             for (String ruleId : grades.keySet()) {
                 Grade grade = grades.get(ruleId);
-                double fullScore = breakdown.getGradingRules().get(ruleId).getFullScore();
-                double absolute = calculateScore(breakdown, ruleId, grades);
-                grade.setAbsolute(absolute);
-                grade.setPercentage(absolute / fullScore);
-                grade.setDeduction(fullScore - absolute);
+                double[] result = calculateScore(breakdown, ruleId, grades);
+                // double fullScore = breakdown.getGradingRules().get(ruleId).getFullScore();
+                // double absolute = calculateScore(breakdown, ruleId, grades);
+                grade.setAbsolute(result[0]);
+                grade.setPercentage(result[1]);
+                grade.setDeduction(result[2]);
+
                 // update this grade in DB
                 GradeDAO.getInstance().upgradeGrade(ruleId, buid, grade);
+
+                // add to final score if this is a category
+                GradingRule rule = breakdown.getGradingRules().get(ruleId);
+                if (rule.getParentID() == "") {
+                    totalPercentage += result[0];
+                    totalAbsolute += result[1];
+                    totalDeduction += result[2];
+                }
             }
+            // update final grade for this student
+            calculateFinalGrade(buid, courseId, breakdown, student, totalAbsolute, totalPercentage, totalDeduction);
         }
 
         return ErrCode.OK.getCode();
     }
 
-    // calculate score for a grading rule; return the absolute score for this rule
-    private double calculateScore(Breakdown breakdown, String ruleId, Map<String, Grade> grades) {
+    // calculate score for a grading rule
+    // return the absolute score, percentage score, deduction score for this rule
+    private double[] calculateScore(Breakdown breakdown, String ruleId, Map<String, Grade> grades) {
+        double[] results = new double[3];
         GradingRule rule = breakdown.getGradingRules().get(ruleId);
         // not a composite rule
         if (rule.getChildren() == null || rule.getChildren().size() == 0) {
-            return grades.get(ruleId).getAbsolute();
+            results[0] = grades.get(ruleId).getAbsolute();
+            results[1] = grades.get(ruleId).getPercentage();
+            results[3] = grades.get(ruleId).getDeduction();
         }
         // a composite rule with sub-grades
-        double absolute = 0;
         List<GradingRule> subRules = rule.getChildren();
         for (GradingRule subRule : subRules) {
-            absolute += calculateScore(breakdown, subRule.getId(), grades);
+            double proportion = breakdown.getGradingRules().get(subRule.getId()).getProportion();
+            double[] subResults = calculateScore(breakdown, subRule.getId(), grades);
+            results[0] += (subResults[0] * proportion);
+            results[1] += (subResults[1] * proportion);
+            results[2] += (subResults[2] * proportion);
         }
-        return absolute;
+        return results;
+    }
+
+
+    // calculate and update the final grade for a student
+    private void calculateFinalGrade(String buid, String courseId, Breakdown breakdown, Student student, double absolute, double percentage, double deduction) {
+        // calculate letter grade
+        Map<String, double[]> letterRule = breakdown.getLetterRule();
+        String letterGrade = "";
+        double toAbsolute = percentage * 100;
+        for (String letter : letterRule.keySet()) {
+            if (toAbsolute <= letterRule.get(letter)[0] && toAbsolute >= letterRule.get(letter)[1]) {
+                letterGrade = letter;
+                break;
+            }
+        }
+
+        // update final grade for student
+        FinalGrade finalGrade = student.getFinalGrade();
+        finalGrade.setAbsolute(absolute);
+        finalGrade.setPercentage(percentage);
+        finalGrade.setDeduction(deduction);
+        finalGrade.setLetterGrade(letterGrade);
+        // update final grade in DB
+        GradeDAO.getInstance().updateFinalGrade(buid, courseId, absolute, percentage, deduction, letterGrade);
     }
 
     public String[] calculateStats(String courseId, String ruleId, String studentType) {

@@ -1,19 +1,15 @@
 package controller;
 
-import model.Breakdown;
-import model.Course;
-import model.GradingRule;
-import model.Student;
-import service.BreakdownService;
-import service.CourseService;
-import service.GradingRuleService;
-import service.StudentService;
+import model.*;
+import service.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.lang.Math;
 
 public class MainFrameController {
@@ -46,7 +42,7 @@ public class MainFrameController {
     public static List<GradingRule> getGradeRuleOfDepth0(List<GradingRule> gradingRules) {
         List<GradingRule> grs = new ArrayList<>();
         for (GradingRule gr : gradingRules) {
-            if (gr.getParentID() == null) grs.add(gr);
+            if (gr.getParentID() == null || gr.getParentID().isEmpty()) grs.add(gr);
         }
         return grs;
     }
@@ -137,6 +133,9 @@ public class MainFrameController {
         Map<String, Student> StudentMap = course.getStudents(); // BUID, Student
         List<GradingRule> gradingRuleList = new ArrayList<>(gradingRuleMap.values());
 
+        // sort gradingRuleList
+        gradingRuleList = sortGradingRuleList(gradingRuleList);
+
         // remove all rows
         dtm.setRowCount(0);
 
@@ -144,22 +143,40 @@ public class MainFrameController {
         for(GradingRule gradingRule : gradingRuleList){
             dtm.addColumn(gradingRule.getName());
         }
-        dtm.addColumn("Final Grade");
+        dtm.addColumn("Bonus");
+        dtm.addColumn("Final Grade(%)");
+        dtm.addColumn("Final Grade(Letter)");
 
         // add rows
         for(Student stu : StudentMap.values()){
-            String[] row = new String[gradingRuleList.size()+3];
+            String[] row = new String[gradingRuleList.size()+5]; // BUID, name, [Grades], Bonus, Final percentage, Final letter
+
+            // stu info
             row[0] = stu.getBuid();
             row[1] = stu.getName().getFullName();
-            for(int i=2; i<row.length-1; i++){
 
+            // grades
+            Map<String, Grade> gradeMap = stu.getGrades(); // ruleID, Grade
+            for(int i=2; i<gradingRuleList.size()+2; i++){
+                Grade grade = gradeMap.get(gradingRuleList.get(i-2).getId());
+                double percentage = grade.getPercentage();
+                String item = String.valueOf((int)(percentage*100))+"%";
+                row[i] = item;
             }
+
+            // bonus
+            row[row.length-3] = String.valueOf((int)stu.getBonus());
+
+            double finalPercentage = gradeMap.get("final").getPercentage();
+            String letterGrade = ((FinalGrade)gradeMap.get("final")).getLetterGrade();
+            row[row.length-2] = (int)(finalPercentage*100) + "%";
+            row[row.length-1] = letterGrade;
+
+            // add row
+            dtm.addRow(row);
         }
-
-
         return dtm;
     }
-
 
     public static List<GradingRule> sortGradingRuleList(List<GradingRule> gradingRuleList){
 //        List<GradingRule> gradingRuleDepth0 = getGradeRuleOfDepth0(gradingRuleList);
@@ -203,4 +220,11 @@ public class MainFrameController {
         }
     }
 
+    public static int updateRowScore(String courseId, String buid, Map<String, Double> scores){
+        return ScoreService.getInstance().updateRowScore(courseId, buid, scores);
+    }
+
+    public static int calculateScores(String courseId){
+        return ScoreService.getInstance().calculateScores(courseId);
+    }
 }
