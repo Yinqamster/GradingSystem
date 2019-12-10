@@ -165,7 +165,7 @@ public class CourseList extends JFrame{
                 thisWindowClosing(e);
             }
         });
-        var contentPane = getContentPane();
+        Container contentPane = getContentPane();
         contentPane.setLayout(null);
 
         //---- label_title ----

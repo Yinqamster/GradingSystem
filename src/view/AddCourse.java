@@ -120,7 +120,7 @@ public class AddCourse extends JFrame {
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - unknown
+        // Generated using JFormDesigner Evaluation license - Jun Li
         label3 = new JLabel();
         textField_name = new JTextField();
         label4 = new JLabel();
@@ -152,7 +152,7 @@ public class AddCourse extends JFrame {
                 thisWindowClosing(e);
             }
         });
-        Container contentPane = getContentPane();
+        var contentPane = getContentPane();
         contentPane.setLayout(null);
 
         //---- label3 ----
@@ -194,7 +194,7 @@ public class AddCourse extends JFrame {
             "Summer"
         }));
         contentPane.add(comboBox_season);
-        comboBox_season.setBounds(165, 120, 80, comboBox_season.getPreferredSize().height);
+        comboBox_season.setBounds(new Rectangle(new Point(160, 120), comboBox_season.getPreferredSize()));
 
         //---- comboBox_year ----
         comboBox_year.setBackground(Color.white);
@@ -209,7 +209,7 @@ public class AddCourse extends JFrame {
             "2025"
         }));
         contentPane.add(comboBox_year);
-        comboBox_year.setBounds(255, 120, 90, comboBox_year.getPreferredSize().height);
+        comboBox_year.setBounds(new Rectangle(new Point(260, 120), comboBox_year.getPreferredSize()));
 
         //---- label6 ----
         label6.setText("Description:");
@@ -267,7 +267,7 @@ public class AddCourse extends JFrame {
         label_filename.setText("filename.xlsx");
         label_filename.setForeground(Color.black);
         contentPane.add(label_filename);
-        label_filename.setBounds(260, 295, 80, label_filename.getPreferredSize().height);
+        label_filename.setBounds(255, 295, 80, label_filename.getPreferredSize().height);
 
         //---- button_save ----
         button_save.setText(" Save");
@@ -333,7 +333,7 @@ public class AddCourse extends JFrame {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - unknown
+    // Generated using JFormDesigner Evaluation license - Jun Li
     private JLabel label3;
     private JTextField textField_name;
     private JLabel label4;
