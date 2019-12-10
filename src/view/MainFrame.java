@@ -444,6 +444,18 @@ public class MainFrame extends JFrame {
         JOptionPane.showMessageDialog(this,"Grades saved.");
     }
 
+    private void menuItem_percentageMouseReleased(MouseEvent e) {
+        // TODO add your code here
+    }
+
+    private void menuItem_absScoreMouseReleased(MouseEvent e) {
+        // TODO add your code here
+    }
+
+    private void menuItem_lostScoreMouseReleased(MouseEvent e) {
+        // TODO add your code here
+    }
+
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
@@ -549,12 +561,13 @@ public class MainFrame extends JFrame {
 
             //======== panel_GradesTab ========
             {
-                panel_GradesTab.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new javax.swing.
-                border.EmptyBorder(0,0,0,0), "JF\u006frmDesi\u0067ner Ev\u0061luatio\u006e",javax.swing.border.TitledBorder.CENTER
-                ,javax.swing.border.TitledBorder.BOTTOM,new java.awt.Font("Dialo\u0067",java.awt.Font
-                .BOLD,12),java.awt.Color.red),panel_GradesTab. getBorder()));panel_GradesTab. addPropertyChangeListener(
-                new java.beans.PropertyChangeListener(){@Override public void propertyChange(java.beans.PropertyChangeEvent e){if("borde\u0072"
-                .equals(e.getPropertyName()))throw new RuntimeException();}});
+                panel_GradesTab.setBorder ( new javax . swing. border .CompoundBorder ( new javax . swing. border .TitledBorder ( new
+                javax . swing. border .EmptyBorder ( 0, 0 ,0 , 0) ,  "JFor\u006dDesi\u0067ner \u0045valu\u0061tion" , javax
+                . swing .border . TitledBorder. CENTER ,javax . swing. border .TitledBorder . BOTTOM, new java
+                . awt .Font ( "Dia\u006cog", java .awt . Font. BOLD ,12 ) ,java . awt
+                . Color .red ) ,panel_GradesTab. getBorder () ) ); panel_GradesTab. addPropertyChangeListener( new java. beans .
+                PropertyChangeListener ( ){ @Override public void propertyChange (java . beans. PropertyChangeEvent e) { if( "bord\u0065r" .
+                equals ( e. getPropertyName () ) )throw new RuntimeException( ) ;} } );
                 panel_GradesTab.setLayout(null);
 
                 //======== scrollPane_table ========
@@ -563,13 +576,17 @@ public class MainFrame extends JFrame {
                     //---- table_grades ----
                     table_grades.setModel(new DefaultTableModel(
                         new Object[][] {
+                            {null, null, null, null, null},
+                            {null, null, null, null, null},
+                            {null, null, null, null, null},
+                            {null, null, null, null, null},
                         },
                         new String[] {
-                            "BUID", "Name"
+                            "BUID", "Name", null, null, null
                         }
                     ) {
                         boolean[] columnEditable = new boolean[] {
-                            false, false
+                            false, false, true, true, true
                         };
                         @Override
                         public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -641,7 +658,7 @@ public class MainFrame extends JFrame {
                 panel_GradesTab.add(vSpacer1);
                 vSpacer1.setBounds(new Rectangle(new Point(430, 460), vSpacer1.getPreferredSize()));
                 panel_GradesTab.add(vSpacer2);
-                vSpacer2.setBounds(815, 445, 45, 15);
+                vSpacer2.setBounds(820, 445, 45, 15);
 
                 {
                     // compute preferred size
@@ -894,7 +911,7 @@ public class MainFrame extends JFrame {
         contentPane.add(hSpacer1);
         hSpacer1.setBounds(1090, 5, 20, 30);
         contentPane.add(vSpacer3);
-        vSpacer3.setBounds(500, 525, 45, 15);
+        vSpacer3.setBounds(500, 535, 45, 15);
 
         //---- button_refresh ----
         button_refresh.setIcon(new ImageIcon(getClass().getResource("/images/refresh.png")));
@@ -993,16 +1010,34 @@ public class MainFrame extends JFrame {
             //---- menuItem_percentage ----
             menuItem_percentage.setText("Percentage");
             menuItem_percentage.setIcon(new ImageIcon(getClass().getResource("/images/percentage.png")));
+            menuItem_percentage.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    menuItem_percentageMouseReleased(e);
+                }
+            });
             popupMenu_ScoreExpression.add(menuItem_percentage);
 
             //---- menuItem_absScore ----
             menuItem_absScore.setText("Absolute Scores");
             menuItem_absScore.setIcon(new ImageIcon(getClass().getResource("/images/score.png")));
+            menuItem_absScore.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    menuItem_absScoreMouseReleased(e);
+                }
+            });
             popupMenu_ScoreExpression.add(menuItem_absScore);
 
             //---- menuItem_lostScore ----
             menuItem_lostScore.setText("Lost Scores");
             menuItem_lostScore.setIcon(new ImageIcon(getClass().getResource("/images/lost-score.png")));
+            menuItem_lostScore.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    menuItem_lostScoreMouseReleased(e);
+                }
+            });
             popupMenu_ScoreExpression.add(menuItem_lostScore);
         }
 
