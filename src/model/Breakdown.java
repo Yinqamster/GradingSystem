@@ -13,6 +13,17 @@ public class Breakdown {
     public Breakdown(){
         gradingRules = new HashMap<>();
         letterRule = new HashMap<>();
+        double[] letterPercent = {0.0, 0.0};
+        letterRule.put("A", letterPercent);
+        letterRule.put("A-", letterPercent);
+        letterRule.put("B+", letterPercent);
+        letterRule.put("B", letterPercent);
+        letterRule.put("B-", letterPercent);
+        letterRule.put("C+", letterPercent);
+        letterRule.put("C", letterPercent);
+        letterRule.put("C-", letterPercent);
+        letterRule.put("D", letterPercent);
+        letterRule.put("F", letterPercent);
     }
 
     public Breakdown(Map<String, GradingRule> gradingRules,
