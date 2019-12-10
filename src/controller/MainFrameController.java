@@ -1,10 +1,7 @@
 package controller;
 
 import model.*;
-import service.BreakdownService;
-import service.CourseService;
-import service.GradingRuleService;
-import service.StudentService;
+import service.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -147,7 +144,8 @@ public class MainFrameController {
             dtm.addColumn(gradingRule.getName());
         }
         dtm.addColumn("Bonus");
-        dtm.addColumn("Final Grade");
+        dtm.addColumn("Final Grade(%)");
+        dtm.addColumn("Final Grade(Letter)");
 
         // add rows
         for(Student stu : StudentMap.values()){
@@ -162,16 +160,17 @@ public class MainFrameController {
             for(int i=2; i<gradingRuleList.size()+2; i++){
                 Grade grade = gradeMap.get(gradingRuleList.get(i-2).getId());
                 double percentage = grade.getPercentage();
-                String item = String.valueOf((int)percentage*100)+"%";
+                String item = String.valueOf((int)(percentage*100))+"%";
                 row[i] = item;
             }
 
             // bonus
             row[row.length-3] = String.valueOf((int)stu.getBonus());
 
-            // TODO final grade
-//            row[row.length-2] =
-//            row[row.length-1] =
+            double finalPercentage = gradeMap.get("final").getPercentage();
+            String letterGrade = ((FinalGrade)gradeMap.get("final")).getLetterGrade();
+            row[row.length-2] = (int)(finalPercentage*100) + "%";
+            row[row.length-1] = letterGrade;
 
             // add row
             dtm.addRow(row);
@@ -219,5 +218,13 @@ public class MainFrameController {
         for(GradingRule gradingRule : result) {
             System.out.println(gradingRule.getName());
         }
+    }
+
+    public static int updateRowScore(String courseId, String buid, Map<String, Double> scores){
+        return ScoreService.getInstance().updateRowScore(courseId, buid, scores);
+    }
+
+    public static int calculateScores(String courseId){
+        return ScoreService.getInstance().calculateScores(courseId);
     }
 }
