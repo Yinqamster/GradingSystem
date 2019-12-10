@@ -4,13 +4,11 @@
 
 package view;
 
-import com.sun.deploy.security.ValidationState;
 import controller.MainFrameController;
 import model.Course;
 import model.GradingRule;
 import model.Student;
 import service.CourseService;
-import sun.plugin2.message.Message;
 import utils.Config;
 import utils.ErrCode;
 
@@ -449,7 +447,7 @@ public class MainFrame extends JFrame {
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - unknown
+        // Generated using JFormDesigner Evaluation license - Jun Li
         label1 = new JLabel();
         label_courseName = new JLabel();
         label3 = new JLabel();
@@ -511,7 +509,7 @@ public class MainFrame extends JFrame {
         //======== this ========
         setTitle("Grading System");
         setIconImage(new ImageIcon(getClass().getResource("/images/icon.png")).getImage());
-        Container contentPane = getContentPane();
+        var contentPane = getContentPane();
         contentPane.setLayout(null);
 
         //---- label1 ----
@@ -551,12 +549,12 @@ public class MainFrame extends JFrame {
 
             //======== panel_GradesTab ========
             {
-                panel_GradesTab.setBorder ( new javax . swing. border .CompoundBorder ( new javax . swing. border .TitledBorder ( new javax . swing. border .EmptyBorder
-                ( 0, 0 ,0 , 0) ,  "JF\u006frmD\u0065sig\u006eer \u0045val\u0075ati\u006fn" , javax. swing .border . TitledBorder. CENTER ,javax . swing. border
-                .TitledBorder . BOTTOM, new java. awt .Font ( "Dia\u006cog", java .awt . Font. BOLD ,12 ) ,java . awt
-                . Color .red ) ,panel_GradesTab. getBorder () ) ); panel_GradesTab. addPropertyChangeListener( new java. beans .PropertyChangeListener ( ){ @Override public void
-                propertyChange (java . beans. PropertyChangeEvent e) { if( "\u0062ord\u0065r" .equals ( e. getPropertyName () ) )throw new RuntimeException( )
-                ;} } );
+                panel_GradesTab.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new javax.swing.
+                border.EmptyBorder(0,0,0,0), "JF\u006frmDesi\u0067ner Ev\u0061luatio\u006e",javax.swing.border.TitledBorder.CENTER
+                ,javax.swing.border.TitledBorder.BOTTOM,new java.awt.Font("Dialo\u0067",java.awt.Font
+                .BOLD,12),java.awt.Color.red),panel_GradesTab. getBorder()));panel_GradesTab. addPropertyChangeListener(
+                new java.beans.PropertyChangeListener(){@Override public void propertyChange(java.beans.PropertyChangeEvent e){if("borde\u0072"
+                .equals(e.getPropertyName()))throw new RuntimeException();}});
                 panel_GradesTab.setLayout(null);
 
                 //======== scrollPane_table ========
@@ -1027,7 +1025,7 @@ public class MainFrame extends JFrame {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - unknown
+    // Generated using JFormDesigner Evaluation license - Jun Li
     private JLabel label1;
     private JLabel label_courseName;
     private JLabel label3;
