@@ -1,0 +1,114 @@
+JFDML JFormDesigner: "7.0.0.6.255" Java: "11.0.4" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+			name: "this"
+			"title": "Course List"
+			"$locationPolicy": 1
+			"iconImage": new com.jformdesigner.model.SwingIcon( 0, "/images/icon.png" )
+			"resizable": false
+			addEvent( new FormEvent( "java.awt.event.WindowListener", "windowClosing", "thisWindowClosing", true ) )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label_title"
+				"text": "Courses"
+				"font": new java.awt.Font( "Impact", 0, 30 )
+				"foreground": new java.awt.Color( 0, 0, 0, 255 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 103
+				"height": 39
+				"x": 125
+				"y": 5
+			} )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "scrollPane_courses"
+				add( new FormComponent( "javax.swing.JList" ) {
+					name: "list_courseList"
+					"background": new java.awt.Color( 255, 255, 255, 255 )
+					"foreground": new java.awt.Color( 0, 0, 0, 255 )
+					"selectionMode": 0
+					"model": new javax.swing.DefaultListModel {
+						addElement( "CS591 P1 Section A1" )
+						addElement( "CS112 Section A1" )
+						addElement( "CS112 Section A2" )
+					}
+				} )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 199
+				"height": 128
+				"x": 30
+				"y": 50
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label_which_semester"
+				"text": "Fall 2019"
+				"foreground": new java.awt.Color( 0, 0, 0, 255 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 105
+				"height": 16
+				"x": 30
+				"y": 185
+			} )
+			add( new FormComponent( "com.jformdesigner.designer.wrapper.VSpacer" ) {
+				name: "vSpacer1"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 5
+				"y": 200
+				"width": 340
+				"height": 25
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button_open"
+				"text": "Open"
+				"foreground": new java.awt.Color( 0, 0, 0, 255 )
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/open-magazine.png" )
+				"horizontalAlignment": 2
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "button_openMouseReleased", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 100
+				"x": 240
+				"y": 55
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button_delete"
+				"text": "Delete"
+				"foreground": new java.awt.Color( 0, 0, 0, 255 )
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/delete.png" )
+				"horizontalAlignment": 2
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "button_deleteMouseReleased", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 100
+				"x": 240
+				"y": 85
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button_add"
+				"text": "Add"
+				"foreground": new java.awt.Color( 0, 0, 0, 255 )
+				"horizontalAlignment": 2
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/plus.png" )
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "button_addMouseReleased", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 100
+				"x": 240
+				"y": 115
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button_history_current"
+				"text": "History"
+				"foreground": new java.awt.Color( 0, 0, 0, 255 )
+				"horizontalAlignment": 2
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/images/history.png" )
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "button_history_currentMouseReleased", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 240
+				"y": 145
+				"width": 100
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 255, 145 )
+			"size": new java.awt.Dimension( 360, 260 )
+		} )
+	}
+}
