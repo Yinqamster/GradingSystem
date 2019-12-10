@@ -87,6 +87,8 @@ public class ScoreService {
         for (String buid : students.keySet()) {
             Student student = students.get(buid);
             double totalPercentage = 0;
+            double totalAbsolute = 0;
+            double totalDeduction = 0;
 
             Map<String, Grade> grades = student.getGrades();
             for (String ruleId : grades.keySet()) {
@@ -104,10 +106,12 @@ public class ScoreService {
                 GradingRule rule = breakdown.getGradingRules().get(ruleId);
                 if (rule.getParentID() == "") {
                     totalPercentage += (absolute / fullScore);
+                    totalAbsolute += absolute;
+                    totalDeduction += (fullScore - absolute);
                 }
             }
             // update final grade for this student
-            calculateFinalGrade(buid, courseId, breakdown, student, totalPercentage);
+            calculateFinalGrade(buid, courseId, breakdown, student, totalAbsolute, totalPercentage, totalDeduction);
         }
 
         return ErrCode.OK.getCode();
@@ -131,11 +135,11 @@ public class ScoreService {
 
 
     // calculate and update the final grade for a student
-    private void calculateFinalGrade(String buid, String courseId, Breakdown breakdown, Student student, double totalPercentage) {
+    private void calculateFinalGrade(String buid, String courseId, Breakdown breakdown, Student student, double absolute, double percentage, double deduction) {
         // calculate letter grade
         Map<String, double[]> letterRule = breakdown.getLetterRule();
         String letterGrade = "";
-        double toAbsolute = totalPercentage * 100;
+        double toAbsolute = percentage * 100;
         for (String letter : letterRule.keySet()) {
             if (toAbsolute <= letterRule.get(letter)[0] && toAbsolute >= letterRule.get(letter)[1]) {
                 letterGrade = letter;
@@ -145,10 +149,10 @@ public class ScoreService {
 
         // update final grade for student
         FinalGrade finalGrade = student.getFinalGrade();
-        finalGrade.setPercentage(totalPercentage);
+        finalGrade.setPercentage(percentage);
         finalGrade.setLetterGrade(letterGrade);
         // update final grade in DB
-        GradeDAO.getInstance().updateFinalGrade(buid, courseId, 0, totalPercentage, 0, letterGrade);
+        GradeDAO.getInstance().updateFinalGrade(buid, courseId, absolute, percentage, deduction, letterGrade);
     }
 
     public String[] calculateStats(String courseId, String ruleId, String studentType) {
