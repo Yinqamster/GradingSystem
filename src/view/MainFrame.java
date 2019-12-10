@@ -7,6 +7,7 @@ package view;
 import com.sun.deploy.security.ValidationState;
 import controller.MainFrameController;
 import model.Course;
+import model.Grade;
 import model.GradingRule;
 import model.Student;
 import service.CourseService;
@@ -446,6 +447,54 @@ public class MainFrame extends JFrame {
         JOptionPane.showMessageDialog(this,"Grades saved.");
     }
 
+    private void menuItem_percentageMouseReleased(MouseEvent e) {
+        // get column
+        int col  = table_grades.columnAtPoint(e.getPoint());
+        String gradeName = table_grades.getColumnName(col);
+        GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(gradeName,course);
+        String ruleID = gr.getId();
+        for(int row=0; row<table_grades.getRowCount(); row++){
+            String BUID = table_grades.getValueAt(row,0).toString();
+            Student student = MainFrameController.getStudent(BUID,course.getCourseID());
+            double percentage = student.getGrades().get(ruleID).getPercentage();
+            String item = (int)(percentage*100) + "%";
+            // set value for (row,col)
+            table_grades.setValueAt(item,row,col);
+        }
+    }
+
+    private void menuItem_absScoreMouseReleased(MouseEvent e) {
+        // get column
+        int col  = table_grades.columnAtPoint(e.getPoint());
+        String gradeName = table_grades.getColumnName(col);
+        GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(gradeName,course);
+        String ruleID = gr.getId();
+        for(int row=0; row<table_grades.getRowCount(); row++){
+            String BUID = table_grades.getValueAt(row,0).toString();
+            Student student = MainFrameController.getStudent(BUID,course.getCourseID());
+            double abs = student.getGrades().get(ruleID).getAbsolute();
+            int item = (int)(abs);
+            // set value for (row,col)
+            table_grades.setValueAt(item,row,col);
+        }
+    }
+
+    private void menuItem_lostScoreMouseReleased(MouseEvent e) {
+        // get column
+        int col  = table_grades.columnAtPoint(e.getPoint());
+        String gradeName = table_grades.getColumnName(col);
+        GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(gradeName,course);
+        String ruleID = gr.getId();
+        for(int row=0; row<table_grades.getRowCount(); row++){
+            String BUID = table_grades.getValueAt(row,0).toString();
+            Student student = MainFrameController.getStudent(BUID,course.getCourseID());
+            double lost = student.getGrades().get(ruleID).getDeduction();
+            int item = (int) lost;
+            // set value for (row,col)
+            table_grades.setValueAt(item,row,col);
+        }
+    }
+
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
@@ -551,12 +600,13 @@ public class MainFrame extends JFrame {
 
             //======== panel_GradesTab ========
             {
-                panel_GradesTab.setBorder ( new javax . swing. border .CompoundBorder ( new javax . swing. border .TitledBorder ( new javax . swing. border .EmptyBorder
-                ( 0, 0 ,0 , 0) ,  "JF\u006frmD\u0065sig\u006eer \u0045val\u0075ati\u006fn" , javax. swing .border . TitledBorder. CENTER ,javax . swing. border
-                .TitledBorder . BOTTOM, new java. awt .Font ( "Dia\u006cog", java .awt . Font. BOLD ,12 ) ,java . awt
-                . Color .red ) ,panel_GradesTab. getBorder () ) ); panel_GradesTab. addPropertyChangeListener( new java. beans .PropertyChangeListener ( ){ @Override public void
-                propertyChange (java . beans. PropertyChangeEvent e) { if( "\u0062ord\u0065r" .equals ( e. getPropertyName () ) )throw new RuntimeException( )
-                ;} } );
+                panel_GradesTab.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new javax.
+                swing.border.EmptyBorder(0,0,0,0), "JF\u006frmDes\u0069gner \u0045valua\u0074ion",javax.swing.border
+                .TitledBorder.CENTER,javax.swing.border.TitledBorder.BOTTOM,new java.awt.Font("D\u0069alog"
+                ,java.awt.Font.BOLD,12),java.awt.Color.red),panel_GradesTab. getBorder
+                ()));panel_GradesTab. addPropertyChangeListener(new java.beans.PropertyChangeListener(){@Override public void propertyChange(java
+                .beans.PropertyChangeEvent e){if("\u0062order".equals(e.getPropertyName()))throw new RuntimeException
+                ();}});
                 panel_GradesTab.setLayout(null);
 
                 //======== scrollPane_table ========
@@ -565,13 +615,17 @@ public class MainFrame extends JFrame {
                     //---- table_grades ----
                     table_grades.setModel(new DefaultTableModel(
                         new Object[][] {
+                            {null, null, null, null, null},
+                            {null, null, null, null, null},
+                            {null, null, null, null, null},
+                            {null, null, null, null, null},
                         },
                         new String[] {
-                            "BUID", "Name"
+                            "BUID", "Name", null, null, null
                         }
                     ) {
                         boolean[] columnEditable = new boolean[] {
-                            false, false
+                            false, false, true, true, true
                         };
                         @Override
                         public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -643,7 +697,7 @@ public class MainFrame extends JFrame {
                 panel_GradesTab.add(vSpacer1);
                 vSpacer1.setBounds(new Rectangle(new Point(430, 460), vSpacer1.getPreferredSize()));
                 panel_GradesTab.add(vSpacer2);
-                vSpacer2.setBounds(815, 445, 45, 15);
+                vSpacer2.setBounds(820, 445, 45, 15);
 
                 {
                     // compute preferred size
@@ -995,16 +1049,34 @@ public class MainFrame extends JFrame {
             //---- menuItem_percentage ----
             menuItem_percentage.setText("Percentage");
             menuItem_percentage.setIcon(new ImageIcon(getClass().getResource("/images/percentage.png")));
+            menuItem_percentage.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    menuItem_percentageMouseReleased(e);
+                }
+            });
             popupMenu_ScoreExpression.add(menuItem_percentage);
 
             //---- menuItem_absScore ----
             menuItem_absScore.setText("Absolute Scores");
             menuItem_absScore.setIcon(new ImageIcon(getClass().getResource("/images/score.png")));
+            menuItem_absScore.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    menuItem_absScoreMouseReleased(e);
+                }
+            });
             popupMenu_ScoreExpression.add(menuItem_absScore);
 
             //---- menuItem_lostScore ----
             menuItem_lostScore.setText("Lost Scores");
             menuItem_lostScore.setIcon(new ImageIcon(getClass().getResource("/images/lost-score.png")));
+            menuItem_lostScore.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    menuItem_lostScoreMouseReleased(e);
+                }
+            });
             popupMenu_ScoreExpression.add(menuItem_lostScore);
         }
 
