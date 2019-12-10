@@ -41,18 +41,18 @@ public class CourseService {
             }
             course.setBreakdown(breakdown);
         }
-        if(filename != null && !filename.isEmpty()){
-            course.setStudents(studentService.importStudent(filename));
-        }
 
-            //add student to db
-            int res = CourseDAO.getInstance().addCourse(course);
-            if (res == ErrCode.OK.getCode()) {
-                String courseId = CourseDAO.getInstance().getCourse(semester, name, section).getCourseID();
-                course.setCourseID(courseId);
-                for (Student s : course.getStudents().values()) {
+
+        //add student to db
+        int res = CourseDAO.getInstance().addCourse(course);
+        if(res == ErrCode.OK.getCode()) {
+            String courseId = CourseDAO.getInstance().getCourse(semester, name, section).getCourseID();
+            course.setCourseID(courseId);
+            if(filename != null && !filename.isEmpty()){
+                course.setStudents(studentService.importStudent(filename));
+                for(Student s : course.getStudents().values()) {
                     int resStu = StudentDAO.getInstance().addStudent(courseId, s);
-                    if (resStu != ErrCode.OK.getCode()) {
+                    if(resStu != ErrCode.OK.getCode()) {
                         return resStu;
                     }
                 }

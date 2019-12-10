@@ -25,7 +25,6 @@ public abstract class Student {
         this();
         this.name = name;
         this.buid = buid;
-        this.finalGrade = new FinalGrade("final", 0, 0, 0, "", "");
     }
 
     public Student(Name name, String buid, int status, double bonus,
@@ -37,14 +36,12 @@ public abstract class Student {
         this.bonus = bonus;
         this.comment = comment;
         this.grades = grades;
-        this.finalGrade = new FinalGrade("final", 0, 0, 0, "", "");
     }
     public Student(Name name, String buid, String comment) {
         this();
         this.name = name;
         this.buid = buid;
         this.comment = comment;
-        this.finalGrade = new FinalGrade("final", 0, 0, 0, "", "");
     }
 
     public Student(Name name, String buid, int status, double bonus,
@@ -55,7 +52,6 @@ public abstract class Student {
         this.status = status;
         this.bonus = bonus;
         this.grades = grades;
-        this.finalGrade = new FinalGrade("final", 0, 0, 0, "", "");
     }
 
     public Name getName() {
