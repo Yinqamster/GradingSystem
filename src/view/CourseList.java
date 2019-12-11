@@ -90,8 +90,8 @@ public class CourseList extends JFrame{
             Course selectedCourse = this.coursesVector.get(selectedIndex);
             CourseListController.deleteCourse(selectedCourse.getCourseID());
             JOptionPane.showMessageDialog(this,"Course deleted");
-            refreshList();
         }
+        refreshList();
     }
 
     // refresh list_courseList, show courses this semester

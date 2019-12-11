@@ -10,7 +10,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 /**
- * @author unknown
+ * @author Jun Li
  */
 public class Login extends JFrame {
     public Login() {

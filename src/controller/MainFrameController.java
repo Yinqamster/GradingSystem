@@ -138,8 +138,11 @@ public class MainFrameController {
 
         // remove all rows
         dtm.setRowCount(0);
+        dtm.setColumnCount(0);
 
         // init headers, add columns
+        dtm.addColumn("BUID");
+        dtm.addColumn("Name");
         for(GradingRule gradingRule : gradingRuleList){
             dtm.addColumn(gradingRule.getName());
         }
@@ -167,10 +170,14 @@ public class MainFrameController {
             // bonus
             row[row.length-3] = String.valueOf((int)stu.getBonus());
 
-            double finalPercentage = gradeMap.get("final").getPercentage();
-            String letterGrade = ((FinalGrade)gradeMap.get("final")).getLetterGrade();
-            row[row.length-2] = (int)(finalPercentage*100) + "%";
-            row[row.length-1] = letterGrade;
+            try {
+                double finalPercentage = gradeMap.get("final").getPercentage();
+                String letterGrade = ((FinalGrade) gradeMap.get("final")).getLetterGrade();
+                row[row.length - 2] = (int) (finalPercentage * 100) + "%";
+                row[row.length - 1] = letterGrade;
+            }catch (Exception e){
+
+            }
 
             // add row
             dtm.addRow(row);
