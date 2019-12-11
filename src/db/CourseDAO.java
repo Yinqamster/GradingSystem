@@ -76,10 +76,20 @@ public class CourseDAO {
 //        String courseid = semester + name + section;
         String updateSql = "REPLACE INTO course (name, section, semester, description)" +
                 "values (?, ?, ?, ?)";
+        String selectSql = "SELECT * FROM course WHERE name = ? AND section = ? AND semester = ?";
         try {
             Connection conn = DBUtil.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(updateSql);
-//            preparedStatement.setObject(1, courseid);
+            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
+            preparedStatement.setObject(1, name);
+            preparedStatement.setObject(2, section);
+            preparedStatement.setObject(3,semester);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) {
+                return ErrCode.ADDERROR.getCode();
+            }
+            resultSet.close();
+            preparedStatement.close();
+            preparedStatement = conn.prepareStatement(updateSql);
             preparedStatement.setObject(1, name);
             preparedStatement.setObject(2, section);
             preparedStatement.setObject(3, semester);
