@@ -18,8 +18,6 @@ import java.util.Map;
 public class CourseService {
 
     private static CourseService instance = new CourseService();
-    public TemplateService templateService = TemplateService.getInstance();
-    public StudentService studentService = StudentService.getInstance();
     private CourseService(){
 
     }
@@ -50,7 +48,7 @@ public class CourseService {
             String courseId = CourseDAO.getInstance().getCourse(semester, name, section).getCourseID();
             course.setCourseID(courseId);
             if(filename != null && !filename.isEmpty()){
-                course.setStudents(studentService.importStudent(filename));
+                course.setStudents(StudentService.getInstance().importStudent(filename));
                 for(Student s : course.getStudents().values()) {
                     int resStu = StudentDAO.getInstance().addStudent(courseId, s);
                     if(resStu != ErrCode.OK.getCode()) {
@@ -79,7 +77,10 @@ public class CourseService {
     }
 
     public Course getCourse(String courseId) {
+        System.out.println(courseId);
         Course course = CourseDAO.getInstance().getCourse(courseId);
+        System.out.println(course == null);
+        System.out.println(course.getName());
         return course;
     }
 

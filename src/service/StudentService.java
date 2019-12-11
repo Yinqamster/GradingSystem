@@ -17,7 +17,6 @@ import java.util.*;
 
 public class StudentService {
     private static StudentService instance = new StudentService();
-    public CourseService courseService = CourseService.getInstance();
 
     private StudentService() {
 
@@ -109,8 +108,12 @@ public class StudentService {
             student = new GraduateStudent(name, buid, comment);
         }
 
-        Course course = courseService.getCourse(courseId);
+        System.out.println(CourseService.getInstance() == null);
+        System.out.println(CourseService.getInstance() == null);
+        Course course = CourseService.getInstance().getCourse(courseId);
+        System.out.println(course == null);
         Map<String, Student> students = course.getStudents();
+        System.out.println(students == null);
         if (students.containsKey(buid)) {
             return ErrCode.STUDENTEXIST.getCode();
         }
@@ -124,13 +127,13 @@ public class StudentService {
     }
 
     public Student getStudent(String buid, String courseId) {
-        Course course = courseService.getCourse(courseId);
+        Course course = CourseService.getInstance().getCourse(courseId);
         Map<String, Student> students = course.getStudents();
         return students.get(buid);
     }
 
     public int updateStudent(String firstname, String midname, String lastname, String buid, String comment, String courseId) {
-        Course course = courseService.getCourse(courseId);
+        Course course = CourseService.getInstance().getCourse(courseId);
         Map<String, Student> students = course.getStudents();
         Student student = students.get(buid);
         if (student == null) {
@@ -148,7 +151,7 @@ public class StudentService {
     }
 
     public int freezeStudent(String buid, String courseId) {
-        Course course = courseService.getCourse(courseId);
+        Course course = CourseService.getInstance().getCourse(courseId);
         Map<String, Student> students = course.getStudents();
         Student student = students.get(buid);
         if (student == null) {
@@ -163,7 +166,7 @@ public class StudentService {
     }
 
     public int deleteStudent(String buid, String courseId) {
-        Course course = courseService.getCourse(courseId);
+        Course course = CourseService.getInstance().getCourse(courseId);
         Map<String, Student> students = course.getStudents();
         if (!students.containsKey(buid)) {
             return ErrCode.STUDENTNOTEXIST.getCode();
