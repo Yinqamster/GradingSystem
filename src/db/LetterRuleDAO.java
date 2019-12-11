@@ -2,6 +2,7 @@ package db;
 
 import utils.ErrCode;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,9 +45,10 @@ public class LetterRuleDAO extends DAOImpl {
     private Map<String, double[]> getLetterMap(String ID, String category) {
         Map<String, double[]> letterResult = new HashMap<>();
         try {
+            Connection conn = DBUtil.getConnection();
             String preSql = "SELECT * FROM letter_rule WHERE placeholder = ?";
             String selectSql = assambleSql(preSql, category);
-            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(selectSql);
+            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
             preparedStatement.setObject(1, ID);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -59,7 +61,7 @@ public class LetterRuleDAO extends DAOImpl {
             }
             resultSet.close();
             preparedStatement.close();
-            DBUtil.getConnection().close();
+            conn.close();
         } catch (SQLException sqle) {
             return null;
         }
@@ -73,18 +75,19 @@ public class LetterRuleDAO extends DAOImpl {
                 "fk_breakdown) values (?, ?, ?, ?)";
         String updateBreakdownSql = "REPLACE INTO breakdown (break_down_id, fk_course) values (?, ?)";
         try {
-            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(updateLetterSql);
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(updateLetterSql);
             preparedStatement.setObject(1, letter);
             preparedStatement.setObject(2, lower);
             preparedStatement.setObject(3, upper);
             preparedStatement.setObject(4, courseId);
             updateFlag *= preparedStatement.executeUpdate();
             preparedStatement.close();
-            DBUtil.getConnection().close();
-            preparedStatement = DBUtil.getConnection().prepareStatement(updateBreakdownSql);
+            preparedStatement = conn.prepareStatement(updateBreakdownSql);
             preparedStatement.setObject(1, courseId);
             preparedStatement.setObject(2, courseId);
             updateFlag *= preparedStatement.executeUpdate();
+            conn.close();
             return updateFlag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch (SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
@@ -106,19 +109,20 @@ public class LetterRuleDAO extends DAOImpl {
                 "values (?, ?, ?, ?)";
         String updateSql = assambleSql(preSql, category);
         try {
+            Connection conn = DBUtil.getConnection();
             for(Map.Entry<String, double[]> entrySet : mapLetter.entrySet()) {
                 String letter = entrySet.getKey();
                 double[] segment = entrySet.getValue();
                 double minScore = Math.min(segment[0], segment[1]);
                 double maxScore = Math.max(segment[0], segment[1]);
-                PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(updateSql);
+                PreparedStatement preparedStatement = conn.prepareStatement(updateSql);
                 preparedStatement.setObject(1, letter);
                 preparedStatement.setObject(2, minScore);
                 preparedStatement.setObject(3, maxScore);
                 preparedStatement.setObject(4, ID);
                 updateFlag *= preparedStatement.executeUpdate();
                 preparedStatement.close();
-                DBUtil.getConnection().close();
+                conn.close();
             }
         } catch (SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
@@ -135,81 +139,17 @@ public class LetterRuleDAO extends DAOImpl {
         String preSql = "DELETE FROM letter_rule WHERE placeholder = ?";
         String deleteSql = assambleSql(preSql, category);
         try {
-            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(deleteSql);
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(deleteSql);
             preparedStatement.setObject(1, ID);
             int flag = preparedStatement.executeUpdate();
+            preparedStatement.close();
+            conn.close();
             return flag == 0 ? ErrCode.DELETEERROR.getCode() : ErrCode.OK.getCode();
         } catch (SQLException sqle) {
             return ErrCode.DELETEERROR.getCode();
         }
     }
-
-
-//    public Map<String, double[]> getLetterMap(String breakdownID) {
-//        Map<String, double[]> letterResult = new HashMap<>();
-//        try {
-//            String selectSql = "SELECT * FROM letter_rule WHERE fk_breakdown_id = ?";
-//            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(selectSql);
-//            preparedStatement.setObject(1, breakdownID);
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//
-//            while(resultSet.next()) {
-//                String letter = resultSet.getString("letter");
-//                double minScore = resultSet.getDouble("min_score");
-//                double maxScore = resultSet.getDouble("max_score");
-//                double[] segment = {minScore, maxScore};
-//                letterResult.put(letter, segment);
-//            }
-//            resultSet.close();
-//            preparedStatement.close();
-//            DBUtil.getConnection().close();
-//        } catch (SQLException sqle) {
-//            return null;
-//        }
-//        return letterResult;
-//    }
-
-//    public int updateLetterMap(Map<String, double[]> mapLetter, String breakdownID) {
-//        int updateFlag = 1;
-//        String updateSql = "REPLACE INTO letter_rule (letter, min_score, max_score, fk_breakdown_id)" +
-//                "values (?, ?, ?, ?)";
-//        try {
-//            for(Map.Entry<String, double[]> entrySet : mapLetter.entrySet()) {
-//                String letter = entrySet.getKey();
-//                double[] segment = entrySet.getValue();
-//                double minScore = Math.min(segment[0], segment[1]);
-//                double maxScore = Math.max(segment[0], segment[1]);
-//                PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(updateSql);
-//                preparedStatement.setObject(1, letter);
-//                preparedStatement.setObject(2, minScore);
-//                preparedStatement.setObject(3, maxScore);
-//                preparedStatement.setObject(4, breakdownID);
-//                updateFlag *= preparedStatement.executeUpdate();
-//                preparedStatement.close();
-//                DBUtil.getConnection().close();
-//            }
-//        } catch (SQLException sqle) {
-//            return ErrCode.UPDATEERROR.getCode();
-//        }
-//        if(updateFlag == 0) {
-//            return ErrCode.UPDATEERROR.getCode();
-//        }
-//        else {
-//            return ErrCode.OK.getCode();
-//        }
-//    }
-
-//    public int deleteLetterMap(String breakdownID) {
-//        String deleteSql = "DELETE FROM letter_rule WHERE fk_breakdown = ?";
-//        try {
-//            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(deleteSql);
-//            preparedStatement.setObject(1, breakdownID);
-//            int flag = preparedStatement.executeUpdate();
-//            return flag == 0 ? ErrCode.DELETEERROR.getCode() : ErrCode.OK.getCode();
-//        } catch (SQLException sqle) {
-//            return ErrCode.DELETEERROR.getCode();
-//        }
-//    }
 
     private String assambleSql(String sql, String category) {
        sql =  sql.replaceAll("placeholder", "fk_" + category);

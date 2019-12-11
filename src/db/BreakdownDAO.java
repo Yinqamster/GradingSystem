@@ -4,6 +4,7 @@ import model.Breakdown;
 import model.GradingRule;
 import utils.ErrCode;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,7 +26,8 @@ public class BreakdownDAO{
         try {
             String selectSql = "SELECT grading_rule_id FROM grading_rule WHERE fk_breakdown = ? AND" +
                     " parent_id = ?";
-            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(selectSql);
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
             preparedStatement.setObject(1, breakdownID);
             preparedStatement.setObject(2, "");
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -35,7 +37,7 @@ public class BreakdownDAO{
             }
             resultSet.close();
             preparedStatement.close();
-            DBUtil.getConnection().close();
+            conn.close();
         } catch (SQLException sqle) {
             return null;
         }
@@ -47,10 +49,12 @@ public class BreakdownDAO{
         int gradingRuleUpdateFlag = 1;
         String updateSql = "REPLACE INTO breakdown (break_down_id, fk_course) values (?, ?)";
         try {
-            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(updateSql);
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(updateSql);
             preparedStatement.setObject(1, breakdown.getBreakdownID());
             preparedStatement.setObject(2, breakdown.getBreakdownID());
             gradingRuleUpdateFlag *= preparedStatement.executeUpdate();
+            conn.close();
         } catch (SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
         }
@@ -68,7 +72,8 @@ public class BreakdownDAO{
         Map<String, GradingRule> gradingRuleMap;
         int deleteFlag = 1;
         try {
-            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(selectSql);
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
             preparedStatement.setObject(1, breakdownId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
@@ -76,13 +81,13 @@ public class BreakdownDAO{
                 deleteFlag *= GradingRuleDAO.getInstance().deleteGradingRule(gradingId);
             }
             preparedStatement.close();
-            DBUtil.getConnection().close();
-            preparedStatement = DBUtil.getConnection().prepareStatement(deleteSql);
+            conn.close();
+            preparedStatement = conn.prepareStatement(deleteSql);
             preparedStatement.setObject(1, breakdownId);
             deleteFlag *= preparedStatement.executeUpdate();
             resultSet.close();
             preparedStatement.close();
-            DBUtil.getConnection().close();
+            conn.close();
         } catch (SQLException sqle) {
             return ErrCode.DELETEERROR.getCode();
         }

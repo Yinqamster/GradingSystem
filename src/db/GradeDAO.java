@@ -5,6 +5,7 @@ import model.Grade;
 import model.GradingRule;
 import utils.ErrCode;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,7 +30,8 @@ public class GradeDAO {
         String updateSql = "UPDATE grade SET absolute_score = ?, percentage_score = ?, deduction_score = ?, letter_grade" +
                 " = ? WHERE fk_student = ? AND fk_course = ? AND name = ?";
         try {
-            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(updateSql);
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(updateSql);
             preparedStatement.setObject(1, absoluate_score);
             preparedStatement.setObject(2, percentage_score);
             preparedStatement.setObject(3, deduction_score);
@@ -38,6 +40,8 @@ public class GradeDAO {
             preparedStatement.setObject(6, courseid);
             preparedStatement.setObject(7, "final");
             int flag = preparedStatement.executeUpdate();
+            preparedStatement.close();
+            conn.close();
             return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch (SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
@@ -48,7 +52,8 @@ public class GradeDAO {
         Map<String, Grade> result = new HashMap<>();
         String selectSql = "SELECT * FROM grade WHERE fk_student = ? and fk_course = ?";
         try {
-            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(selectSql);
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
             preparedStatement.setObject(1, BUID);
             preparedStatement.setObject(2, courseId);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -68,6 +73,9 @@ public class GradeDAO {
                     result.put(gradeName, grade);
                 }
             }
+            resultSet.close();
+            preparedStatement.close();
+            conn.close();
             return result;
         } catch (SQLException sqle) {
             return null;
@@ -78,7 +86,8 @@ public class GradeDAO {
         String updateSql = "REPLACE INTO grade (fk_grading_rule, fk_student, absolute_score, percentage_score, deduction_score, comment, name)" +
                 "values (?, ?, ?, ?, ?, ?, ?)";
         try {
-            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(updateSql);
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(updateSql);
             preparedStatement.setObject(1, ruleId);
             preparedStatement.setObject(2, buid);
             preparedStatement.setObject(3, grade.getAbsolute());
@@ -87,6 +96,8 @@ public class GradeDAO {
             preparedStatement.setObject(6, grade.getComment());
             preparedStatement.setObject(7, grade.getRuleId());
             int flag = preparedStatement.executeUpdate();
+            preparedStatement.close();
+            conn.close();
             return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch(SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
@@ -97,11 +108,14 @@ public class GradeDAO {
         String updateSql = "REPLACE INTO grade(fk_grading_rule, fk_student, comment) values " +
                 "(?, ?, ?)";
         try {
-            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(updateSql);
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(updateSql);
             preparedStatement.setObject(1, ruleId);
             preparedStatement.setObject(2, buid);
             preparedStatement.setObject(3, comment);
             int flag = preparedStatement.executeUpdate();
+            preparedStatement.close();
+            conn.close();
             return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch (SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
