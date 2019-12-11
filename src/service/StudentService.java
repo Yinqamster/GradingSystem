@@ -115,7 +115,8 @@ public class StudentService {
         }
         students.put(buid, student);
         // add student to DB
-        StudentDAO.getInstance().addStudent(firstname, midname, lastname, buid, year, comment, courseId);
+        StudentDAO.getInstance().addStudent(courseId, student);
+//        StudentDAO.getInstance().addStudent(firstname, midname, lastname, buid, year, comment, courseId);
 
         course.setStudents(students);
         //update course in DB
