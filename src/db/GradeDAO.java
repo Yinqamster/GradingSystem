@@ -121,4 +121,42 @@ public class GradeDAO {
             return ErrCode.UPDATEERROR.getCode();
         }
     }
+
+    public int deleteGrade(String buid, String courseId, String gradingRuleId) {
+        String deleteSql = "DELETE FROM grade WHERE fk_student = ? AND fk_course = ? AND fk_grading_rule = ?";
+        try {
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(deleteSql);
+            preparedStatement.setObject(1, buid);
+            preparedStatement.setObject(2, courseId);
+            preparedStatement.setObject(3, gradingRuleId);
+            return preparedStatement.executeUpdate();
+        } catch (SQLException sqle) {
+            return ErrCode.DELETEERROR.getCode();
+        }
+    }
+
+    public int updateGradeList(String buid, String courseid, List<Grade> grades) {
+        int flag = 1;
+        for(int i = 0; i < grades.size(); i++) {
+            if(grades.get(i) instanceof FinalGrade) {
+                FinalGrade finalGrade = (FinalGrade)grades.get(i);
+                flag *= updateFinalGrade(buid, courseid, finalGrade.getAbsolute(),
+                        finalGrade.getPercentage(), finalGrade.getDeduction(), finalGrade.getLetterGrade());
+            }
+            else {
+                flag *= upgradeGrade(courseid, buid, grades.get(i));
+            }
+        }
+        return flag;
+    }
+
+    public int deleteGradeList(String buid, String courseId) {
+        Map<String, Grade> gradeMap = getGradeList(buid, courseId);
+        int flag = 1;
+        for(Map.Entry<String, Grade> entry : gradeMap.entrySet()) {
+            flag *= deleteGrade(buid, courseId, entry.getValue().getRuleId());
+        }
+        return flag;
+    }
 }
