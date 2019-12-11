@@ -59,8 +59,8 @@ public class CourseList extends JFrame{
 
             // test
             String item = list_courseList.getSelectedValue().toString();
-            String[] items = item.split("Section: ");
-            String courseName = items[0].substring(0,items[0].length()-1); // remove the space in the end
+            String[] items = item.split(" Section: ");
+            String courseName = items[0]; // remove the space in the end
             String section = items[1];
 
             List<Course> coursesThisSemester = CourseService.getInstance().getCourseListBySemester(currentSemester);
@@ -75,8 +75,9 @@ public class CourseList extends JFrame{
     private void button_deleteMouseReleased(MouseEvent e) {
         if(list_courseList.getSelectedIndex() == -1){
             // select nothing
+            System.out.println("select nothing");
             return;
-        }else if(button_history_current.getText().equals("History")){
+        }else if(button_history_current.getText().equals("Current")){
             // cannot delete previous courses
             return;
         }
@@ -88,6 +89,7 @@ public class CourseList extends JFrame{
 //            test
             Course selectedCourse = this.coursesVector.get(selectedIndex);
             CourseListController.deleteCourse(selectedCourse.getCourseID());
+            JOptionPane.showMessageDialog(this,"Course deleted");
             refreshList();
         }
     }
