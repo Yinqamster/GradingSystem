@@ -3,6 +3,7 @@ package db;
 import model.*;
 import utils.ErrCode;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,7 +32,8 @@ public class CourseDAO {
     public Course getCourse(String courseId) {
         try{
             String selectCourseSql = "SELECT * FROM course WHERE course_id = ?";
-            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(selectCourseSql);
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(selectCourseSql);
             preparedStatement.setObject(1, courseId);
             ResultSet resultSet = preparedStatement.executeQuery();
             String description = "";
@@ -44,19 +46,23 @@ public class CourseDAO {
                 section = resultSet.getString("section");
                 semester = resultSet.getString("semester");
             }
-            resultSet.close();
-            preparedStatement.close();
-            DBUtil.getConnection().close();
             Map<String, Student> studentMap = new HashMap<>();
             String selectStudentSql = "SELECT student_id from " +
                     "course_student_relationship WHERE course_id = ?";
             preparedStatement = DBUtil.getConnection().prepareStatement(selectStudentSql);
+            preparedStatement.setObject(1, courseId);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Student student = StudentDAO.studentDAO.getStudent(resultSet.getString(1), courseId);
                 studentMap.put(student.getBuid(), student);
             }
-            return new Course(name, section, semester, description, studentMap);
+            Course course = new Course(name, section, semester, description, studentMap);
+            course.setCourseID(courseId);
+
+            resultSet.close();
+            preparedStatement.close();
+            conn.close();
+            return course;
         } catch (Exception e) {
             return null;
         }
@@ -80,6 +86,7 @@ public class CourseDAO {
             int flag = preparedStatement.executeUpdate();
             return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch (SQLException sqle) {
+            System.out.println("11111");
             return ErrCode.UPDATEERROR.getCode();
         }
     }

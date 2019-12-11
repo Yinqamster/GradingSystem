@@ -36,6 +36,10 @@ public class CourseList extends JFrame{
     }
 
     private void button_addMouseReleased(MouseEvent e) {
+        if(button_history_current.getText().equals("Current")){
+            // cannot delete previous courses
+            return;
+        }
         AddCourse addCourse = new AddCourse(this);
         addCourse.setVisible(true);
     }
@@ -43,10 +47,11 @@ public class CourseList extends JFrame{
     private void button_openMouseReleased(MouseEvent e) {
         if(list_courseList.getSelectedIndex() == -1){
             // select nothing
+            System.out.println("select nothing");
             return;
         }else{
             // if course lists history courses, cannot open
-            if(button_history_current.getText().equals("History")) return;
+            if(button_history_current.getText().equals("Current")) return;
 
             // test
 //            MainFrame mainFrame = new MainFrame(this, "");
@@ -61,7 +66,6 @@ public class CourseList extends JFrame{
             List<Course> coursesThisSemester = CourseService.getInstance().getCourseListBySemester(currentSemester);
             String courseID = CourseListController.getCourseID(courseName,section,coursesThisSemester);
             MainFrame mainFrame = new MainFrame(this, courseID);
-
             mainFrame.setVisible(true);
             this.setVisible(false);
         }
