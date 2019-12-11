@@ -64,6 +64,7 @@ public class CourseService {
         }
 
         //add letter rule
+        System.out.println("add letter rule");
         res = LetterRuleDAO.getInstance().updateBreakdownLetterMap(course.getBreakdown().getLetterRule(), course.getCourseID());
         if(res != ErrCode.OK.getCode()) {
             return res;

@@ -22,6 +22,7 @@ public class Course {
     }
 
     public Course() {
+        breakdown = new Breakdown();
         students = new HashMap<>();
     }
 
