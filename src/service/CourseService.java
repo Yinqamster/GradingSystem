@@ -45,6 +45,7 @@ public class CourseService {
         //add student to db
         int res = CourseDAO.getInstance().addCourse(course);
         if(res == ErrCode.OK.getCode()) {
+            CourseDAO courseDAO = CourseDAO.getInstance();
             String courseId = CourseDAO.getInstance().getCourse(semester, name, section).getCourseID();
             course.setCourseID(courseId);
             if(filename != null && !filename.isEmpty()){

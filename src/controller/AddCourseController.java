@@ -19,7 +19,9 @@ public class AddCourseController {
         if(courseList.size() != 0) {
             for(Course course : courseList){
                 String item = "Course: " + course.getName() + " - " + course.getSection() + " - " + course.getSemester();
-                itemMap.put(course.getBreakdown().getBreakdownID(), item);
+                if(course.getBreakdown()!=null) {
+                    itemMap.put(course.getBreakdown().getBreakdownID(), item);
+                }
             }
         }
         List<Template> templateList = new ArrayList<>(TemplateService.getInstance().getTemplateMap().values());

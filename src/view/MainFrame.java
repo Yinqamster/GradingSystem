@@ -171,44 +171,20 @@ public class MainFrame extends JFrame {
     public void loadBreakdownTree() {
         // test
         Breakdown breakdown = this.course.getBreakdown();
-        Map<String, GradingRule> gradingRules = breakdown.getGradingRules(); // GradingRuleID, GradingRule
-        List<GradingRule> grs= new ArrayList<>(gradingRules.values());
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(course.getName() + " - 100%");
-
-        // test
-//        List<GradingRule> grs = new ArrayList<>();
-//        for (int i = 0; i < 5; i++) {
-//            List<GradingRule> gs = new ArrayList<>();
-//            List<GradingRule> gs0 = new ArrayList<>();
-//            gs0.add(new GradingRule("Homework3", 100, 0.33));
-//            gs.add(new GradingRule("Homework1", 150, 0.21, gs0));
-//            GradingRule gradingRule = new GradingRule("Homework2", 0.55, gs);
-//            grs.add(gradingRule);
-//        }
-//        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("CS 591 P1 - 100%");
-        // --------------------------------------------
-
-        DefaultTreeModel treeModel = new DefaultTreeModel(MainFrameController.initBreakdownTree(rootNode, MainFrameController.getGradeRuleOfDepth0(grs)));
-        this.tree_breakdown.setModel(treeModel);
+        if(breakdown == null){
+            this.tree_breakdown.setModel(new DefaultTreeModel(rootNode));
+        }
+        else {
+            Map<String, GradingRule> gradingRules = breakdown.getGradingRules(); // GradingRuleID, GradingRule
+            List<GradingRule> grs = new ArrayList<>(gradingRules.values());
+            DefaultTreeModel treeModel = new DefaultTreeModel(MainFrameController.initBreakdownTree(rootNode, MainFrameController.getGradeRuleOfDepth0(grs)));
+            this.tree_breakdown.setModel(treeModel);
+        }
     }
 
     public void loadLetterRuleTree() {
-        //test
         Map<String, double[]> letterRule = course.getBreakdown().getLetterRule();
-
-        //test
-//        Map<String, double[]> letterRule = new HashMap<>();
-//        letterRule.put("A", new double[]{0, 0});
-//        letterRule.put("A-", new double[]{0, 0});
-//        letterRule.put("B+", new double[]{0, 0});
-//        letterRule.put("B", new double[]{0, 0});
-//        letterRule.put("B-", new double[]{0, 0});
-//        letterRule.put("C+", new double[]{0, 0});
-//        letterRule.put("C", new double[]{0, 0});
-//        letterRule.put("C-", new double[]{0, 20});
-//        letterRule.put("D", new double[]{0, 0});
-//        letterRule.put("F", new double[]{0, 0});
-        // -------------------------------------------------------
 
         ListModel lm = list_letterGradeRule.getModel();
         DefaultListModel dlm = MainFrameController.refreshLM(lm, letterRule);
@@ -443,7 +419,6 @@ public class MainFrame extends JFrame {
     }
 
     private void menuItem_percentageMouseReleased(MouseEvent e) {
-        // TODO add your code here
         // get column
         int col  = table_grades.columnAtPoint(e.getPoint());
         String gradeName = table_grades.getColumnName(col);
@@ -460,7 +435,6 @@ public class MainFrame extends JFrame {
     }
 
     private void menuItem_absScoreMouseReleased(MouseEvent e) {
-        // TODO add your code here
         int col  = table_grades.columnAtPoint(e.getPoint());
         String gradeName = table_grades.getColumnName(col);
         GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(gradeName,course);
@@ -476,7 +450,6 @@ public class MainFrame extends JFrame {
     }
 
     private void menuItem_lostScoreMouseReleased(MouseEvent e) {
-        // TODO add your code here
         // get column
         int col  = table_grades.columnAtPoint(e.getPoint());
         String gradeName = table_grades.getColumnName(col);

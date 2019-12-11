@@ -194,7 +194,7 @@ public class AddCourse extends JFrame {
             "Summer"
         }));
         contentPane.add(comboBox_season);
-        comboBox_season.setBounds(new Rectangle(new Point(160, 120), comboBox_season.getPreferredSize()));
+        comboBox_season.setBounds(165, 120, 90, comboBox_season.getPreferredSize().height);
 
         //---- comboBox_year ----
         comboBox_year.setBackground(Color.white);
@@ -209,7 +209,7 @@ public class AddCourse extends JFrame {
             "2025"
         }));
         contentPane.add(comboBox_year);
-        comboBox_year.setBounds(new Rectangle(new Point(260, 120), comboBox_year.getPreferredSize()));
+        comboBox_year.setBounds(255, 120, 90, comboBox_year.getPreferredSize().height);
 
         //---- label6 ----
         label6.setText("Description:");

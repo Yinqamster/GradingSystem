@@ -69,9 +69,10 @@ new FormModel {
 					addElement( "Summer" )
 				}
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-				"x": 160
+				"x": 165
 				"y": 120
 				"height": -5
+				"width": 90
 			} )
 			add( new FormComponent( "javax.swing.JComboBox" ) {
 				name: "comboBox_year"
@@ -89,8 +90,9 @@ new FormModel {
 				}
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 				"height": -5
-				"x": 260
+				"x": 255
 				"y": 120
+				"width": 90
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "label6"
