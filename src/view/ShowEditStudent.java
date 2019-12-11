@@ -105,9 +105,9 @@ public class ShowEditStudent extends JFrame {
                 ShowEditStudentController.updateGradeComment(course.getCourseID(),BUID,GradingRuleID,comment);
             }
             JOptionPane.showMessageDialog(this, "Student updated");
-            this.dispose();
             // refresh table
             parent.refreshTable();
+            this.dispose();
         }else{
             this.label_warning.setText(ErrCode.TEXTFIELDEMPTY.getDescription());
         }
