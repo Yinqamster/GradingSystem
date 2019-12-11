@@ -2,6 +2,7 @@ package db;
 
 import model.Name;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,7 +21,8 @@ public class NameDAO {
 
     public Name getName(String BUID) throws SQLException {
         String selectSql = "SELECT first_name, middle_name, last_name FROM student WHERE buid = ?";
-        PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(selectSql);
+        Connection conn = DBUtil.getConnection();
+        PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
         preparedStatement.setObject(1, BUID);
         ResultSet resultSet = preparedStatement.executeQuery();
         String firstName = "";
@@ -33,7 +35,7 @@ public class NameDAO {
         }
         resultSet.close();
         preparedStatement.close();
-        DBUtil.getConnection().close();
+        conn.close();
         return new Name(firstName, middleName, lastName);
     }
 

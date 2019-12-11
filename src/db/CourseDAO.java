@@ -77,16 +77,17 @@ public class CourseDAO {
         String updateSql = "REPLACE INTO course (course_id, name, section, semester, description)" +
                 "values (?, ?, ?, ?, ?)";
         try {
-            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(updateSql);
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(updateSql);
             preparedStatement.setObject(1, courseid);
             preparedStatement.setObject(2, name);
             preparedStatement.setObject(3, section);
             preparedStatement.setObject(4, semester);
             preparedStatement.setObject(5, description);
             int flag = preparedStatement.executeUpdate();
+            conn.close();
             return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch (SQLException sqle) {
-            System.out.println("11111");
             return ErrCode.UPDATEERROR.getCode();
         }
     }
@@ -96,7 +97,8 @@ public class CourseDAO {
         String selectSql = "SELECT break_down_id FROM breakdown WHERE fk_course = ?";
         int deleteFlag = 1;
         try {
-            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(selectSql);
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
             preparedStatement.setObject(1, courseId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
@@ -105,10 +107,12 @@ public class CourseDAO {
             }
             resultSet.close();
             preparedStatement.close();
-            DBUtil.getConnection().close();
-            preparedStatement = DBUtil.getConnection().prepareStatement(deleteSql);
+            conn.close();
+            preparedStatement = conn.prepareStatement(deleteSql);
             preparedStatement.setObject(1, courseId);
             deleteFlag *= preparedStatement.executeUpdate();
+            preparedStatement.close();
+            conn.close();
         } catch (SQLException sqle) {
             return ErrCode.DELETEERROR.getCode();
         }
@@ -123,7 +127,8 @@ public class CourseDAO {
         List<Course> result = new ArrayList<>();
         String selectSql = "SELECT course_id FROM course";
         try {
-            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(selectSql);
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 String courseId = resultSet.getString("course_id");
@@ -131,7 +136,7 @@ public class CourseDAO {
             }
             resultSet.close();
             preparedStatement.close();
-            DBUtil.getConnection().close();
+            conn.close();
             return result;
         } catch (SQLException sqle) {
             return null;
@@ -142,7 +147,8 @@ public class CourseDAO {
         String selectSql = "SELECT course_id FROM course WHERE semester = ?";
         List<Course> result = new ArrayList<>();
         try {
-            PreparedStatement preparedStatement = DBUtil.getConnection().prepareStatement(selectSql);
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
             preparedStatement.setObject(1, semester);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
@@ -151,11 +157,10 @@ public class CourseDAO {
             }
             resultSet.close();
             preparedStatement.close();
-            DBUtil.getConnection().close();
+            conn.close();
             return result;
         } catch (SQLException sqle) {
             return null;
         }
     }
-
 }
