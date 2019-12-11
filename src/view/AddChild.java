@@ -56,15 +56,19 @@ public class AddChild extends JFrame {
         if(textField_name.getText().isEmpty()){
             JOptionPane.showMessageDialog(this, ErrCode.TEXTFIELDEMPTY);
             return false;
-        }else if(AddChildController.isRuleNameUnique(textField_name.getText(),course)){
+        }else if(!AddChildController.isRuleNameUnique(textField_name.getText(),course)){
             JOptionPane.showMessageDialog(this,ErrCode.NAMENOTUNIQUE);
             return false;
         }else return true;
     }
 
+    private void button1MouseReleased(MouseEvent e) {
+        this.dispose();
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - unknown
+        // Generated using JFormDesigner Evaluation license - Jun Li
         button_saveBreakdown = new JButton();
         label5 = new JLabel();
         textField_name = new JTextField();
@@ -142,6 +146,12 @@ public class AddChild extends JFrame {
         //---- button1 ----
         button1.setText("Cancel");
         button1.setIcon(new ImageIcon(getClass().getResource("/images/cancel.png")));
+        button1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                button1MouseReleased(e);
+            }
+        });
         contentPane.add(button1);
         button1.setBounds(170, 140, 95, button1.getPreferredSize().height);
         contentPane.add(hSpacer1);
@@ -169,7 +179,7 @@ public class AddChild extends JFrame {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - unknown
+    // Generated using JFormDesigner Evaluation license - Jun Li
     private JButton button_saveBreakdown;
     private JLabel label5;
     private JTextField textField_name;

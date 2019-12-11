@@ -165,13 +165,13 @@ public class MainFrame extends JFrame {
     }
 
     private void button_statisticsMouseReleased(MouseEvent e) {
-        Statistics statistics = new Statistics();
+        Statistics statistics = new Statistics(course);
         statistics.setVisible(true);
     }
 
     public void loadBreakdownTree() {
         // test
-        Breakdown breakdown = this.course.getBreakdown();
+        Breakdown breakdown = MainFrameController.getCourseByID(course.getCourseID()).getBreakdown();
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(course.getName() + " - 100%");
         if(breakdown == null){
             this.tree_breakdown.setModel(new DefaultTreeModel(rootNode));
@@ -382,6 +382,7 @@ public class MainFrame extends JFrame {
             for(int col=2; col < table_grades.getColumnCount(); col++) {
                 String ruleName = table_grades.getColumnName(col);
                 GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(ruleName, course);
+                if(gr == null) continue;
                 String ruleID = gr.getName();
                 double fullScore = gr.getFullScore();
                 String item = table_grades.getValueAt(row, col).toString();
@@ -499,14 +500,13 @@ public class MainFrame extends JFrame {
                             // set highLight for those grades who have comments
                             if(col >= 2){
                                 String ruleName = table_grades.getColumnName(col); // get GradingRule name
-                                String ruleID = MainFrameController.getGradingRuleByNameAndCourse(ruleName,course).getName();
+                                GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(ruleName,course);
+                                if(gr == null) return comp;
+                                String ruleID = gr.getName();
                                 if(student.getGrades().get(ruleID).getComment() != null && !student.getGrades().get(ruleID).getComment().isEmpty()){
                                     comp.setBackground(Color.ORANGE);
                                 }
                             }
-                            //}catch(Exception e){
-
-                            //}
                             return comp;
                         }
         };
@@ -543,7 +543,6 @@ public class MainFrame extends JFrame {
         spinner_fullScore = new JSpinner();
         button_back = new JButton();
         hSpacer1 = new JPanel(null);
-        vSpacer3 = new JPanel(null);
         button_refresh = new JButton();
         popupMenu_breakdownTree = new JPopupMenu();
         menuItem_addChildren = new JMenuItem();
@@ -932,8 +931,6 @@ public class MainFrame extends JFrame {
         button_back.setBounds(new Rectangle(new Point(1010, 5), button_back.getPreferredSize()));
         contentPane.add(hSpacer1);
         hSpacer1.setBounds(1090, 5, 20, 30);
-        contentPane.add(vSpacer3);
-        vSpacer3.setBounds(500, 535, 45, 15);
 
         //---- button_refresh ----
         button_refresh.setIcon(new ImageIcon(getClass().getResource("/images/refresh.png")));
@@ -1125,7 +1122,6 @@ public class MainFrame extends JFrame {
     private JSpinner spinner_fullScore;
     private JButton button_back;
     private JPanel hSpacer1;
-    private JPanel vSpacer3;
     private JButton button_refresh;
     private JPopupMenu popupMenu_breakdownTree;
     private JMenuItem menuItem_addChildren;

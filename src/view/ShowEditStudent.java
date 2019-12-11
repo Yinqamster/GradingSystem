@@ -104,6 +104,8 @@ public class ShowEditStudent extends JFrame {
             }else if(type == Config.ADDEDITCOMMENT){
                 ShowEditStudentController.updateGradeComment(course.getCourseID(),BUID,GradingRuleID,comment);
             }
+            JOptionPane.showMessageDialog(this, "Student updated");
+            this.dispose();
             // refresh table
             parent.refreshTable();
         }else{
@@ -127,7 +129,7 @@ public class ShowEditStudent extends JFrame {
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - unknown
+        // Generated using JFormDesigner Evaluation license - Jun Li
         label1 = new JLabel();
         label2 = new JLabel();
         textField_firstName = new JTextField();
@@ -168,7 +170,7 @@ public class ShowEditStudent extends JFrame {
         textField_firstName.setBounds(125, 60, 180, textField_firstName.getPreferredSize().height);
 
         //---- label3 ----
-        label3.setText("Middle Name:");
+        label3.setText("Mid Name:");
         contentPane.add(label3);
         label3.setBounds(45, 95, 72, 15);
         contentPane.add(textField_middleName);
@@ -268,7 +270,7 @@ public class ShowEditStudent extends JFrame {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - unknown
+    // Generated using JFormDesigner Evaluation license - Jun Li
     private JLabel label1;
     private JLabel label2;
     private JTextField textField_firstName;

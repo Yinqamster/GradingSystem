@@ -81,7 +81,7 @@ public class StudentService {
             }
 
             //only for test, can be deleted
-            printStudent(students);
+            //printStudent(students);
         } catch(Exception e) {
             return null;
         }
