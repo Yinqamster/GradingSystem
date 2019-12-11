@@ -55,8 +55,9 @@ public class Course {
         this.breakdown = breakdown;
     }
 
-    public Course(String name, String section, String semester, String description, Map<String, Student> studentMap, Breakdown breakdown) {
+    public Course(String courseID, String name, String section, String semester, String description, Map<String, Student> studentMap, Breakdown breakdown) {
         this(name, section, semester, description, studentMap);
+        this.courseID = courseID;
         this.breakdown = breakdown;
     }
 

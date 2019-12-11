@@ -89,7 +89,7 @@ public class CourseDAO {
                 breakdown = BreakdownDAO.getInstance().getBreakdown(breakDownId);
             }
 
-            Course course = new Course(name, section, semester, description, studentMap, breakdown);
+            Course course = new Course(courseId, name, section, semester, description, studentMap, breakdown);
 //            course.setCourseID(courseId);
 
             conn.close();
