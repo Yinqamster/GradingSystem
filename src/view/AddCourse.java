@@ -194,7 +194,7 @@ public class AddCourse extends JFrame {
             "Summer"
         }));
         contentPane.add(comboBox_season);
-        comboBox_season.setBounds(165, 120, 80, comboBox_season.getPreferredSize().height);
+        comboBox_season.setBounds(165, 120, 90, comboBox_season.getPreferredSize().height);
 
         //---- comboBox_year ----
         comboBox_year.setBackground(Color.white);
@@ -267,7 +267,7 @@ public class AddCourse extends JFrame {
         label_filename.setText("filename.xlsx");
         label_filename.setForeground(Color.black);
         contentPane.add(label_filename);
-        label_filename.setBounds(260, 295, 80, label_filename.getPreferredSize().height);
+        label_filename.setBounds(255, 295, 80, label_filename.getPreferredSize().height);
 
         //---- button_save ----
         button_save.setText(" Save");

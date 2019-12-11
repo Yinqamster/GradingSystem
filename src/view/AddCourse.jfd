@@ -71,8 +71,8 @@ new FormModel {
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 				"x": 165
 				"y": 120
-				"width": 80
 				"height": -5
+				"width": 90
 			} )
 			add( new FormComponent( "javax.swing.JComboBox" ) {
 				name: "comboBox_year"
@@ -89,10 +89,10 @@ new FormModel {
 					addElement( "2025" )
 				}
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-				"width": 90
 				"height": -5
 				"x": 255
 				"y": 120
+				"width": 90
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "label6"
@@ -167,7 +167,7 @@ new FormModel {
 				"text": "filename.xlsx"
 				"foreground": new java.awt.Color( 0, 0, 0, 255 )
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-				"x": 260
+				"x": 255
 				"y": 295
 				"width": 80
 			} )
