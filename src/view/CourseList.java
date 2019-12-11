@@ -86,7 +86,6 @@ public class CourseList extends JFrame{
         if(n == 0){
             // delete this course
             int selectedIndex = list_courseList.getSelectedIndex();
-//            test
             Course selectedCourse = this.coursesVector.get(selectedIndex);
             CourseListController.deleteCourse(selectedCourse.getCourseID());
             JOptionPane.showMessageDialog(this,"Course deleted");
@@ -106,16 +105,6 @@ public class CourseList extends JFrame{
             String item = course.getName() + " Section: " + course.getSection();
             dlm.addElement(item);
         }
-
-        //test
-//        coursesVector.add(new Course("CS591 P1", "Fall 2019",""));
-//        coursesVector.add(new Course("CS591 P1", "Fall 2019",""));
-//        coursesVector.add(new Course("CS591 P1", "Fall 2019",""));
-//        for(Course course:coursesVector){
-//            String item = course.getName() + " Section: " + course.getSemester();
-//            dlm.addElement(item);
-//        }
-
         this.list_courseList.setModel(dlm);
     }
 

@@ -169,7 +169,6 @@ public class MainFrame extends JFrame {
     }
 
     public void loadBreakdownTree() {
-        // test
         Breakdown breakdown = MainFrameController.getCourseByID(course.getCourseID()).getBreakdown();
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(course.getName() + " - 100%");
         if(breakdown == null){
