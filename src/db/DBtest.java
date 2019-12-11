@@ -1,6 +1,7 @@
 package db;
 
 import model.*;
+import service.StudentService;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -31,11 +32,11 @@ public class DBtest {
 
     public static void main(String[] args) {
         DBtest dBtest = new DBtest();
-        dBtest.courseDAOTest();
+//        dBtest.courseDAOTest();
         dBtest.studentDAOTest();
-        dBtest.gradingRuleDAOTest();
-        GradingRule gradingRule = new GradingRule("EXAM", 2, "Bonus Exam", 100, 0.0);
-        GradingRuleDAO.getInstance().updateBreakdownGradingRule(gradingRule, "CS591P1");
+//        dBtest.gradingRuleDAOTest();
+//        GradingRule gradingRule = new GradingRule("EXAM", 2, "Bonus Exam", 100, 0.0);
+//        GradingRuleDAO.getInstance().updateBreakdownGradingRule(gradingRule, "CS591P1");
     }
 
     public void courseDAOTest() {
@@ -106,7 +107,26 @@ public class DBtest {
         Student student = StudentDAO.getInstance().getStudent("U28384838", "CS591P1");
         System.out.println(student);
         student.setComment("Good Boy");
-        code = StudentDAO.getInstance().updateStudent(student);
+        code = StudentDAO.getInstance().addStudent("CS591P1", student);
+        System.out.println("code: " + code);
+        student.setBuid("U28384837");
+        code = StudentDAO.getInstance().addStudent("CS591P1", student);
+        System.out.println("code: " + code);
+        student.setBuid("U28384839");
+        code = StudentDAO.getInstance().addStudent("CS591P1", student);
+        System.out.println("code: " + code);
+        student.setBuid("U28384831");
+        code = StudentDAO.getInstance().addStudent("CS591P1", student);
+        System.out.println("code: " + code);
+        student.setBuid("U28384832");
+        code = StudentDAO.getInstance().addStudent("CS591P1", student);
+        System.out.println("code: " + code);
+        student.setBuid("U28384832");
+        code = StudentDAO.getInstance().addStudent("CS591P1", student);
+        System.out.println("code: " + code);
+        student.setComment("asdf");
+        code = StudentDAO.getInstance().addStudent("CS591P2", student);
+        System.out.println("code: " + code);
 //        student = StudentDAO.getInstance().getStudent("U28384838", "CS591P1");
 //        System.out.println(student);
 //        StudentDAO.getInstance().freezeStudent("U28384838", "CS591P1EEE");

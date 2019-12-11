@@ -9,7 +9,7 @@ import java.text.DecimalFormat;
 
 public class ScoreService {
     private static ScoreService instance = new ScoreService();
-    public CourseService courseService = CourseService.getInstance();
+//    public CourseService courseService = CourseService.getInstance();
 
     private ScoreService(){
 
@@ -24,7 +24,7 @@ public class ScoreService {
     // only update scores that is not a composite, i.e. generated directly by grading
     public int updateRowScore(String courseId, String buid, Map<String, Double> scores) {
         // get course, breakdown and student
-        Course course = courseService.getCourse(courseId);
+        Course course = CourseService.getInstance().getCourse(courseId);
         if (course == null) {
             return ErrCode.COURSENOTEXIST.getCode();
         }
@@ -57,7 +57,7 @@ public class ScoreService {
 
     public int updateGradeComment(String courseId, String buid, String ruleId, String comment) {
         // get course, student and grade
-        Course course = courseService.getCourse(courseId);
+        Course course = CourseService.getInstance().getCourse(courseId);
         if (course == null) {
             return ErrCode.COURSENOTEXIST.getCode();
         }
@@ -74,7 +74,7 @@ public class ScoreService {
     // calculate and update any composite score, i.e. grade that is made up of sub-grades
     public int calculateScores(String courseId) {
         // get course, breakdown and students
-        Course course = courseService.getCourse(courseId);
+        Course course = CourseService.getInstance().getCourse(courseId);
         if (course == null) {
             return ErrCode.COURSENOTEXIST.getCode();
         }
@@ -191,7 +191,7 @@ public class ScoreService {
     }
 
     private double[] calcAllStats(String courseId, String ruleId) {
-        Course course = courseService.getCourse(courseId);
+        Course course = CourseService.getInstance().getCourse(courseId);
         Map<String, Student> students = course.getStudents();
         int count = students.size();
         Map<String, GradingRule> rules = course.getBreakdown().getGradingRules();
@@ -215,7 +215,7 @@ public class ScoreService {
     }
 
     private double[] calcUnderStats(String courseId, String ruleId) {
-        Course course = courseService.getCourse(courseId);
+        Course course = CourseService.getInstance().getCourse(courseId);
         Map<String, Student> students = course.getStudents();
         int count = 0;
         Map<String, GradingRule> rules = course.getBreakdown().getGradingRules();
@@ -242,7 +242,7 @@ public class ScoreService {
     }
 
     private double[] calcGradStats(String courseId, String ruleId) {
-        Course course = courseService.getCourse(courseId);
+        Course course = CourseService.getInstance().getCourse(courseId);
         Map<String, Student> students = course.getStudents();
         int count = 0;
         Map<String, GradingRule> rules = course.getBreakdown().getGradingRules();
