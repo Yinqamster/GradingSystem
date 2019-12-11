@@ -77,24 +77,27 @@ new FormModel {
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "label_mean"
-				"text": "82"
+				"text": "0"
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 				"x": 330
 				"y": 235
+				"width": 45
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "label_median"
-				"text": "82"
+				"text": "0"
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 				"x": 330
 				"y": 260
+				"width": 45
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "label_stddev"
-				"text": "12"
+				"text": "0"
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 				"x": 330
 				"y": 285
+				"width": 55
 			} )
 			add( new FormComponent( "javax.swing.JComboBox" ) {
 				name: "comboBox_chooseStudent"

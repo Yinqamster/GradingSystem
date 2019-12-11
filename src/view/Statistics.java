@@ -139,7 +139,7 @@ public class Statistics extends JFrame {
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - unknown
+        // Generated using JFormDesigner Evaluation license - Jun Li
         label1 = new JLabel();
         label_courseName = new JLabel();
         label3 = new JLabel();
@@ -215,19 +215,19 @@ public class Statistics extends JFrame {
         label7.setBounds(180, 280, 135, 25);
 
         //---- label_mean ----
-        label_mean.setText("82");
+        label_mean.setText("0");
         contentPane.add(label_mean);
-        label_mean.setBounds(new Rectangle(new Point(330, 235), label_mean.getPreferredSize()));
+        label_mean.setBounds(330, 235, 45, label_mean.getPreferredSize().height);
 
         //---- label_median ----
-        label_median.setText("82");
+        label_median.setText("0");
         contentPane.add(label_median);
-        label_median.setBounds(new Rectangle(new Point(330, 260), label_median.getPreferredSize()));
+        label_median.setBounds(330, 260, 45, label_median.getPreferredSize().height);
 
         //---- label_stddev ----
-        label_stddev.setText("12");
+        label_stddev.setText("0");
         contentPane.add(label_stddev);
-        label_stddev.setBounds(new Rectangle(new Point(330, 285), label_stddev.getPreferredSize()));
+        label_stddev.setBounds(330, 285, 55, label_stddev.getPreferredSize().height);
 
         //---- comboBox_chooseStudent ----
         comboBox_chooseStudent.setModel(new DefaultComboBoxModel<>(new String[] {
@@ -274,7 +274,7 @@ public class Statistics extends JFrame {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - unknown
+    // Generated using JFormDesigner Evaluation license - Jun Li
     private JLabel label1;
     private JLabel label_courseName;
     private JLabel label3;
