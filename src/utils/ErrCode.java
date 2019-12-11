@@ -26,7 +26,8 @@ public enum ErrCode {
     DELETEERROR("There is an error while deleting table", 502),
 
     // breakdown
-    BREAKDOWNNOTEXIST("Breakdown doesn't exist.", 601);
+    BREAKDOWNNOTEXIST("Breakdown doesn't exist.", 601),
+    SUMWRONG("The total proportion of grading rules is not 100%", 602);
 
     private final String description;
     private final int code;
