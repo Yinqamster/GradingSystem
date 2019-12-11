@@ -57,7 +57,7 @@ public class MainFrame extends JFrame {
                     // get point position
                     int pick = table_grades.getTableHeader().columnAtPoint(e.getPoint());
                     // if not first two columns, then show popupMenu
-                    if (pick != 0 && pick != 1) {
+                    if (pick > 1 && pick<table_grades.getColumnCount()-3) {
                         popupMenu_ScoreExpression.show(table_grades.getTableHeader(), e.getX(), e.getY());
                     }
                 }
@@ -74,9 +74,8 @@ public class MainFrame extends JFrame {
     public void refreshTable() {
         // disable first two columns
         DefaultTableModel dtm = (DefaultTableModel) table_grades.getModel();
-        List<GradingRule> gradingRuleList = MainFrameController.getAllGradingRule(course);
 
-        dtm = MainFrameController.initTableData(dtm, course);
+        dtm = MainFrameController.initTableData(dtm, MainFrameController.getCourseByID(course.getCourseID()));
         table_grades.setModel(dtm);
 
 //        table_grades = new JTable(dtm){

@@ -14,6 +14,7 @@ import java.util.Objects;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
+import controller.MainFrameController;
 import controller.StatisticsController;
 import model.Breakdown;
 import model.Course;
@@ -28,7 +29,7 @@ public class Statistics extends JFrame {
     private Course course;
     public Statistics(Course course) {
         initComponents();
-        this.course = course;
+        this.course = MainFrameController.getCourseByID(course.getCourseID());
         this.label_courseName.setText(course.getName());
         this.label_section.setText(course.getSection());
 
@@ -81,10 +82,30 @@ public class Statistics extends JFrame {
     }
 
     private void refreshStats(){
+        String[] stats = new String[0]; //{mean, median, sd};
+
         if (tree_breakdown.getSelectionCount() == 0) return;
 
         // get GradingRuleID for selected GradingRule
         String itemText = Objects.requireNonNull(tree_breakdown.getSelectionPath()).getLastPathComponent().toString();
+        if(tree_breakdown.getSelectionPath().getParentPath() == null){
+            // show overall grade stats
+            if(Objects.requireNonNull(comboBox_chooseStudent.getSelectedItem()).toString().equals("All Students")){
+                // calculate for all students
+                stats = ScoreService.getInstance().calculateStats(course.getCourseID(),"final", "All");
+            }else if(Objects.requireNonNull(comboBox_chooseStudent.getSelectedItem()).toString().equals("Graduate Student")){
+                // calculate for Graduate Students
+                stats = ScoreService.getInstance().calculateStats(course.getCourseID(),"final", Config.GRADUATE);
+            }else if(Objects.requireNonNull(comboBox_chooseStudent.getSelectedItem()).toString().equals("Undergraduate Student")){
+                // calculate for Undergraduate Students
+                stats = ScoreService.getInstance().calculateStats(course.getCourseID(),"final", Config.UNDERGRADUATE);
+            }
+            // set labels
+            label_mean.setText(stats[0]);
+            label_median.setText(stats[1]);
+            label_stddev.setText(stats[2]);
+            return;
+        }
         String parentItemText = tree_breakdown.getSelectionPath().getParentPath().getLastPathComponent().toString();
         String[] items = itemText.split(" - ");
         String[] parentItems = parentItemText.split(" - ");
@@ -99,7 +120,6 @@ public class Statistics extends JFrame {
         String gradingRuleID = StatisticsController.findGradingRuleID(grs,name,parentName,courseID);
 
         // calculate stats
-        String[] stats = new String[0]; //{mean, median, sd};
         if(Objects.requireNonNull(comboBox_chooseStudent.getSelectedItem()).toString().equals("All Students")){
             // calculate for all students
             stats = ScoreService.getInstance().calculateStats(courseID,gradingRuleID, "All");
