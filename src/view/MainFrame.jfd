@@ -61,64 +61,14 @@ new FormModel {
 						name: "scrollPane_table"
 						add( new FormComponent( "javax.swing.JTable" ) {
 							name: "table_grades"
-							"model": new com.jformdesigner.model.SwingTableModel( new java.util.Vector {
-								add( new java.util.Vector {
-									add( null )
-									add( null )
-									add( null )
-									add( null )
-									add( null )
-								} )
-								add( new java.util.Vector {
-									add( null )
-									add( null )
-									add( null )
-									add( null )
-									add( null )
-								} )
-								add( new java.util.Vector {
-									add( null )
-									add( null )
-									add( null )
-									add( null )
-									add( null )
-								} )
-								add( new java.util.Vector {
-									add( null )
-									add( null )
-									add( null )
-									add( null )
-									add( null )
-								} )
-							}, new java.util.Vector {
-								add( "BUID" )
-								add( "Name" )
-								add( null )
-								add( null )
-								add( null )
-							}, new java.util.Vector {
-								add( null )
-								add( null )
-								add( null )
-								add( null )
-								add( null )
-							}, new java.util.Vector {
-								add( false )
-								add( false )
-								add( null )
-								add( null )
-								add( null )
-							}, new java.util.Vector {
-								add( null )
-								add( null )
-								add( null )
-								add( null )
-								add( null )
-							} )
+							"model": new com.jformdesigner.model.SwingTableModel( new java.util.Vector, new java.util.Vector, new java.util.Vector, new java.util.Vector, new java.util.Vector )
 							"autoResizeMode": 0
 							"border": new javax.swing.border.MatteBorder( 1, 0, 0, 0, sfield java.awt.Color black )
 							"selectionMode": 1
 							"columnSelectionAllowed": true
+							auxiliary() {
+								"JavaCodeGenerator.customCreateCode": "new JTable(){\n@Override\n                // Disable frozen students\n                public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {\n                    Component comp = super.prepareRenderer(renderer, row, col);\n\t\t\t\t\t//try{\n                    String BUID = getModel().getValueAt(row, 0).toString(); // get BUID\n                    Student student = MainFrameController.getStudent(BUID,course.getCourseID()); // get student\n                    if (student.getStatus() == Config.FREEZE) {\n                        comp.setEnabled(false);\n                    }\n\n                    // set highLight for those grades who have comments\n                    if(col >= 2){\n                        String ruleName = table_grades.getColumnName(col); // get GradingRule name\n                        String ruleID = MainFrameController.getGradingRuleByNameAndCourse(ruleName,course).getName();\n                        if(student.getGrades().get(ruleID).getComment() != null && !student.getGrades().get(ruleID).getComment().isEmpty()){\n                            comp.setBackground(Color.ORANGE);\n                        }\n                    }\n\t\t\t\t\t//}catch(Exception e){\n\t\t\t\t\t\n\t\t\t\t\t//}\n                    return comp;\n                }\n};"
+							}
 							addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "table_gradesMouseReleased", true ) )
 						} )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
