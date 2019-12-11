@@ -1,6 +1,7 @@
 package service;
 
 import db.CourseDAO;
+import db.LetterRuleDAO;
 import db.StudentDAO;
 import model.Breakdown;
 import model.Course;
@@ -59,6 +60,12 @@ public class CourseService {
             }
         }
         else {
+            return res;
+        }
+
+        //add letter rule
+        res = LetterRuleDAO.getInstance().updateBreakdownLetterMap(course.getBreakdown().getLetterRule(), course.getCourseID());
+        if(res != ErrCode.OK.getCode()) {
             return res;
         }
         return ErrCode.OK.getCode();
