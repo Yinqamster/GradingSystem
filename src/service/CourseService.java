@@ -58,6 +58,7 @@ public class CourseService {
             }
         }
         else {
+            System.out.println(res);
             return res;
         }
 
