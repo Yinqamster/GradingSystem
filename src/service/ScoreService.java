@@ -1,6 +1,7 @@
 package service;
 
 import model.*;
+import utils.Config;
 import utils.ErrCode;
 import db.GradeDAO;
 
@@ -183,9 +184,13 @@ public class ScoreService {
         String[] stats = new String[3];
         DecimalFormat num = new DecimalFormat("##.##");
         DecimalFormat percentage = new DecimalFormat("##.##%");
-        stats[0] = num.format(results[0]) + " " + percentage.format(results[0] / results[3]);
-        stats[1] = num.format(results[1]) + " " + percentage.format(results[1] / results[3]);
-        stats[2] = num.format(results[2]) + " " + percentage.format(results[2] / results[3]);
+//        stats[0] = num.format(results[0]) + " " + percentage.format(results[0] / results[3]);
+//        stats[1] = num.format(results[1]) + " " + percentage.format(results[1] / results[3]);
+//        stats[2] = num.format(results[2]) + " " + percentage.format(results[2] / results[3]);
+
+        stats[0] = percentage.format(results[0]);
+        stats[1] = percentage.format(results[1]);
+        stats[2] = percentage.format(results[2]);
 
         return stats;
     }
@@ -194,22 +199,37 @@ public class ScoreService {
         Course course = CourseService.getInstance().getCourse(courseId);
         Map<String, Student> students = course.getStudents();
         int count = students.size();
-        Map<String, GradingRule> rules = course.getBreakdown().getGradingRules();
-        double fullScore = rules.get(ruleId).getFullScore();
+//        Map<String, GradingRule> rules = course.getBreakdown().getGradingRules();
+//        GradingRule rule = rules.get(ruleId);
+//        double fullScore = 1.0;
+//        System.out.println(ruleId);
+//        System.out.println(rule.getName());
+//        if(!rule.getName().equals(Config.FINALRULENAME)){
+//            fullScore = rule.getFullScore();
+//        }
         double total = 0;
         List<Double> scores = new ArrayList<>();
 
         for (String buid : students.keySet()) {
             Student student = students.get(buid);
-            Grade grade = student.getGrades().get(ruleId);
-            total += grade.getAbsolute();
-            scores.add(grade.getAbsolute());
+            if(ruleId.equals(Config.FINALRULENAME)) {
+                total += student.getFinalGrade().getPercentage();
+                scores.add(student.getFinalGrade().getPercentage());
+            }
+            else {
+                Grade grade = student.getGrades().get(ruleId);
+//            total += grade.getAbsolute();
+                total += grade.getPercentage();
+                scores.add(grade.getPercentage());
+            }
+
         }
 
-        double mean = total / (fullScore * count);
+//        double mean = total / (fullScore * count);
+        double mean = total / count;
         double median = calcMedian(scores);
         double sd = calcSD(scores, mean);
-        double[] results = {mean, median, sd, fullScore};
+        double[] results = {mean, median, sd};
 
         return results;
     }
