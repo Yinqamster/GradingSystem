@@ -184,8 +184,8 @@ public class MainFrame extends JFrame {
     }
 
     public void loadLetterRuleTree() {
-
-        Map<String, double[]> letterRule = course.getBreakdown().getLetterRule();
+        Course c = MainFrameController.getCourseByID(course.getCourseID());
+        Map<String, double[]> letterRule = c.getBreakdown().getLetterRule();
 
         ListModel lm = list_letterGradeRule.getModel();
         DefaultListModel dlm = MainFrameController.refreshLM(lm, letterRule);
@@ -363,7 +363,7 @@ public class MainFrame extends JFrame {
     }
 
     private void button_refreshMouseReleased(MouseEvent e) {
-        refreshCourseNameAndSection(course);
+        refreshCourseNameAndSection(MainFrameController.getCourseByID(course.getCourseID()));
         refreshTable();
         loadBreakdownTree();
         loadLetterRuleTree();
