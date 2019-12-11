@@ -73,17 +73,17 @@ public class CourseDAO {
         String section = course.getSection();
         String semester = course.getSemester();
         String description = course.getDescription();
-        String courseid = semester + name + section;
-        String updateSql = "REPLACE INTO course (course_id, name, section, semester, description)" +
-                "values (?, ?, ?, ?, ?)";
+//        String courseid = semester + name + section;
+        String updateSql = "REPLACE INTO course (name, section, semester, description)" +
+                "values (?, ?, ?, ?)";
         try {
             Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(updateSql);
-            preparedStatement.setObject(1, courseid);
-            preparedStatement.setObject(2, name);
-            preparedStatement.setObject(3, section);
-            preparedStatement.setObject(4, semester);
-            preparedStatement.setObject(5, description);
+//            preparedStatement.setObject(1, courseid);
+            preparedStatement.setObject(1, name);
+            preparedStatement.setObject(2, section);
+            preparedStatement.setObject(3, semester);
+            preparedStatement.setObject(4, description);
             int flag = preparedStatement.executeUpdate();
             conn.close();
             return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
