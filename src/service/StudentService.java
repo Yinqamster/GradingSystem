@@ -108,12 +108,8 @@ public class StudentService {
             student = new GraduateStudent(name, buid, comment);
         }
 
-        System.out.println(CourseService.getInstance() == null);
-        System.out.println(CourseService.getInstance() == null);
         Course course = CourseService.getInstance().getCourse(courseId);
-        System.out.println(course == null);
         Map<String, Student> students = course.getStudents();
-        System.out.println(students == null);
         if (students.containsKey(buid)) {
             return ErrCode.STUDENTEXIST.getCode();
         }

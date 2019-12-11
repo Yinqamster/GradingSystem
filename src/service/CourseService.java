@@ -58,6 +58,7 @@ public class CourseService {
             }
         }
         else {
+            System.out.println(res);
             return res;
         }
 
@@ -77,10 +78,7 @@ public class CourseService {
     }
 
     public Course getCourse(String courseId) {
-        //System.out.println(courseId);
         Course course = CourseDAO.getInstance().getCourse(courseId);
-        //System.out.println(course == null);
-        //System.out.println(course.getName());
         return course;
     }
 
