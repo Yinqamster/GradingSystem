@@ -74,7 +74,7 @@ public class CourseDAO {
             preparedStatement.setObject(1, courseId);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                Student student = StudentDAO.studentDAO.getStudent(resultSet.getString(1), courseId);
+                Student student = StudentDAO.getInstance().getStudent(resultSet.getString(1), courseId);
                 studentMap.put(student.getBuid(), student);
             }
 

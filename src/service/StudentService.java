@@ -83,7 +83,7 @@ public class StudentService {
             //only for test, can be deleted
             //printStudent(students);
         } catch(Exception e) {
-            return null;
+            return students;
         }
         return students;
     }
