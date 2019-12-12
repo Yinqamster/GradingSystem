@@ -83,6 +83,25 @@ public class MainFrameController {
         return null;
     }
 
+    public static GradingRule getGradingRuleByIDAndCourse(String ruleID, Course course){
+        Breakdown breakdown = course.getBreakdown();
+        List<GradingRule> gradingRuleList = new ArrayList<>(breakdown.getGradingRules().values());
+        return findGradingRuleID(ruleID,gradingRuleList);
+    }
+
+    private static GradingRule findGradingRuleID(String ruleID, List<GradingRule> grs){
+        for (GradingRule gr : grs) {
+            String grID = gr.getId();
+            if (grID.equals(ruleID)) return gr;
+            else if(gr.getChildren()!=null && gr.getChildren().size()!=0){
+                GradingRule tmp = findGradingRuleID(ruleID,gr.getChildren());
+                if(tmp==null) continue;
+                else return tmp;
+            }
+        }
+        return null;
+    }
+
     public static int freezeStudent(String buid, String courseId) {
         return StudentService.getInstance().freezeStudent(buid, courseId);
     }

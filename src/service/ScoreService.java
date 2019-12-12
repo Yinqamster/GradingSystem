@@ -41,7 +41,12 @@ public class ScoreService {
 
         // update score
         for (String ruleId : scores.keySet()) {
-            GradingRule rule = breakdown.getGradingRules().get(ruleId);
+            //GradingRule rule = breakdown.getGradingRules().get(ruleId);
+
+            // added by Jun Li -----------------------------------
+            GradingRule rule = GradingRuleService.getInstance().getGradingRuleByID(courseId,ruleId);
+            //----------------------------------------------------
+
             // only update scores that is not composite
             if (rule.getChildren() == null || rule.getChildren().size() == 0) {
                 Grade grade = student.getGrades().get(ruleId);
