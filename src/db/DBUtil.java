@@ -5,6 +5,10 @@ import java.sql.*;
 public class DBUtil {
     public static final String url = "jdbc:sqlite:src/db/GradingSystem.db";
     public static final String JDBCName = "org.sqlite.JDBC";
+    private static Connection connection = getConnection();
+    public static Connection getInstance() {
+        return connection;
+    }
     // call this method firstly
     public static boolean testDBConnection() {
         if (getConnection() != null) {

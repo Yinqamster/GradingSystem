@@ -15,6 +15,7 @@ import java.util.Map;
 
 public class BreakdownDAO{
     public static BreakdownDAO breakdownDAO = new BreakdownDAO();
+    private static Connection connection = DBUtil.getInstance();
 
     public BreakdownDAO() {
     }
@@ -28,8 +29,8 @@ public class BreakdownDAO{
         try {
             String selectSql = "SELECT grading_rule_id FROM grading_rule WHERE fk_breakdown = ? AND" +
                     " parent_id = ?";
-            Connection conn = DBUtil.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
+//            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
             preparedStatement.setObject(1, breakdownID);
             preparedStatement.setObject(2, "");
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -39,7 +40,7 @@ public class BreakdownDAO{
             }
             resultSet.close();
             preparedStatement.close();
-            conn.close();
+//            conn.close();
         } catch (SQLException sqle) {
             return new Breakdown();
         }
@@ -51,12 +52,12 @@ public class BreakdownDAO{
         int gradingRuleUpdateFlag = 1;
         String updateSql = "REPLACE INTO breakdown (break_down_id, fk_course) values (?, ?)";
         try {
-            Connection conn = DBUtil.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(updateSql);
+//            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
             preparedStatement.setObject(1, breakdown.getBreakdownID());
             preparedStatement.setObject(2, breakdown.getBreakdownID());
             gradingRuleUpdateFlag *= preparedStatement.executeUpdate();
-            conn.close();
+//            conn.close();
         } catch (SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
         }
@@ -74,8 +75,8 @@ public class BreakdownDAO{
         List<String> deleteGradingList = new ArrayList<>();
         int deleteFlag = 1;
         try {
-            Connection conn = DBUtil.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
+//            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
             preparedStatement.setObject(1, breakdownId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
@@ -84,12 +85,12 @@ public class BreakdownDAO{
 //                deleteFlag *= GradingRuleDAO.getInstance().deleteGradingRule(gradingId);
             }
             preparedStatement.close();
-            preparedStatement = conn.prepareStatement(deleteSql);
+            preparedStatement = connection.prepareStatement(deleteSql);
             preparedStatement.setObject(1, breakdownId);
             deleteFlag *= preparedStatement.executeUpdate();
             resultSet.close();
             preparedStatement.close();
-            conn.close();
+//            conn.close();
             for(String str : deleteGradingList) {
                 deleteFlag *= GradingRuleDAO.getInstance().deleteGradingRule(str);
             }
