@@ -19,6 +19,8 @@ public class CourseDAO {
      */
     public static CourseDAO courseDAO = new CourseDAO();
 
+    private static Connection connection = DBUtil.getInstance();
+
     private CourseDAO() {
     }
 
@@ -27,9 +29,9 @@ public class CourseDAO {
     }
     public Course getCourse(String courseId) {
         String selectCourseSql = "SELECT semester, name, section FROM course WHERE course_id = ?";
-        Connection conn = DBUtil.getConnection();
+//        Connection conn = DBUtil.getConnection();
         try {
-            PreparedStatement preparedStatement = conn.prepareStatement(selectCourseSql);
+            PreparedStatement preparedStatement = connection.prepareStatement(selectCourseSql);
             preparedStatement.setObject(1, courseId);
             ResultSet resultSet = preparedStatement.executeQuery();
             String name = "";
@@ -42,10 +44,10 @@ public class CourseDAO {
             }
             resultSet.close();
             preparedStatement.close();
-            conn.close();
+//            conn.close();
             return getCourse(semester, name, section);
         } catch (SQLException sqle) {
-            return null;
+            return new Course();
         }
 
 
@@ -54,8 +56,8 @@ public class CourseDAO {
         try{
             String selectCourseSql = "SELECT * FROM course WHERE semester = ? AND name = ? AND section = ?";
             String selectBreakdownSql = "SELECT break_down_id FROM breakdown WHERE fk_course = ?";
-            Connection conn = DBUtil.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(selectCourseSql);
+//            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(selectCourseSql);
             preparedStatement.setObject(1, semester);
             preparedStatement.setObject(2, name);
             preparedStatement.setObject(3, section);
@@ -70,7 +72,7 @@ public class CourseDAO {
             Map<String, Student> studentMap = new HashMap<>();
             String selectStudentSql = "SELECT student_id from " +
                     "course_student_relationship WHERE course_id = ?";
-            preparedStatement = DBUtil.getConnection().prepareStatement(selectStudentSql);
+            preparedStatement = connection.prepareStatement(selectStudentSql);
             preparedStatement.setObject(1, courseId);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -81,7 +83,7 @@ public class CourseDAO {
             resultSet.close();
             preparedStatement.close();
 
-            preparedStatement = conn.prepareStatement(selectBreakdownSql);
+            preparedStatement = connection.prepareStatement(selectBreakdownSql);
             preparedStatement.setObject(1, courseId);
             resultSet = preparedStatement.executeQuery();
             if(resultSet.next()) {
@@ -92,10 +94,10 @@ public class CourseDAO {
             Course course = new Course(courseId, name, section, semester, description, studentMap, breakdown);
 //            course.setCourseID(courseId);
 
-            conn.close();
+//            conn.close();
             return course;
         } catch (Exception e) {
-            return null;
+            return new Course();
         }
     }
 
@@ -109,8 +111,8 @@ public class CourseDAO {
                 "values (?, ?, ?, ?)";
         String selectSql = "SELECT * FROM course WHERE name = ? AND section = ? AND semester = ?";
         try {
-            Connection conn = DBUtil.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
+//            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
             preparedStatement.setObject(1, name);
             preparedStatement.setObject(2, section);
             preparedStatement.setObject(3,semester);
@@ -120,13 +122,13 @@ public class CourseDAO {
             }
             resultSet.close();
             preparedStatement.close();
-            preparedStatement = conn.prepareStatement(updateSql);
+            preparedStatement = connection.prepareStatement(updateSql);
             preparedStatement.setObject(1, name);
             preparedStatement.setObject(2, section);
             preparedStatement.setObject(3, semester);
             preparedStatement.setObject(4, description);
             int flag = preparedStatement.executeUpdate();
-            conn.close();
+//            conn.close();
             return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch (SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
@@ -135,25 +137,44 @@ public class CourseDAO {
 
     public int deleteCourse(String courseId){
         String deleteSql = "DELETE FROM course WHERE course_id = ?";
-        String selectSql = "SELECT break_down_id FROM breakdown WHERE fk_course = ?";
+        String selectBreakdownSql = "SELECT break_down_id FROM breakdown WHERE fk_course = ?";
+        String selectStudentSql = "SELECT student_id FROM course_student_relationship WHERE course_id = ?";
         int deleteFlag = 1;
+        List<String> deleteBreakIdList = new ArrayList<>();
+        List<String> deleteStudentIdList = new ArrayList<>();
         try {
-            Connection conn = DBUtil.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
+//            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(selectBreakdownSql);
             preparedStatement.setObject(1, courseId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 String breakdownID = resultSet.getString("break_down_id");
-                deleteFlag *= BreakdownDAO.getInstance().deleteBreakdown(breakdownID);
+                deleteBreakIdList.add(breakdownID);
+//                deleteFlag *= BreakdownDAO.getInstance().deleteBreakdown(breakdownID);
             }
             resultSet.close();
             preparedStatement.close();
-            conn.close();
-            preparedStatement = conn.prepareStatement(deleteSql);
+            preparedStatement = connection.prepareStatement(selectStudentSql);
+            preparedStatement.setObject(1, courseId);
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                String buid = resultSet.getString("student_id");
+                deleteStudentIdList.add(buid);
+            }
+            resultSet.close();
+            preparedStatement.close();
+            preparedStatement = connection.prepareStatement(deleteSql);
             preparedStatement.setObject(1, courseId);
             deleteFlag *= preparedStatement.executeUpdate();
             preparedStatement.close();
-            conn.close();
+//            conn.close();
+            for(String str : deleteBreakIdList) {
+                deleteFlag *= BreakdownDAO.getInstance().deleteBreakdown(str);
+            }
+            for(String str : deleteStudentIdList) {
+                deleteFlag *= StudentDAO.getInstance().deleteStudent(str, courseId);
+            }
+            deleteFlag *= GradeDAO.getInstance().deleteGrade(courseId);
         } catch (SQLException sqle) {
             return ErrCode.DELETEERROR.getCode();
         }
@@ -168,8 +189,8 @@ public class CourseDAO {
         List<Course> result = new ArrayList<>();
         String selectSql = "SELECT semester, name, section FROM course";
         try {
-            Connection conn = DBUtil.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
+//            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 String semester = resultSet.getString("semester");
@@ -179,10 +200,10 @@ public class CourseDAO {
             }
             resultSet.close();
             preparedStatement.close();
-            conn.close();
+//            conn.close();
             return result;
         } catch (SQLException sqle) {
-            return null;
+            return result;
         }
     }
 }

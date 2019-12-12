@@ -25,13 +25,15 @@ public class GradeDAO {
         return gradeDAO;
     }
 
+    private static Connection connection = DBUtil.getInstance();
+
     public int updateFinalGrade(String buid, String courseid, double absoluate_score, double percentage_score,
                                 double deduction_score, String letterGrade) {
         String updateSql = "UPDATE grade SET absolute_score = ?, percentage_score = ?, deduction_score = ?, letter_grade" +
                 " = ? WHERE fk_student = ? AND fk_course = ? AND name = ?";
         try {
-            Connection conn = DBUtil.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(updateSql);
+//            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
             preparedStatement.setObject(1, absoluate_score);
             preparedStatement.setObject(2, percentage_score);
             preparedStatement.setObject(3, deduction_score);
@@ -41,7 +43,7 @@ public class GradeDAO {
             preparedStatement.setObject(7, "final");
             int flag = preparedStatement.executeUpdate();
             preparedStatement.close();
-            conn.close();
+//            conn.close();
             return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch (SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
@@ -52,8 +54,8 @@ public class GradeDAO {
         Map<String, Grade> result = new HashMap<>();
         String selectSql = "SELECT * FROM grade WHERE fk_student = ? and fk_course = ?";
         try {
-            Connection conn = DBUtil.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
+//            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
             preparedStatement.setObject(1, BUID);
             preparedStatement.setObject(2, courseId);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -76,7 +78,7 @@ public class GradeDAO {
             }
             resultSet.close();
             preparedStatement.close();
-            conn.close();
+//            conn.close();
             return result;
         } catch (SQLException sqle) {
             return null;
@@ -87,8 +89,8 @@ public class GradeDAO {
         String updateSql = "REPLACE INTO grade (fk_grading_rule, fk_student, absolute_score, percentage_score, deduction_score, comment, name)" +
                 "values (?, ?, ?, ?, ?, ?, ?)";
         try {
-            Connection conn = DBUtil.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(updateSql);
+//            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
             preparedStatement.setObject(1, ruleId);
             preparedStatement.setObject(2, buid);
             preparedStatement.setObject(3, grade.getAbsolute());
@@ -98,7 +100,30 @@ public class GradeDAO {
             preparedStatement.setObject(7, grade.getRuleId());
             int flag = preparedStatement.executeUpdate();
             preparedStatement.close();
-            conn.close();
+//            conn.close();
+            return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
+        } catch(SQLException sqle) {
+            return ErrCode.UPDATEERROR.getCode();
+        }
+    }
+
+    public int upgradeGrade(String courseId, String buid, Grade grade, String gradingRuleId) {
+        String updateSql = "REPLACE INTO grade (fk_grading_rule, fk_student, absolute_score, percentage_score, deduction_score, comment, name, fk_course)" +
+                "values (?, ?, ?, ?, ?, ?, ?, ?)";
+        try {
+//            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
+            preparedStatement.setObject(1, gradingRuleId);
+            preparedStatement.setObject(2, buid);
+            preparedStatement.setObject(3, grade.getAbsolute());
+            preparedStatement.setObject(4, grade.getPercentage());
+            preparedStatement.setObject(5, grade.getDeduction());
+            preparedStatement.setObject(6, grade.getComment());
+            preparedStatement.setObject(7, grade.getRuleId());
+            preparedStatement.setObject(8, courseId);
+            int flag = preparedStatement.executeUpdate();
+            preparedStatement.close();
+//            conn.close();
             return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch(SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
@@ -109,14 +134,14 @@ public class GradeDAO {
         String updateSql = "REPLACE INTO grade(fk_grading_rule, fk_student, comment) values " +
                 "(?, ?, ?)";
         try {
-            Connection conn = DBUtil.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(updateSql);
+//            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
             preparedStatement.setObject(1, ruleId);
             preparedStatement.setObject(2, buid);
             preparedStatement.setObject(3, comment);
             int flag = preparedStatement.executeUpdate();
             preparedStatement.close();
-            conn.close();
+//            conn.close();
             return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch (SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
@@ -126,8 +151,8 @@ public class GradeDAO {
     public int deleteGrade(String buid, String courseId, String gradingRuleId) {
         String deleteSql = "DELETE FROM grade WHERE fk_student = ? AND fk_course = ? AND fk_grading_rule = ?";
         try {
-            Connection conn = DBUtil.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(deleteSql);
+//            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(deleteSql);
             preparedStatement.setObject(1, buid);
             preparedStatement.setObject(2, courseId);
             preparedStatement.setObject(3, gradingRuleId);
@@ -137,7 +162,19 @@ public class GradeDAO {
         }
     }
 
-    public int updateGradeList(String buid, String courseid, List<Grade> grades) {
+    public int deleteGrade(String courseId) {
+        String deleteSql = "DELETE FROM grade WHERE fk_course = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(deleteSql);
+            preparedStatement.setObject(1, courseId);
+            int flag = preparedStatement.executeUpdate();
+            return flag == 0 ? ErrCode.DELETEERROR.getCode() : ErrCode.OK.getCode();
+        } catch (SQLException sqle) {
+            return ErrCode.DELETEERROR.getCode();
+        }
+    }
+
+    public int updateGradeList(String buid, String courseid, List<Grade> grades, String gradingRuleId) {
         int flag = 1;
         for(int i = 0; i < grades.size(); i++) {
             if(grades.get(i) instanceof FinalGrade) {
@@ -146,7 +183,7 @@ public class GradeDAO {
                         finalGrade.getPercentage(), finalGrade.getDeduction(), finalGrade.getLetterGrade());
             }
             else {
-                flag *= upgradeGrade(courseid, buid, grades.get(i));
+                flag *= upgradeGrade(courseid, buid, grades.get(i), gradingRuleId);
             }
         }
         return flag;
@@ -167,8 +204,8 @@ public class GradeDAO {
         String updateSql = "REPLACE INTO grade (fk_student, fk_grading_rule, fk_course, name) values (?, ?, ?, ?)";
         try {
             for (String id : studentId) {
-                Connection conn = DBUtil.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(updateSql);
+//                Connection conn = DBUtil.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
                 preparedStatement.setObject(1, id);
                 preparedStatement.setObject(2, gradingId);
                 preparedStatement.setObject(3, courseId);
@@ -185,8 +222,8 @@ public class GradeDAO {
         String selectSql = "SELECT * FROM grading_rule WHERE fk_breakdown = ?";
         List<List<Object>> result = new ArrayList<>();
         try {
-            Connection conn = DBUtil.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
+//            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
             preparedStatement.setObject(1, courseId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
@@ -198,7 +235,7 @@ public class GradeDAO {
             }
             resultSet.close();
             preparedStatement.close();
-            conn.close();
+//            conn.close();
             return result;
         } catch(SQLException sqle) {
             return result;
