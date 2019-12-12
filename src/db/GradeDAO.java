@@ -79,17 +79,17 @@ public class GradeDAO {
             conn.close();
             return result;
         } catch (SQLException sqle) {
-            return result;
+            return null;
         }
     }
 
-    public int upgradeGrade(String courseId, String buid, Grade grade) {
-        String updateSql = "REPLACE INTO grade (fk_course, fk_student, absolute_score, percentage_score, deduction_score, comment, fk_grading_rule, name)" +
-                "values (?, ?, ?, ?, ?, ?, ?, ?)";
+    public int upgradeGrade(String ruleId, String buid, Grade grade) {
+        String updateSql = "REPLACE INTO grade (fk_grading_rule, fk_student, absolute_score, percentage_score, deduction_score, comment, name)" +
+                "values (?, ?, ?, ?, ?, ?, ?)";
         try {
             Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(updateSql);
-            preparedStatement.setObject(1, courseId);
+            preparedStatement.setObject(1, ruleId);
             preparedStatement.setObject(2, buid);
             preparedStatement.setObject(3, grade.getAbsolute());
             preparedStatement.setObject(4, grade.getPercentage());
