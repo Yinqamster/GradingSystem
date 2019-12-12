@@ -22,4 +22,9 @@ public class Config {
     public static final int EDITSTUDENT = 1; // edit a saved student
     public static final int EDITSTUDENTCOMMENT = 2; // edit a saved student
     public static final int ADDEDITCOMMENT = 3; // add or edit the comment for a certain grade of a certain student
+
+    // Unique grades
+    public static final String BONUS = "Bonus";
+    public static final String FINALGRADEPERCENTAGE = "Final Grade(%)";
+    public static final String FINALGRADELETTER = "Final Grade(Letter)";
 }

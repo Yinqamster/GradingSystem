@@ -77,29 +77,6 @@ public class MainFrame extends JFrame {
 
         dtm = MainFrameController.initTableData(dtm, MainFrameController.getCourseByID(course.getCourseID()));
         table_grades.setModel(dtm);
-
-//        table_grades = new JTable(dtm){
-//            @Override
-//            // Disable frozen students
-//            public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
-//                Component comp = super.prepareRenderer(renderer, row, col);
-//                String BUID = getModel().getValueAt(row, 0).toString(); // get BUID
-//                Student student = MainFrameController.getStudent(BUID,course.getCourseID()); // get student
-//                if (student.getStatus() == Config.FREEZE) {
-//                    comp.setEnabled(false);
-//                }
-//
-//                // set highLight for those grades who have comments
-//                if(col >= 2){
-//                    String ruleName = table_grades.getColumnName(col); // get GradingRule name
-//                    String ruleID = MainFrameController.getGradingRuleByNameAndCourse(ruleName,course).getName();
-//                    if(student.getGrades().get(ruleID).getComment() != null && !student.getGrades().get(ruleID).getComment().isEmpty()){
-//                        comp.setBackground(Color.ORANGE);
-//                    }
-//                }
-//                return comp;
-//            }
-//        };
     }
 
     public void refreshCourseNameAndSection(Course course) {
@@ -169,7 +146,6 @@ public class MainFrame extends JFrame {
     }
 
     public void loadBreakdownTree() {
-        // test
         Breakdown breakdown = MainFrameController.getCourseByID(course.getCourseID()).getBreakdown();
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(course.getName() + " - 100%");
         if(breakdown == null){
@@ -228,11 +204,14 @@ public class MainFrame extends JFrame {
 
         String GradingRuleName = table_grades.getColumnName(col);
         GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(GradingRuleName, course);
-        String BUID = table_grades.getValueAt(row, 0).toString();
-        Student student = MainFrameController.getStudent(BUID, course.getCourseID());
+        if(gr == null){
+            return;
+        }
 
-        ShowEditStudent showEditStudent = new ShowEditStudent(course, Config.ADDEDITCOMMENT, student, gr.getId(), this);
-        showEditStudent.setVisible(true);
+        String BUID = table_grades.getValueAt(row, 0).toString();
+
+        AddComment addComment = new AddComment(course,gr,BUID);
+        addComment.setVisible(true);
     }
 
     private void menuItem_studentCommentMouseReleased(MouseEvent e) {
@@ -309,7 +288,7 @@ public class MainFrame extends JFrame {
                 MainFrameController.updateGradingRule(course.getCourseID(), ruleName, fullScore, percentage, null, 0);
             } else {
                 // depth != 0
-                String parentText = Objects.requireNonNull(tree_breakdown.getSelectionPath()).getLastPathComponent().toString();
+                String parentText = Objects.requireNonNull(tree_breakdown.getSelectionPath().getParentPath()).getLastPathComponent().toString();
                 String parentName = parentText.split(" - ")[0];
                 String parentRuleID = MainFrameController.getGradingRuleByNameAndCourse(parentName, course).getId();
                 int depth = Objects.requireNonNull(tree_breakdown.getSelectionPath()).getPathCount() - 1;
@@ -378,42 +357,61 @@ public class MainFrame extends JFrame {
         for(int row=0; row < table_grades.getRowCount(); row++) {
             Map<String, Double> scores = new HashMap<>();
             String BUID = table_grades.getValueAt(row,0).toString();
-            System.out.println(table_grades.getColumnCount());
             for(int col=2; col < table_grades.getColumnCount(); col++) {
                 String ruleName = table_grades.getColumnName(col);
                 GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(ruleName, course);
                 if(gr == null) continue;
-                String ruleID = gr.getName();
-                double fullScore = gr.getFullScore();
-                String item = table_grades.getValueAt(row, col).toString();
-                double absolute=0;
-                System.out.println("gr " + gr.getChildren().size());
-                if (gr.getChildren().size() == 0) {
-                    if (item.contains("-")) {
-                        // lost scores
-                        double value = Double.parseDouble(item);
-                        absolute = fullScore + value;
-                        if(absolute<0){
-                            JOptionPane.showMessageDialog(this,"ERROR!!!\nSome score is lower than 0.","Error", JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }
-                    } else if (item.contains("%")) {
-                        // percentage
-                    } else {
-                        // absolute scores
-                        double value = Double.parseDouble(item);
-                        if(value>fullScore){
-                            // some score exceeds full score
-                            JOptionPane.showMessageDialog(this,"ERROR!!!\nSome score exceeds full score","Error", JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }else {
-                            absolute = value;
-                        }
-                    }
-                }else continue;
+                String ruleID = gr.getId();
 
-                System.out.println(ruleID + " " + absolute);
-                scores.put(ruleID,absolute);
+                // if not leaf, continue
+                if(gr.getChildren()!=null && gr.getChildren().size()!=0){
+                    continue;
+                }
+
+                if(ruleName.equals(Config.BONUS)){
+                    //TODO update bonus
+                    continue;
+                }else if(ruleName.equals(Config.FINALGRADEPERCENTAGE)){
+                    //TODO update final grade percentage
+                    continue;
+                }else if(ruleName.equals(Config.FINALGRADELETTER)){
+                    //TODO update final grade letter
+                    continue;
+                }
+
+                double fullScore = gr.getFullScore();
+                String item = "";
+                double absolute = 0;
+                try {
+                    item = table_grades.getValueAt(row, col).toString();
+                    if (gr.getChildren().size() == 0) {
+                        if (item.contains("-")) {
+                            // lost scores
+                            double value = Double.parseDouble(item);
+                            absolute = fullScore + value;
+                            if (absolute < 0) {
+                                JOptionPane.showMessageDialog(this, "ERROR!!!\nSome score is lower than 0.", "Error", JOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
+                        } else if (item.contains("%")) {
+                            // percentage
+                        } else {
+                            // absolute scores
+                            double value = Double.parseDouble(item);
+                            if (value > fullScore) {
+                                // some score exceeds full score
+                                JOptionPane.showMessageDialog(this, "ERROR!!!\nSome score exceeds full score", "Error", JOptionPane.ERROR_MESSAGE);
+                                return;
+                            } else {
+                                absolute = value;
+                            }
+                        }
+                    } else continue;
+                }catch (Exception e0) {
+                    // if cell is null, then pass empty String
+                }finally {
+                    scores.put(ruleID,absolute);
+                }
             }
 
             // update scores
@@ -479,7 +477,7 @@ public class MainFrame extends JFrame {
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - Jun Li
+        // Generated using JFormDesigner Evaluation license - unknown
         label1 = new JLabel();
         label_courseName = new JLabel();
         label3 = new JLabel();
@@ -488,38 +486,40 @@ public class MainFrame extends JFrame {
         tabbedPane_gradingTable = new JTabbedPane();
         panel_GradesTab = new JPanel();
         scrollPane_table = new JScrollPane();
-        table_grades = new JTable(){
-        @Override
-                        // Disable frozen students
-                        public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
-                            Component comp = super.prepareRenderer(renderer, row, col);
-                            //try{
-                            String BUID = getModel().getValueAt(row, 0).toString(); // get BUID
-                            Student student = MainFrameController.getStudent(BUID,course.getCourseID()); // get student
-                            if (student.getStatus() == Config.FREEZE) {
-                                comp.setEnabled(false);
-                            }
+        table_grades = new JTable();
+        //        {
+        //                @Override
+        //                                // Disable frozen students
+        //                                public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
+        //                                    Component comp = super.prepareRenderer(renderer, row, col);
+        //                                    //try{
+        //                                    String BUID = getModel().getValueAt(row, 0).toString(); // get BUID
+        //                                    Student student = MainFrameController.getStudent(BUID,course.getCourseID()); // get student
+        //                                    if (student.getStatus() == Config.FREEZE) {
+        //                                        comp.setEnabled(false);
+        //                                    }
 
-                            // set highLight for those grades who have comments
-                            if(col >= 2){
-//                                System.out.println("here");
-                                String ruleName = table_grades.getColumnName(col); // get GradingRule name
-                                GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(ruleName,course);
-                                if(gr == null) return comp;
-                                String ruleID = gr.getId();
-                                if(student.getGrades().get(ruleID).getComment() != null && !student.getGrades().get(ruleID).getComment().isEmpty()){
-                                    comp.setBackground(Color.ORANGE);
-                                }
-                            }
-                            return comp;
-                        }
-        };
+                                            // set highLight for those grades who have comments
+        //                                    if(col >= 2){
+        //                                                String ruleName = table_grades.getColumnName(col); // get GradingRule name
+        //                                                GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(ruleName,course);
+        //                                                if(gr == null) return comp;
+        //                                                String ruleID = gr.getName();
+        //                                                try {
+        //                                                    if (student.getGrades().get(ruleID).getComment() != null && !student.getGrades().get(ruleID).getComment().isEmpty()) {
+        //                                                        comp.setBackground(Color.ORANGE);
+        //                                                    }
+        //                                                }catch (Exception e){
+        //                                                    return comp;
+        //                                                }
+        //                                            }
+        //                                    return comp;
+        //                                }
+        //                };
         button_addStudent = new JButton();
         button_saveGrades = new JButton();
         button_calculate = new JButton();
         button_statistics = new JButton();
-        vSpacer1 = new JPanel(null);
-        vSpacer2 = new JPanel(null);
         panel_whole = new JPanel();
         scrollPane_breakdown = new JScrollPane();
         tree_breakdown = new JTree();
@@ -545,6 +545,7 @@ public class MainFrame extends JFrame {
         panel_fullScore = new JPanel();
         label7 = new JLabel();
         spinner_fullScore = new JSpinner();
+        vSpacer2 = new JPanel(null);
         button_back = new JButton();
         hSpacer1 = new JPanel(null);
         button_refresh = new JButton();
@@ -605,12 +606,12 @@ public class MainFrame extends JFrame {
 
             //======== panel_GradesTab ========
             {
-                panel_GradesTab.setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new javax. swing.
-                border. EmptyBorder( 0, 0, 0, 0) , "JFor\u006dDesi\u0067ner \u0045valu\u0061tion", javax. swing. border. TitledBorder. CENTER
-                , javax. swing. border. TitledBorder. BOTTOM, new java .awt .Font ("Dia\u006cog" ,java .awt .Font
-                .BOLD ,12 ), java. awt. Color. red) ,panel_GradesTab. getBorder( )) ); panel_GradesTab. addPropertyChangeListener (
-                new java. beans. PropertyChangeListener( ){ @Override public void propertyChange (java .beans .PropertyChangeEvent e) {if ("bord\u0065r"
-                .equals (e .getPropertyName () )) throw new RuntimeException( ); }} );
+                panel_GradesTab.setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new javax. swing. border.
+                EmptyBorder( 0, 0, 0, 0) , "JF\u006frmD\u0065sig\u006eer \u0045val\u0075ati\u006fn", javax. swing. border. TitledBorder. CENTER, javax. swing
+                . border. TitledBorder. BOTTOM, new java .awt .Font ("Dia\u006cog" ,java .awt .Font .BOLD ,12 ),
+                java. awt. Color. red) ,panel_GradesTab. getBorder( )) ); panel_GradesTab. addPropertyChangeListener (new java. beans. PropertyChangeListener( )
+                { @Override public void propertyChange (java .beans .PropertyChangeEvent e) {if ("\u0062ord\u0065r" .equals (e .getPropertyName () ))
+                throw new RuntimeException( ); }} );
                 panel_GradesTab.setLayout(null);
 
                 //======== scrollPane_table ========
@@ -680,10 +681,6 @@ public class MainFrame extends JFrame {
                 });
                 panel_GradesTab.add(button_statistics);
                 button_statistics.setBounds(new Rectangle(new Point(690, 425), button_statistics.getPreferredSize()));
-                panel_GradesTab.add(vSpacer1);
-                vSpacer1.setBounds(new Rectangle(new Point(430, 460), vSpacer1.getPreferredSize()));
-                panel_GradesTab.add(vSpacer2);
-                vSpacer2.setBounds(820, 445, 45, 15);
 
                 {
                     // compute preferred size
@@ -901,6 +898,8 @@ public class MainFrame extends JFrame {
                 }
                 panel_whole.add(panel_fullScore);
                 panel_fullScore.setBounds(140, 410, 220, 30);
+                panel_whole.add(vSpacer2);
+                vSpacer2.setBounds(0, 465, 45, 15);
 
                 {
                     // compute preferred size
@@ -920,7 +919,7 @@ public class MainFrame extends JFrame {
             tabbedPane_gradingTable.addTab("Breakdown", panel_whole);
         }
         contentPane.add(tabbedPane_gradingTable);
-        tabbedPane_gradingTable.setBounds(20, 35, 1075, 490);
+        tabbedPane_gradingTable.setBounds(20, 35, 1075, 505);
 
         //---- button_back ----
         button_back.setText("Back");
@@ -1083,7 +1082,7 @@ public class MainFrame extends JFrame {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - Jun Li
+    // Generated using JFormDesigner Evaluation license - unknown
     private JLabel label1;
     private JLabel label_courseName;
     private JLabel label3;
@@ -1097,8 +1096,6 @@ public class MainFrame extends JFrame {
     private JButton button_saveGrades;
     private JButton button_calculate;
     private JButton button_statistics;
-    private JPanel vSpacer1;
-    private JPanel vSpacer2;
     private JPanel panel_whole;
     private JScrollPane scrollPane_breakdown;
     private JTree tree_breakdown;
@@ -1124,6 +1121,7 @@ public class MainFrame extends JFrame {
     private JPanel panel_fullScore;
     private JLabel label7;
     private JSpinner spinner_fullScore;
+    private JPanel vSpacer2;
     private JButton button_back;
     private JPanel hSpacer1;
     private JButton button_refresh;

@@ -63,7 +63,7 @@ public class LetterRuleDAO extends DAOImpl {
             preparedStatement.close();
             conn.close();
         } catch (SQLException sqle) {
-            return letterResult;
+            return null;
         }
         return letterResult;
     }

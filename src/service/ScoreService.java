@@ -1,5 +1,6 @@
 package service;
 
+import controller.MainFrameController;
 import model.*;
 import utils.Config;
 import utils.ErrCode;
@@ -66,9 +67,8 @@ public class ScoreService {
         if (student == null) {
             return ErrCode.STUDENTNOTEXIST.getCode();
         }
-        Grade grade = student.getGrades().get(ruleId);
-
-        grade.setComment(comment);
+        //Grade grade = student.getGrades().get(ruleId);
+        //grade.setComment(comment);
         return GradeDAO.getInstance().updateGrade(ruleId, buid, comment);
     }
 

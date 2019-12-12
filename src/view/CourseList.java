@@ -86,7 +86,6 @@ public class CourseList extends JFrame{
         if(n == 0){
             // delete this course
             int selectedIndex = list_courseList.getSelectedIndex();
-//            test
             Course selectedCourse = this.coursesVector.get(selectedIndex);
             CourseListController.deleteCourse(selectedCourse.getCourseID());
             JOptionPane.showMessageDialog(this,"Course deleted");

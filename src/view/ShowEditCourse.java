@@ -14,7 +14,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 /**
- * @author unknown
+ * @author Jun Li
  */
 public class ShowEditCourse extends JFrame {
     private Course course;
