@@ -167,7 +167,11 @@ public class StudentDAO {
             preparedStatement.close();
             conn.close();
             List<Grade> gradeList = getGradeList(courseId);
-            GradeDAO.getInstance().updateGradeList(student.getBuid(), courseId, gradeList);
+            // need grading_rule_id via course_id
+            List<String> gradingRuleList = GradingRuleDAO.getInstance().getGradingRuleList(courseId);
+            for(String str : gradingRuleList) {
+                GradeDAO.getInstance().updateGradeList(student.getBuid(), courseId, gradeList, str);
+            }
             return updateFlag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch(SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();

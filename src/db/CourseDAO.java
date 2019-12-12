@@ -45,7 +45,7 @@ public class CourseDAO {
             conn.close();
             return getCourse(semester, name, section);
         } catch (SQLException sqle) {
-            return null;
+            return new Course();
         }
 
 
@@ -95,7 +95,7 @@ public class CourseDAO {
             conn.close();
             return course;
         } catch (Exception e) {
-            return null;
+            return new Course();
         }
     }
 
@@ -135,25 +135,43 @@ public class CourseDAO {
 
     public int deleteCourse(String courseId){
         String deleteSql = "DELETE FROM course WHERE course_id = ?";
-        String selectSql = "SELECT break_down_id FROM breakdown WHERE fk_course = ?";
+        String selectBreakdownSql = "SELECT break_down_id FROM breakdown WHERE fk_course = ?";
+        String selectStudentSql = "SELECT student_id FROM course_student_relationship WHERE course_id = ?";
         int deleteFlag = 1;
+        List<String> deleteBreakIdList = new ArrayList<>();
+        List<String> deleteStudentIdList = new ArrayList<>();
         try {
             Connection conn = DBUtil.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
+            PreparedStatement preparedStatement = conn.prepareStatement(selectBreakdownSql);
             preparedStatement.setObject(1, courseId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 String breakdownID = resultSet.getString("break_down_id");
-                deleteFlag *= BreakdownDAO.getInstance().deleteBreakdown(breakdownID);
+                deleteBreakIdList.add(breakdownID);
+//                deleteFlag *= BreakdownDAO.getInstance().deleteBreakdown(breakdownID);
             }
             resultSet.close();
             preparedStatement.close();
-            conn.close();
+            preparedStatement = conn.prepareStatement(selectStudentSql);
+            preparedStatement.setObject(1, courseId);
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                String buid = resultSet.getString("student_id");
+                deleteStudentIdList.add(buid);
+            }
+            resultSet.close();
+            preparedStatement.close();
             preparedStatement = conn.prepareStatement(deleteSql);
             preparedStatement.setObject(1, courseId);
             deleteFlag *= preparedStatement.executeUpdate();
             preparedStatement.close();
             conn.close();
+            for(String str : deleteBreakIdList) {
+                deleteFlag *= BreakdownDAO.getInstance().deleteBreakdown(str);
+            }
+            for(String str : deleteStudentIdList) {
+                deleteFlag *= StudentDAO.getInstance().deleteStudent(str, courseId);
+            }
         } catch (SQLException sqle) {
             return ErrCode.DELETEERROR.getCode();
         }
@@ -182,7 +200,7 @@ public class CourseDAO {
             conn.close();
             return result;
         } catch (SQLException sqle) {
-            return null;
+            return result;
         }
     }
 }

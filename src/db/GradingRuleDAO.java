@@ -96,6 +96,12 @@ public class GradingRuleDAO {
                 updateFlag *= preparedStatement.executeUpdate();
                 preparedStatement.close();
                 conn.close();
+                String name = temp.get(0).toString();
+                String gradingRuleId = temp.get(5).toString();
+                System.out.println("name: " + name);
+                System.out.println("gradingruleid: " + gradingRuleId);
+                System.out.println("courseid: " + breakdownId);
+                GradeDAO.getInstance().addGrade(breakdownId, gradingRuleId, name);
             }
             Connection conn = DBUtil.getConnection();
             String updateBreakdownSql = "REPLACE INTO breakdown (break_down_id, fk_course) values (?, ?)";
@@ -172,6 +178,24 @@ public class GradingRuleDAO {
             conn.close();
         } catch (SQLException sqle) {
             System.err.println(sqle);
+        }
+    }
+
+    public List<String> getGradingRuleList(String courseId) {
+        String selectSql = "SELECT * FROM grading_rule WHERE fk_breakdown = ?";
+        Connection conn = DBUtil.getConnection();
+        List<String> result = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
+            preparedStatement.setObject(1, courseId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                String gradingRuleId = resultSet.getString("grading_rule_id");
+                result.add(gradingRuleId);
+            }
+            return result;
+        } catch(SQLException sqle) {
+            return result;
         }
     }
 

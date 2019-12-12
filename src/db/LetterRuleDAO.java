@@ -63,7 +63,7 @@ public class LetterRuleDAO extends DAOImpl {
             preparedStatement.close();
             conn.close();
         } catch (SQLException sqle) {
-            return null;
+            return letterResult;
         }
         return letterResult;
     }
@@ -152,7 +152,7 @@ public class LetterRuleDAO extends DAOImpl {
     }
 
     private String assambleSql(String sql, String category) {
-       sql =  sql.replaceAll("placeholder", "fk_" + category);
-       return sql;
+        sql =  sql.replaceAll("placeholder", "fk_" + category);
+        return sql;
     }
 }
