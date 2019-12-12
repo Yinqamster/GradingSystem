@@ -3,6 +3,7 @@ package db;
 import model.*;
 import utils.ErrCode;
 
+import javax.xml.transform.Result;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -56,10 +57,10 @@ public class StudentDAO {
                 return new UndergraduateStudent(name, buid, status, bonus, comment, gradeList);
             } else {
                 System.err.println("The student does not have any category");
-                return null;
+                return new GraduateStudent();
             }
         } catch (SQLException sqle) {
-            return null;
+            return new GraduateStudent();
         }
     }
 
@@ -204,7 +205,7 @@ public class StudentDAO {
             DBUtil.getConnection().close();
             return this.getStudent(buid, courseId);
         } catch (SQLException sqle) {
-            return null;
+            return new GraduateStudent();
         }
     }
 
@@ -252,7 +253,27 @@ public class StudentDAO {
             conn.close();
             return result;
         } catch(SQLException sqle) {
-            return null;
+            return result;
+        }
+    }
+
+    public List<String> getStudentIdByCourseId(String courseId) {
+        List<String> result = new ArrayList<>();
+        String selectSql = "SELECT student_id FROM course_student_relationship WHERE course_id = ?";
+        try {
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
+            preparedStatement.setObject(1, courseId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                result.add((resultSet.getString(1)));
+            }
+            resultSet.close();
+            preparedStatement.close();
+            conn.close();
+            return result;
+        } catch(SQLException sqle) {
+            return result;
         }
     }
 }

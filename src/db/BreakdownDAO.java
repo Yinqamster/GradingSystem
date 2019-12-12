@@ -8,7 +8,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BreakdownDAO{
@@ -39,7 +41,7 @@ public class BreakdownDAO{
             preparedStatement.close();
             conn.close();
         } catch (SQLException sqle) {
-            return null;
+            return new Breakdown();
         }
         Map<String, double[]> letterMap = LetterRuleDAO.getInstance().getBreakdownLetterMap(breakdownID);
         return new Breakdown(gradingRuleMap, letterMap, breakdownID);
@@ -69,7 +71,7 @@ public class BreakdownDAO{
     public int deleteBreakdown(String breakdownId) {
         String selectSql = "SELECT grading_rule_id FROM grading_rule WHERE fk_breakdown = ?";
         String deleteSql = "DELETE FROM breakdown WHERE break_down_id = ?";
-        Map<String, GradingRule> gradingRuleMap;
+        List<String> deleteGradingList = new ArrayList<>();
         int deleteFlag = 1;
         try {
             Connection conn = DBUtil.getConnection();
@@ -78,16 +80,20 @@ public class BreakdownDAO{
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 String gradingId = resultSet.getString("grading_rule_id");
-                deleteFlag *= GradingRuleDAO.getInstance().deleteGradingRule(gradingId);
+                deleteGradingList.add(gradingId);
+//                deleteFlag *= GradingRuleDAO.getInstance().deleteGradingRule(gradingId);
             }
             preparedStatement.close();
-            conn.close();
             preparedStatement = conn.prepareStatement(deleteSql);
             preparedStatement.setObject(1, breakdownId);
             deleteFlag *= preparedStatement.executeUpdate();
             resultSet.close();
             preparedStatement.close();
             conn.close();
+            for(String str : deleteGradingList) {
+                deleteFlag *= GradingRuleDAO.getInstance().deleteGradingRule(str);
+            }
+            LetterRuleDAO.getInstance().deleteBreakdownLetterMap(breakdownId);
         } catch (SQLException sqle) {
             return ErrCode.DELETEERROR.getCode();
         }

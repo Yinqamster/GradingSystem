@@ -45,7 +45,7 @@ public class CourseDAO {
             conn.close();
             return getCourse(semester, name, section);
         } catch (SQLException sqle) {
-            return null;
+            return new Course();
         }
 
 
@@ -95,7 +95,7 @@ public class CourseDAO {
             conn.close();
             return course;
         } catch (Exception e) {
-            return null;
+            return new Course();
         }
     }
 
@@ -137,6 +137,7 @@ public class CourseDAO {
         String deleteSql = "DELETE FROM course WHERE course_id = ?";
         String selectSql = "SELECT break_down_id FROM breakdown WHERE fk_course = ?";
         int deleteFlag = 1;
+        List<String> deleteBreakIdList = new ArrayList<>();
         try {
             Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
@@ -144,16 +145,19 @@ public class CourseDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 String breakdownID = resultSet.getString("break_down_id");
-                deleteFlag *= BreakdownDAO.getInstance().deleteBreakdown(breakdownID);
+                deleteBreakIdList.add(breakdownID);
+//                deleteFlag *= BreakdownDAO.getInstance().deleteBreakdown(breakdownID);
             }
             resultSet.close();
             preparedStatement.close();
-            conn.close();
             preparedStatement = conn.prepareStatement(deleteSql);
             preparedStatement.setObject(1, courseId);
             deleteFlag *= preparedStatement.executeUpdate();
             preparedStatement.close();
             conn.close();
+            for(String str : deleteBreakIdList) {
+                deleteFlag *= BreakdownDAO.getInstance().deleteBreakdown(str);
+            }
         } catch (SQLException sqle) {
             return ErrCode.DELETEERROR.getCode();
         }
@@ -182,7 +186,7 @@ public class CourseDAO {
             conn.close();
             return result;
         } catch (SQLException sqle) {
-            return null;
+            return result;
         }
     }
 }
