@@ -58,10 +58,10 @@ public class StudentDAO {
                 return new UndergraduateStudent(name, buid, status, bonus, comment, gradeList);
             } else {
                 System.err.println("The student does not have any category");
-                return null;
+                return new GraduateStudent();
             }
         } catch (SQLException sqle) {
-            return null;
+            return new GraduateStudent();
         }
     }
 
@@ -169,12 +169,13 @@ public class StudentDAO {
             updateFlag *= preparedStatement.executeUpdate();
             preparedStatement.close();
 //            conn.close();
-            List<Grade> gradeList = getGradeList(courseId);
+            Map<String, Grade> gradeMap = getGradeList(courseId);
+            GradeDAO.getInstance().updateGradeList(student.getBuid(), courseId, gradeMap);
             // need grading_rule_id via course_id
-            List<String> gradingRuleList = GradingRuleDAO.getInstance().getGradingRuleList(courseId);
-            for(String str : gradingRuleList) {
-                GradeDAO.getInstance().updateGradeList(student.getBuid(), courseId, gradeList, str);
-            }
+//            List<String> gradingRuleList = GradingRuleDAO.getInstance().getGradingRuleList(courseId);
+//            for(String str : gradingRuleList) {
+//                GradeDAO.getInstance().updateGradeList(student.getBuid(), courseId, gradeList, str);
+//            }
             return updateFlag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch(SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
@@ -240,9 +241,9 @@ public class StudentDAO {
         }
     }
 
-    public List<Grade> getGradeList(String courseId) {
+    public Map<String, Grade> getGradeList(String courseId) {
         String selectSql = "SELECT * FROM grading_rule WHERE fk_breakdown = ?";
-        List<Grade> result = new ArrayList<>();
+        Map<String, Grade> result = new HashMap<>();
         try {
 //            Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
@@ -252,14 +253,14 @@ public class StudentDAO {
                 String name = resultSet.getString("name");
                 double fullScore = resultSet.getDouble("full_score");
                 String ruleId = resultSet.getString("grading_rule_id");
-                result.add(new Grade(ruleId, fullScore, 1, 0, ""));
+                result.put(ruleId, new Grade(ruleId, fullScore, 1, 0, ""));
             }
             resultSet.close();
             preparedStatement.close();
 //            conn.close();
             return result;
         } catch(SQLException sqle) {
-            return null;
+            return result;
         }
     }
     public List<String> getStudentIdByCourseId(String courseId) {

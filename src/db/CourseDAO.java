@@ -206,4 +206,20 @@ public class CourseDAO {
             return result;
         }
     }
+
+    public String getCourseIdByGradingRuleId(String gradingRuleId) {
+        String selectSql = "SELECT fk_breakdown FROM grading_rule WHERE grading_rule_id = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
+            preparedStatement.setObject(1, gradingRuleId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            String courseId = "";
+            while(resultSet.next()) {
+                courseId = resultSet.getString("fk_breakdown");
+            }
+            return courseId;
+        } catch (SQLException sqle) {
+            return "";
+        }
+    }
 }
