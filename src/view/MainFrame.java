@@ -10,6 +10,8 @@ import model.Course;
 import model.GradingRule;
 import model.Student;
 import service.CourseService;
+import service.ScoreService;
+import service.StudentService;
 import utils.Config;
 import utils.ErrCode;
 
@@ -66,10 +68,7 @@ public class MainFrame extends JFrame {
         });
 
         // load course name and section
-        refreshCourseNameAndSection(this.course);
-        refreshTable();
-        loadBreakdownTree();
-        loadLetterRuleTree();
+        refreshAll();
     }
 
     public void refreshTable() {
@@ -402,6 +401,8 @@ public class MainFrame extends JFrame {
 
                 if(ruleName.equals(Config.BONUS)){
                     //TODO update bonus
+                    double bonus = Double.parseDouble(table_grades.getValueAt(row, col).toString());
+                    StudentService.getInstance().updateBonus(BUID,course.getCourseID(),bonus);
                     continue;
                 }else if(ruleName.equals(Config.FINALGRADEPERCENTAGE)){
                     //TODO update final grade percentage
@@ -427,6 +428,7 @@ public class MainFrame extends JFrame {
                             }
                         } else if (item.contains("%")) {
                             // percentage
+                            continue;
                         } else {
                             // absolute scores
                             double value = Double.parseDouble(item);
