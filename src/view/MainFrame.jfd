@@ -113,20 +113,6 @@ new FormModel {
 						"x": 690
 						"y": 425
 					} )
-					add( new FormComponent( "com.jformdesigner.designer.wrapper.VSpacer" ) {
-						name: "vSpacer1"
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 430
-						"y": 460
-					} )
-					add( new FormComponent( "com.jformdesigner.designer.wrapper.VSpacer" ) {
-						name: "vSpacer2"
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-						"x": 820
-						"y": 445
-						"height": 15
-						"width": 45
-					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": "Grades"
 				} )
@@ -368,6 +354,14 @@ new FormModel {
 						"width": 220
 						"height": 30
 					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.VSpacer" ) {
+						name: "vSpacer2"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+						"x": 0
+						"y": 465
+						"height": 15
+						"width": 45
+					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": "Breakdown"
 				} )
@@ -375,7 +369,7 @@ new FormModel {
 				"x": 20
 				"y": 35
 				"width": 1075
-				"height": 490
+				"height": 505
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "button_back"

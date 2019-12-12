@@ -361,47 +361,57 @@ public class MainFrame extends JFrame {
                 String ruleName = table_grades.getColumnName(col);
                 GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(ruleName, course);
                 if(gr == null) continue;
-                String ruleID = gr.getName();
+                String ruleID = gr.getId();
 
-                if(ruleID.equals(Config.BONUS)){
+                // if not leaf, continue
+                if(gr.getChildren()!=null && gr.getChildren().size()!=0){
+                    continue;
+                }
+
+                if(ruleName.equals(Config.BONUS)){
                     //TODO update bonus
                     continue;
-                }else if(ruleID.equals(Config.FINALGRADEPERCENTAGE)){
+                }else if(ruleName.equals(Config.FINALGRADEPERCENTAGE)){
                     //TODO update final grade percentage
                     continue;
-                }else if(ruleID.equals(Config.FINALGRADELETTER)){
+                }else if(ruleName.equals(Config.FINALGRADELETTER)){
                     //TODO update final grade letter
                     continue;
                 }
 
                 double fullScore = gr.getFullScore();
-                String item = table_grades.getValueAt(row, col).toString();
-                double absolute=0;
-                if (gr.getChildren().size() == 0) {
-                    if (item.contains("-")) {
-                        // lost scores
-                        double value = Double.parseDouble(item);
-                        absolute = fullScore + value;
-                        if(absolute<0){
-                            JOptionPane.showMessageDialog(this,"ERROR!!!\nSome score is lower than 0.","Error", JOptionPane.ERROR_MESSAGE);
-                            return;
+                String item = "";
+                double absolute = 0;
+                try {
+                    item = table_grades.getValueAt(row, col).toString();
+                    if (gr.getChildren().size() == 0) {
+                        if (item.contains("-")) {
+                            // lost scores
+                            double value = Double.parseDouble(item);
+                            absolute = fullScore + value;
+                            if (absolute < 0) {
+                                JOptionPane.showMessageDialog(this, "ERROR!!!\nSome score is lower than 0.", "Error", JOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
+                        } else if (item.contains("%")) {
+                            // percentage
+                        } else {
+                            // absolute scores
+                            double value = Double.parseDouble(item);
+                            if (value > fullScore) {
+                                // some score exceeds full score
+                                JOptionPane.showMessageDialog(this, "ERROR!!!\nSome score exceeds full score", "Error", JOptionPane.ERROR_MESSAGE);
+                                return;
+                            } else {
+                                absolute = value;
+                            }
                         }
-                    } else if (item.contains("%")) {
-                        // percentage
-                    } else {
-                        // absolute scores
-                        double value = Double.parseDouble(item);
-                        if(value>fullScore){
-                            // some score exceeds full score
-                            JOptionPane.showMessageDialog(this,"ERROR!!!\nSome score exceeds full score","Error", JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }else {
-                            absolute = value;
-                        }
-                    }
-                }else continue;
-
-                scores.put(ruleID,absolute);
+                    } else continue;
+                }catch (Exception e0) {
+                    // if cell is null, then pass empty String
+                }finally {
+                    scores.put(ruleID,absolute);
+                }
             }
 
             // update scores
@@ -509,8 +519,6 @@ public class MainFrame extends JFrame {
         button_saveGrades = new JButton();
         button_calculate = new JButton();
         button_statistics = new JButton();
-        vSpacer1 = new JPanel(null);
-        vSpacer2 = new JPanel(null);
         panel_whole = new JPanel();
         scrollPane_breakdown = new JScrollPane();
         tree_breakdown = new JTree();
@@ -536,6 +544,7 @@ public class MainFrame extends JFrame {
         panel_fullScore = new JPanel();
         label7 = new JLabel();
         spinner_fullScore = new JSpinner();
+        vSpacer2 = new JPanel(null);
         button_back = new JButton();
         hSpacer1 = new JPanel(null);
         button_refresh = new JButton();
@@ -596,12 +605,12 @@ public class MainFrame extends JFrame {
 
             //======== panel_GradesTab ========
             {
-                panel_GradesTab.setBorder ( new javax . swing. border .CompoundBorder ( new javax . swing. border .TitledBorder ( new javax . swing. border .EmptyBorder
-                ( 0, 0 ,0 , 0) ,  "JF\u006frmDes\u0069gner \u0045valua\u0074ion" , javax. swing .border . TitledBorder. CENTER ,javax . swing. border
-                .TitledBorder . BOTTOM, new java. awt .Font ( "D\u0069alog", java .awt . Font. BOLD ,12 ) ,java . awt
-                . Color .red ) ,panel_GradesTab. getBorder () ) ); panel_GradesTab. addPropertyChangeListener( new java. beans .PropertyChangeListener ( ){ @Override public void
-                propertyChange (java . beans. PropertyChangeEvent e) { if( "\u0062order" .equals ( e. getPropertyName () ) )throw new RuntimeException( )
-                ;} } );
+                panel_GradesTab.setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new javax. swing. border.
+                EmptyBorder( 0, 0, 0, 0) , "JF\u006frmD\u0065sig\u006eer \u0045val\u0075ati\u006fn", javax. swing. border. TitledBorder. CENTER, javax. swing
+                . border. TitledBorder. BOTTOM, new java .awt .Font ("Dia\u006cog" ,java .awt .Font .BOLD ,12 ),
+                java. awt. Color. red) ,panel_GradesTab. getBorder( )) ); panel_GradesTab. addPropertyChangeListener (new java. beans. PropertyChangeListener( )
+                { @Override public void propertyChange (java .beans .PropertyChangeEvent e) {if ("\u0062ord\u0065r" .equals (e .getPropertyName () ))
+                throw new RuntimeException( ); }} );
                 panel_GradesTab.setLayout(null);
 
                 //======== scrollPane_table ========
@@ -671,10 +680,6 @@ public class MainFrame extends JFrame {
                 });
                 panel_GradesTab.add(button_statistics);
                 button_statistics.setBounds(new Rectangle(new Point(690, 425), button_statistics.getPreferredSize()));
-                panel_GradesTab.add(vSpacer1);
-                vSpacer1.setBounds(new Rectangle(new Point(430, 460), vSpacer1.getPreferredSize()));
-                panel_GradesTab.add(vSpacer2);
-                vSpacer2.setBounds(820, 445, 45, 15);
 
                 {
                     // compute preferred size
@@ -892,6 +897,8 @@ public class MainFrame extends JFrame {
                 }
                 panel_whole.add(panel_fullScore);
                 panel_fullScore.setBounds(140, 410, 220, 30);
+                panel_whole.add(vSpacer2);
+                vSpacer2.setBounds(0, 465, 45, 15);
 
                 {
                     // compute preferred size
@@ -911,7 +918,7 @@ public class MainFrame extends JFrame {
             tabbedPane_gradingTable.addTab("Breakdown", panel_whole);
         }
         contentPane.add(tabbedPane_gradingTable);
-        tabbedPane_gradingTable.setBounds(20, 35, 1075, 490);
+        tabbedPane_gradingTable.setBounds(20, 35, 1075, 505);
 
         //---- button_back ----
         button_back.setText("Back");
@@ -1088,8 +1095,6 @@ public class MainFrame extends JFrame {
     private JButton button_saveGrades;
     private JButton button_calculate;
     private JButton button_statistics;
-    private JPanel vSpacer1;
-    private JPanel vSpacer2;
     private JPanel panel_whole;
     private JScrollPane scrollPane_breakdown;
     private JTree tree_breakdown;
@@ -1115,6 +1120,7 @@ public class MainFrame extends JFrame {
     private JPanel panel_fullScore;
     private JLabel label7;
     private JSpinner spinner_fullScore;
+    private JPanel vSpacer2;
     private JButton button_back;
     private JPanel hSpacer1;
     private JButton button_refresh;

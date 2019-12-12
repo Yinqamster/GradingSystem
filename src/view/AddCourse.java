@@ -71,7 +71,7 @@ public class AddCourse extends JFrame {
             String breakdownID = AddCourseController.getBreakdownID(item, this.breakdownID_item);
             if(breakdownID.isEmpty()){
                 // error
-                breakdownID = null;
+                breakdownID = "";
             }
 
             String courseName = this.textField_name.getText();
