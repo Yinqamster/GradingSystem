@@ -27,6 +27,7 @@ public class GradingRule {
         this.name = name;
         this.fullScore = fullScore;
         this.proportion = proportion;
+        this.id = "GradingRule" + name;
     }
 
     public GradingRule(String ID, String parentID, String name, double fullScore, double proportion) {
@@ -44,6 +45,7 @@ public class GradingRule {
         this.name = name;
         this.fullScore = fullScore;
         this.proportion = proportion;
+        this.id = "GradingRule" + name;
     }
 
     public GradingRule(String ID, String parentID, String name, double proportion) {
@@ -61,6 +63,7 @@ public class GradingRule {
         this.name = name;
         this.fullScore = 0.0;
         this.proportion = proportion;
+        this.id = "GradingRule" + name;
     }
 
     public GradingRule(String name, double proportion) {
@@ -68,6 +71,7 @@ public class GradingRule {
         this.name = name;
         this.fullScore = 0.0;
         this.proportion = proportion;
+        this.id = "GradingRule" + name;
     }
 
     public GradingRule(String name, double fullScore, double proportion) {
@@ -75,6 +79,7 @@ public class GradingRule {
         this.name = name;
         this.fullScore = fullScore;
         this.proportion = proportion;
+        this.id = "GradingRule" + name;
     }
 
     public GradingRule(String ID, String parentID, String name, double proportion, List<GradingRule> children) {
@@ -90,21 +95,25 @@ public class GradingRule {
     public GradingRule(String parentID, String name, double proportion, List<GradingRule> children) {
         this(parentID, name, proportion);
         this.children = children;
+        this.id = "GradingRule" + name;
     }
 
     public GradingRule(String parentID, String name, double fullScore, double proportion, List<GradingRule> children) {
         this(parentID, name,fullScore, proportion);
         this.children = children;
+        this.id = "GradingRule" + name;
     }
 
     public GradingRule(String name, double proportion, List<GradingRule> children) {
         this(name, proportion);
         this.children = children;
+        this.id = "GradingRule" + name;
     }
 
     public GradingRule(String name, double fullScore, double proportion, List<GradingRule> children) {
         this(name,fullScore, proportion);
         this.children = children;
+        this.id = "GradingRule" + name;
     }
 
 

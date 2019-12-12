@@ -2,6 +2,7 @@ package controller;
 
 import model.*;
 import service.*;
+import utils.Config;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -64,10 +65,20 @@ public class MainFrameController {
     }
 
     public static GradingRule getGradingRuleByNameAndCourse(String name, Course course) {
-        Breakdown breakdown = course.getBreakdown();
+        Breakdown breakdown = CourseService.getInstance().getCourse(course.getCourseID()).getBreakdown();
         List<GradingRule> gradingRuleList = new ArrayList<>(breakdown.getGradingRules().values());
-        for (GradingRule gr : gradingRuleList) {
-            if (gr.getName().equals(name)) return gr;
+        return findGradingRule(name,gradingRuleList);
+    }
+
+    private static GradingRule findGradingRule(String name, List<GradingRule> grs){
+        for (GradingRule gr : grs) {
+            String grName = gr.getName();
+            if (grName.equals(name)) return gr;
+            else if(gr.getChildren()!=null && gr.getChildren().size()!=0){
+                GradingRule tmp = findGradingRule(name,gr.getChildren());
+                if(tmp==null) continue;
+                else return tmp;
+            }
         }
         return null;
     }
@@ -146,9 +157,9 @@ public class MainFrameController {
         for(GradingRule gradingRule : gradingRuleList){
             dtm.addColumn(gradingRule.getName());
         }
-        dtm.addColumn("Bonus");
-        dtm.addColumn("Final Grade(%)");
-        dtm.addColumn("Final Grade(Letter)");
+        dtm.addColumn(Config.BONUS);
+        dtm.addColumn(Config.FINALGRADEPERCENTAGE);
+        dtm.addColumn(Config.FINALGRADELETTER);
 
         // add rows
         for(Student stu : StudentMap.values()){
@@ -162,6 +173,7 @@ public class MainFrameController {
             Map<String, Grade> gradeMap = stu.getGrades(); // ruleID, Grade
             for(int i=2; i<gradingRuleList.size()+2; i++){
                 Grade grade = gradeMap.get(gradingRuleList.get(i-2).getId());
+                if(grade == null) continue;
                 double percentage = grade.getPercentage();
                 String item = String.valueOf((int)(percentage*100))+"%";
                 row[i] = item;
@@ -176,7 +188,8 @@ public class MainFrameController {
                 row[row.length - 2] = (int) (finalPercentage * 100) + "%";
                 row[row.length - 1] = letterGrade;
             }catch (Exception e){
-
+                row[row.length - 2] = "0%";
+                row[row.length - 1] = "N/A";
             }
 
             // add row

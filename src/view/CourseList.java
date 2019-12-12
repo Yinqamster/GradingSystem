@@ -105,6 +105,16 @@ public class CourseList extends JFrame{
             String item = course.getName() + " Section: " + course.getSection();
             dlm.addElement(item);
         }
+
+        //test
+//        coursesVector.add(new Course("CS591 P1", "Fall 2019",""));
+//        coursesVector.add(new Course("CS591 P1", "Fall 2019",""));
+//        coursesVector.add(new Course("CS591 P1", "Fall 2019",""));
+//        for(Course course:coursesVector){
+//            String item = course.getName() + " Section: " + course.getSemester();
+//            dlm.addElement(item);
+//        }
+
         this.list_courseList.setModel(dlm);
     }
 

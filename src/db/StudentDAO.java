@@ -144,6 +144,7 @@ public class StudentDAO {
             }
             preparedStatement.setObject(2, buid);
             preparedStatement.close();
+//            String update
             conn.close();
             return ErrCode.OK.getCode();
         } catch(SQLException sqle) {
@@ -165,6 +166,8 @@ public class StudentDAO {
             updateFlag *= preparedStatement.executeUpdate();
             preparedStatement.close();
             conn.close();
+            List<Grade> gradeList = getGradeList(courseId);
+            GradeDAO.getInstance().updateGradeList(student.getBuid(), courseId, gradeList);
             return updateFlag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch(SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
@@ -220,12 +223,36 @@ public class StudentDAO {
             preparedStatement.setObject(1, courseId);
             preparedStatement.setObject(2, buid);
             deleteReturnValue = preparedStatement.executeUpdate();
+            deleteReturnValue *= GradeDAO.getInstance().deleteGradeList(buid, courseId);
             if (deleteReturnValue == 0) {
                 return ErrCode.COURSENOTEXIST.getCode();
             }
             return ErrCode.OK.getCode();
         } catch (SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
+        }
+    }
+
+    public List<Grade> getGradeList(String courseId) {
+        String selectSql = "SELECT * FROM grading_rule WHERE fk_breakdown = ?";
+        List<Grade> result = new ArrayList<>();
+        try {
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
+            preparedStatement.setObject(1, courseId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                String name = resultSet.getString("name");
+                double fullScore = resultSet.getDouble("full_score");
+                String ruleId = resultSet.getString("grading_rule_id");
+                result.add(new Grade(ruleId, fullScore, 1, 0, ""));
+            }
+            resultSet.close();
+            preparedStatement.close();
+            conn.close();
+            return result;
+        } catch(SQLException sqle) {
+            return null;
         }
     }
 }

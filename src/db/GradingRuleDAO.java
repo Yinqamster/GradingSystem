@@ -58,7 +58,7 @@ public class GradingRuleDAO {
             resultSet.close();
             preparedStatement.close();
             // Get the information of current grading_rule
-            selectSql = "SELECT * FROM grading_rule WHERE current_id = ?";
+            selectSql = "SELECT * FROM grading_rule WHERE grading_rule_id = ?";
             preparedStatement = conn.prepareStatement(selectSql);
             preparedStatement.setObject(1, currentId);
             resultSet = preparedStatement.executeQuery();
@@ -97,7 +97,12 @@ public class GradingRuleDAO {
                 preparedStatement.close();
                 conn.close();
             }
-
+            Connection conn = DBUtil.getConnection();
+            String updateBreakdownSql = "REPLACE INTO breakdown (break_down_id, fk_course) values (?, ?)";
+            PreparedStatement preparedStatement = conn.prepareStatement(updateBreakdownSql);
+            preparedStatement.setObject(1, breakdownId);
+            preparedStatement.setObject(2, breakdownId);
+            updateFlag *= preparedStatement.executeUpdate();
         } catch (SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
         }

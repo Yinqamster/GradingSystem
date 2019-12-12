@@ -25,26 +25,47 @@ public class CourseDAO {
     public static CourseDAO getInstance() {
         return courseDAO;
     }
-    public Course getCourse(String semester, String name, String section) {
-        String courseId = semester + name + section;
-        return getCourse(courseId);
-    }
     public Course getCourse(String courseId) {
-        try{
-            String selectCourseSql = "SELECT * FROM course WHERE course_id = ?";
-            Connection conn = DBUtil.getConnection();
+        String selectCourseSql = "SELECT semester, name, section FROM course WHERE course_id = ?";
+        Connection conn = DBUtil.getConnection();
+        try {
             PreparedStatement preparedStatement = conn.prepareStatement(selectCourseSql);
             preparedStatement.setObject(1, courseId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            String description = "";
             String name = "";
-            String section = "";
             String semester = "";
+            String section = "";
+            if(resultSet.next()) {
+                name = resultSet.getString("name");
+                semester = resultSet.getString("semester");
+                section = resultSet.getString("section");
+            }
+            resultSet.close();
+            preparedStatement.close();
+            conn.close();
+            return getCourse(semester, name, section);
+        } catch (SQLException sqle) {
+            return null;
+        }
+
+
+    }
+    public Course getCourse(String semester, String name, String section) {
+        try{
+            String selectCourseSql = "SELECT * FROM course WHERE semester = ? AND name = ? AND section = ?";
+            String selectBreakdownSql = "SELECT break_down_id FROM breakdown WHERE fk_course = ?";
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(selectCourseSql);
+            preparedStatement.setObject(1, semester);
+            preparedStatement.setObject(2, name);
+            preparedStatement.setObject(3, section);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            String description = "";
+            String courseId = "";
+            Breakdown  breakdown = new Breakdown();
             if (resultSet.next()) {
                 description = resultSet.getString("description");
-                name = resultSet.getString("name");
-                section = resultSet.getString("section");
-                semester = resultSet.getString("semester");
+                courseId = resultSet.getString("course_id");
             }
             Map<String, Student> studentMap = new HashMap<>();
             String selectStudentSql = "SELECT student_id from " +
@@ -56,11 +77,21 @@ public class CourseDAO {
                 Student student = StudentDAO.studentDAO.getStudent(resultSet.getString(1), courseId);
                 studentMap.put(student.getBuid(), student);
             }
-            Course course = new Course(name, section, semester, description, studentMap);
-            course.setCourseID(courseId);
 
             resultSet.close();
             preparedStatement.close();
+
+            preparedStatement = conn.prepareStatement(selectBreakdownSql);
+            preparedStatement.setObject(1, courseId);
+            resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) {
+                String breakDownId = resultSet.getString("break_down_id");
+                breakdown = BreakdownDAO.getInstance().getBreakdown(breakDownId);
+            }
+
+            Course course = new Course(courseId, name, section, semester, description, studentMap, breakdown);
+//            course.setCourseID(courseId);
+
             conn.close();
             return course;
         } catch (Exception e) {
@@ -135,35 +166,16 @@ public class CourseDAO {
 
     public List<Course> getAllCourses() {
         List<Course> result = new ArrayList<>();
-        String selectSql = "SELECT course_id FROM course";
+        String selectSql = "SELECT semester, name, section FROM course";
         try {
             Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
-                String courseId = resultSet.getString("course_id");
-                result.add(getCourse(courseId));
-            }
-            resultSet.close();
-            preparedStatement.close();
-            conn.close();
-            return result;
-        } catch (SQLException sqle) {
-            return null;
-        }
-    }
-
-    public List<Course> getCourseListBySemester(String semester) {
-        String selectSql = "SELECT course_id FROM course WHERE semester = ?";
-        List<Course> result = new ArrayList<>();
-        try {
-            Connection conn = DBUtil.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
-            preparedStatement.setObject(1, semester);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()) {
-                String courseId = resultSet.getString("course_id");
-                result.add(getCourse(courseId));
+                String semester = resultSet.getString("semester");
+                String name = resultSet.getString("name");
+                String section = resultSet.getString("section");
+                result.add(getCourse(semester, name, section));
             }
             resultSet.close();
             preparedStatement.close();

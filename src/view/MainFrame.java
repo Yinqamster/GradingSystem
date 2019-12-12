@@ -77,29 +77,6 @@ public class MainFrame extends JFrame {
 
         dtm = MainFrameController.initTableData(dtm, MainFrameController.getCourseByID(course.getCourseID()));
         table_grades.setModel(dtm);
-
-//        table_grades = new JTable(dtm){
-//            @Override
-//            // Disable frozen students
-//            public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
-//                Component comp = super.prepareRenderer(renderer, row, col);
-//                String BUID = getModel().getValueAt(row, 0).toString(); // get BUID
-//                Student student = MainFrameController.getStudent(BUID,course.getCourseID()); // get student
-//                if (student.getStatus() == Config.FREEZE) {
-//                    comp.setEnabled(false);
-//                }
-//
-//                // set highLight for those grades who have comments
-//                if(col >= 2){
-//                    String ruleName = table_grades.getColumnName(col); // get GradingRule name
-//                    String ruleID = MainFrameController.getGradingRuleByNameAndCourse(ruleName,course).getName();
-//                    if(student.getGrades().get(ruleID).getComment() != null && !student.getGrades().get(ruleID).getComment().isEmpty()){
-//                        comp.setBackground(Color.ORANGE);
-//                    }
-//                }
-//                return comp;
-//            }
-//        };
     }
 
     public void refreshCourseNameAndSection(Course course) {
@@ -227,11 +204,14 @@ public class MainFrame extends JFrame {
 
         String GradingRuleName = table_grades.getColumnName(col);
         GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(GradingRuleName, course);
-        String BUID = table_grades.getValueAt(row, 0).toString();
-        Student student = MainFrameController.getStudent(BUID, course.getCourseID());
+        if(gr == null){
+            return;
+        }
 
-        ShowEditStudent showEditStudent = new ShowEditStudent(course, Config.ADDEDITCOMMENT, student, gr.getId(), this);
-        showEditStudent.setVisible(true);
+        String BUID = table_grades.getValueAt(row, 0).toString();
+
+        AddComment addComment = new AddComment(course,gr,BUID);
+        addComment.setVisible(true);
     }
 
     private void menuItem_studentCommentMouseReleased(MouseEvent e) {
@@ -308,7 +288,7 @@ public class MainFrame extends JFrame {
                 MainFrameController.updateGradingRule(course.getCourseID(), ruleName, fullScore, percentage, null, 0);
             } else {
                 // depth != 0
-                String parentText = Objects.requireNonNull(tree_breakdown.getSelectionPath()).getLastPathComponent().toString();
+                String parentText = Objects.requireNonNull(tree_breakdown.getSelectionPath().getParentPath()).getLastPathComponent().toString();
                 String parentName = parentText.split(" - ")[0];
                 String parentRuleID = MainFrameController.getGradingRuleByNameAndCourse(parentName, course).getId();
                 int depth = Objects.requireNonNull(tree_breakdown.getSelectionPath()).getPathCount() - 1;
@@ -382,6 +362,18 @@ public class MainFrame extends JFrame {
                 GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(ruleName, course);
                 if(gr == null) continue;
                 String ruleID = gr.getName();
+
+                if(ruleID.equals(Config.BONUS)){
+                    //TODO update bonus
+                    continue;
+                }else if(ruleID.equals(Config.FINALGRADEPERCENTAGE)){
+                    //TODO update final grade percentage
+                    continue;
+                }else if(ruleID.equals(Config.FINALGRADELETTER)){
+                    //TODO update final grade letter
+                    continue;
+                }
+
                 double fullScore = gr.getFullScore();
                 String item = table_grades.getValueAt(row, col).toString();
                 double absolute=0;
@@ -474,7 +466,7 @@ public class MainFrame extends JFrame {
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - Jun Li
+        // Generated using JFormDesigner Evaluation license - unknown
         label1 = new JLabel();
         label_courseName = new JLabel();
         label3 = new JLabel();
@@ -483,31 +475,36 @@ public class MainFrame extends JFrame {
         tabbedPane_gradingTable = new JTabbedPane();
         panel_GradesTab = new JPanel();
         scrollPane_table = new JScrollPane();
-        table_grades = new JTable(){
-        @Override
-                        // Disable frozen students
-                        public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
-                            Component comp = super.prepareRenderer(renderer, row, col);
-                            //try{
-                            String BUID = getModel().getValueAt(row, 0).toString(); // get BUID
-                            Student student = MainFrameController.getStudent(BUID,course.getCourseID()); // get student
-                            if (student.getStatus() == Config.FREEZE) {
-                                comp.setEnabled(false);
-                            }
+        table_grades = new JTable();
+        //        {
+        //                @Override
+        //                                // Disable frozen students
+        //                                public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
+        //                                    Component comp = super.prepareRenderer(renderer, row, col);
+        //                                    //try{
+        //                                    String BUID = getModel().getValueAt(row, 0).toString(); // get BUID
+        //                                    Student student = MainFrameController.getStudent(BUID,course.getCourseID()); // get student
+        //                                    if (student.getStatus() == Config.FREEZE) {
+        //                                        comp.setEnabled(false);
+        //                                    }
 
-                            // set highLight for those grades who have comments
-                            if(col >= 2){
-                                String ruleName = table_grades.getColumnName(col); // get GradingRule name
-                                GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(ruleName,course);
-                                if(gr == null) return comp;
-                                String ruleID = gr.getName();
-                                if(student.getGrades().get(ruleID).getComment() != null && !student.getGrades().get(ruleID).getComment().isEmpty()){
-                                    comp.setBackground(Color.ORANGE);
-                                }
-                            }
-                            return comp;
-                        }
-        };
+                                            // set highLight for those grades who have comments
+        //                                    if(col >= 2){
+        //                                                String ruleName = table_grades.getColumnName(col); // get GradingRule name
+        //                                                GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(ruleName,course);
+        //                                                if(gr == null) return comp;
+        //                                                String ruleID = gr.getName();
+        //                                                try {
+        //                                                    if (student.getGrades().get(ruleID).getComment() != null && !student.getGrades().get(ruleID).getComment().isEmpty()) {
+        //                                                        comp.setBackground(Color.ORANGE);
+        //                                                    }
+        //                                                }catch (Exception e){
+        //                                                    return comp;
+        //                                                }
+        //                                            }
+        //                                    return comp;
+        //                                }
+        //                };
         button_addStudent = new JButton();
         button_saveGrades = new JButton();
         button_calculate = new JButton();
@@ -599,12 +596,12 @@ public class MainFrame extends JFrame {
 
             //======== panel_GradesTab ========
             {
-                panel_GradesTab.setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new javax. swing.
-                border. EmptyBorder( 0, 0, 0, 0) , "JFor\u006dDesi\u0067ner \u0045valu\u0061tion", javax. swing. border. TitledBorder. CENTER
-                , javax. swing. border. TitledBorder. BOTTOM, new java .awt .Font ("Dia\u006cog" ,java .awt .Font
-                .BOLD ,12 ), java. awt. Color. red) ,panel_GradesTab. getBorder( )) ); panel_GradesTab. addPropertyChangeListener (
-                new java. beans. PropertyChangeListener( ){ @Override public void propertyChange (java .beans .PropertyChangeEvent e) {if ("bord\u0065r"
-                .equals (e .getPropertyName () )) throw new RuntimeException( ); }} );
+                panel_GradesTab.setBorder ( new javax . swing. border .CompoundBorder ( new javax . swing. border .TitledBorder ( new javax . swing. border .EmptyBorder
+                ( 0, 0 ,0 , 0) ,  "JF\u006frmDes\u0069gner \u0045valua\u0074ion" , javax. swing .border . TitledBorder. CENTER ,javax . swing. border
+                .TitledBorder . BOTTOM, new java. awt .Font ( "D\u0069alog", java .awt . Font. BOLD ,12 ) ,java . awt
+                . Color .red ) ,panel_GradesTab. getBorder () ) ); panel_GradesTab. addPropertyChangeListener( new java. beans .PropertyChangeListener ( ){ @Override public void
+                propertyChange (java . beans. PropertyChangeEvent e) { if( "\u0062order" .equals ( e. getPropertyName () ) )throw new RuntimeException( )
+                ;} } );
                 panel_GradesTab.setLayout(null);
 
                 //======== scrollPane_table ========
@@ -1077,7 +1074,7 @@ public class MainFrame extends JFrame {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - Jun Li
+    // Generated using JFormDesigner Evaluation license - unknown
     private JLabel label1;
     private JLabel label_courseName;
     private JLabel label3;

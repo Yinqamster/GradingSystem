@@ -27,9 +27,9 @@ public class GradingRuleService {
         return GradingRuleDAO.getInstance().updateBreakdownGradingRule(gradingRule, courseID);
     }
 
-    public GradingRule getGradingRuleByID(String courseID, String GradingRuleID){
+    public GradingRule getGradingRuleByID(String courseID, String gradingRuleID){
         // TODO given GradingRuleID and courseID, return GradingRule
-        return new GradingRule();
+        return GradingRuleDAO.getInstance().getGradingRule(gradingRuleID);
     }
 
 }
