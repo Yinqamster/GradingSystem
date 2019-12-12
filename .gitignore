@@ -39,5 +39,6 @@ out
 # JFormDesigner files
 # *.jfd
 
+# db file
 *.db
-*.db
+src/db/GradingSystem.db

@@ -47,7 +47,7 @@ public class AddChild extends JFrame {
             // add a child
             AddChildController.addGradingRule(course.getCourseID(),name,fullScore,proportion,parentID,depth);
             JOptionPane.showMessageDialog(this,"Rule added");
-            mainFrame.loadBreakdownTree();
+            mainFrame.refreshAll();
             this.dispose();
         }
     }
