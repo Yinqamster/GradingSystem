@@ -7,10 +7,14 @@ public class Name {
     private String fullName;
 
     public Name(){
-
+        firstName = "";
+        middleName = "";
+        lastName = "";
+        fullName = "";
     }
 
     public Name(String firstName, String middleName, String lastName){
+        this();
         setFirstName(firstName);
         setMiddleName(middleName);
         setLastName(lastName);
@@ -22,6 +26,7 @@ public class Name {
     }
 
     public Name(String fullName){
+        this();
         setFullName(fullName);
         String[] names = fullName.split(" ");
         setFirstName(names[0]);

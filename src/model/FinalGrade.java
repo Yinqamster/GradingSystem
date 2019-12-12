@@ -7,6 +7,7 @@ public class FinalGrade extends Grade {
 
     public FinalGrade() {
         super();
+        letterGrade = "";
     }
 
     public FinalGrade(double percentage, String letterGrade){

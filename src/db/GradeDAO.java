@@ -63,14 +63,15 @@ public class GradeDAO {
                 double deduction_score = resultSet.getDouble("deduction_score");
                 String comment = resultSet.getString("comment");
                 String gradeName = resultSet.getString("name");
+                String gradingRuleId = resultSet.getString("fk_grading_rule");
                 if (gradeName.equalsIgnoreCase("Final")) {
                     String letter = resultSet.getString("letter_grade");
                     Grade finalGrade = new FinalGrade(gradeName, absolute_score, percentage_score,
                             deduction_score, comment, letter);
-                    result.put(gradeName, finalGrade);
+                    result.put(gradingRuleId, finalGrade);
                 } else {
                     Grade grade = new Grade(gradeName, absolute_score, percentage_score, deduction_score, comment);
-                    result.put(gradeName, grade);
+                    result.put(gradingRuleId, grade);
                 }
             }
             resultSet.close();
@@ -158,5 +159,49 @@ public class GradeDAO {
             flag *= deleteGrade(buid, courseId, entry.getValue().getRuleId());
         }
         return flag;
+    }
+
+    public int addGrade(String courseId, String gradingId, String name) {
+        List<String> studentId = StudentDAO.getInstance().getStudentIdByCourseId(courseId);
+        int updateFlag = 1;
+        String updateSql = "REPLACE INTO grade (fk_student, fk_grading_rule, fk_course, name) values (?, ?, ?, ?)";
+        try {
+            for (String id : studentId) {
+                Connection conn = DBUtil.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(updateSql);
+                preparedStatement.setObject(1, id);
+                preparedStatement.setObject(2, gradingId);
+                preparedStatement.setObject(3, courseId);
+                preparedStatement.setObject(4, name);
+                updateFlag *= preparedStatement.executeUpdate();
+            }
+            return updateFlag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
+        } catch (SQLException sqle) {
+            return ErrCode.UPDATEERROR.getCode();
+        }
+    }
+
+    public List<List<Object>> getGradeFromGradingRule(String courseId) {
+        String selectSql = "SELECT * FROM grading_rule WHERE fk_breakdown = ?";
+        List<List<Object>> result = new ArrayList<>();
+        try {
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
+            preparedStatement.setObject(1, courseId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                List<Object> temp = new ArrayList<>();
+                temp.add(resultSet.getString("name"));
+                temp.add(resultSet.getString("grading_rule_id"));
+                temp.add(resultSet.getDouble("full_score"));
+                result.add(temp);
+            }
+            resultSet.close();
+            preparedStatement.close();
+            conn.close();
+            return result;
+        } catch(SQLException sqle) {
+            return result;
+        }
     }
 }

@@ -13,7 +13,13 @@ public class GradingRule {
     private double proportion;
 
     public GradingRule(){
+        id = "";
+        parentID = "";
         children = new ArrayList<>();
+        depth = -1;
+        name = "";
+        fullScore = 0.0;
+        proportion = 0.0;
     }
 
     public void setChildrenID(List<GradingRule> children) {

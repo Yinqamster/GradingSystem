@@ -5,13 +5,18 @@ public class Grade {
     private double absolute;
     private double percentage;
     private double deduction;
-    private String comment = "";
+    private String comment;
 
     public Grade(){
-
+        ruleId = "";
+        absolute = 0.0;
+        percentage = 0.0;
+        deduction = 0.0;
+        comment = "";
     }
 
     public Grade(String ruleId, double absolute, double percentage, double deduction, String comment) {
+        this();
         this.ruleId = ruleId;
         this.absolute = absolute;
         this.percentage = percentage;

@@ -13,6 +13,7 @@ public class Breakdown {
     public Breakdown(){
         gradingRules = new HashMap<>();
         letterRule = new HashMap<>();
+        breakdownID = "";
         double[] letterPercent = {0.0, 0.0};
         letterRule.put("A", letterPercent);
         letterRule.put("A-", letterPercent);

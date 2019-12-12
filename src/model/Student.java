@@ -16,9 +16,13 @@ public abstract class Student {
     private FinalGrade finalGrade;
 
     public Student(){
-        grades = new HashMap<>();
+        name = new Name();
+        buid = "";
         status = Config.ACTIVE;
-        finalGrade = new FinalGrade("final", 0, 0, 0, "", "");
+        bonus = 0.0;
+        comment = "";
+        grades = new HashMap<>();
+        finalGrade = new FinalGrade("final", 0.0, 0.0, 0.0, "", "");
     }
 
     public Student(Name name, String buid) {

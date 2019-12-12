@@ -37,7 +37,7 @@ public class StudentDAO {
             int status = 0;
             double bonus = 0;
             String comment = "";
-            Map<String, Grade> gradeList = null;
+            Map<String, Grade> gradeList = new HashMap<>();
             int category = 0;
 
             if (resultSet.next()) {
