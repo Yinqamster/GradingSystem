@@ -378,6 +378,7 @@ public class MainFrame extends JFrame {
         for(int row=0; row < table_grades.getRowCount(); row++) {
             Map<String, Double> scores = new HashMap<>();
             String BUID = table_grades.getValueAt(row,0).toString();
+            System.out.println(table_grades.getColumnCount());
             for(int col=2; col < table_grades.getColumnCount(); col++) {
                 String ruleName = table_grades.getColumnName(col);
                 GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(ruleName, course);
@@ -386,6 +387,7 @@ public class MainFrame extends JFrame {
                 double fullScore = gr.getFullScore();
                 String item = table_grades.getValueAt(row, col).toString();
                 double absolute=0;
+                System.out.println("gr " + gr.getChildren().size());
                 if (gr.getChildren().size() == 0) {
                     if (item.contains("-")) {
                         // lost scores
@@ -410,10 +412,12 @@ public class MainFrame extends JFrame {
                     }
                 }else continue;
 
+                System.out.println(ruleID + " " + absolute);
                 scores.put(ruleID,absolute);
             }
 
             // update scores
+            System.out.println("size" + scores.size());
             MainFrameController.updateRowScore(course.getCourseID(),BUID,scores);
         }
 
@@ -498,7 +502,7 @@ public class MainFrame extends JFrame {
 
                             // set highLight for those grades who have comments
                             if(col >= 2){
-                                System.out.println("here");
+//                                System.out.println("here");
                                 String ruleName = table_grades.getColumnName(col); // get GradingRule name
                                 GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(ruleName,course);
                                 if(gr == null) return comp;
