@@ -31,6 +31,7 @@ import javax.swing.tree.*;
 public class MainFrame extends JFrame {
     private CourseList parent;
     private Course course;
+    private Map<String, Student> BUID_Student_map = new HashMap<>();
 
     public MainFrame(CourseList courseList, String courseID) {
         initComponents();
@@ -75,8 +76,11 @@ public class MainFrame extends JFrame {
         // disable first two columns
         DefaultTableModel dtm = (DefaultTableModel) table_grades.getModel();
 
+        course = MainFrameController.getCourseByID(course.getCourseID());
         dtm = MainFrameController.initTableData(dtm, MainFrameController.getCourseByID(course.getCourseID()));
         table_grades.setModel(dtm);
+
+        BUID_Student_map = course.getStudents();
     }
 
     public void refreshCourseNameAndSection(Course course) {
@@ -156,6 +160,30 @@ public class MainFrame extends JFrame {
             List<GradingRule> grs = new ArrayList<>(gradingRules.values());
             DefaultTreeModel treeModel = new DefaultTreeModel(MainFrameController.initBreakdownTree(rootNode, MainFrameController.getGradeRuleOfDepth0(grs)));
             this.tree_breakdown.setModel(treeModel);
+        }
+
+        // expand all nodes
+        setTreeExpandedState(tree_breakdown,true);
+    }
+
+    public static void setTreeExpandedState(JTree tree, boolean expanded) {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getModel().getRoot();
+        setNodeExpandedState(tree, node, expanded);
+    }
+
+    public static void setNodeExpandedState(JTree tree, DefaultMutableTreeNode node, boolean expanded) {
+        ArrayList<DefaultMutableTreeNode> list = Collections.list(node.children());
+        for (DefaultMutableTreeNode treeNode : list) {
+            setNodeExpandedState(tree, treeNode, expanded);
+        }
+        if (!expanded && node.isRoot()) {
+            return;
+        }
+        TreePath path = new TreePath(node.getPath());
+        if (expanded) {
+            tree.expandPath(path);
+        } else {
+            tree.collapsePath(path);
         }
     }
 
@@ -342,6 +370,10 @@ public class MainFrame extends JFrame {
     }
 
     private void button_refreshMouseReleased(MouseEvent e) {
+        refreshAll();
+    }
+
+    public void refreshAll(){
         refreshCourseNameAndSection(MainFrameController.getCourseByID(course.getCourseID()));
         refreshTable();
         loadBreakdownTree();
@@ -439,7 +471,7 @@ public class MainFrame extends JFrame {
     }
 
     private void menuItem_absScoreMouseReleased(MouseEvent e) {
-        int col  = table_grades.columnAtPoint(e.getPoint());
+        int col = table_grades.getTableHeader().columnAtPoint(e.getPoint());
         String gradeName = table_grades.getColumnName(col);
         GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(gradeName,course);
         String ruleID = gr.getId();
@@ -485,36 +517,37 @@ public class MainFrame extends JFrame {
         tabbedPane_gradingTable = new JTabbedPane();
         panel_GradesTab = new JPanel();
         scrollPane_table = new JScrollPane();
-        table_grades = new JTable();
-        //        {
-        //                @Override
-        //                                // Disable frozen students
-        //                                public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
-        //                                    Component comp = super.prepareRenderer(renderer, row, col);
-        //                                    //try{
-        //                                    String BUID = getModel().getValueAt(row, 0).toString(); // get BUID
-        //                                    Student student = MainFrameController.getStudent(BUID,course.getCourseID()); // get student
-        //                                    if (student.getStatus() == Config.FREEZE) {
-        //                                        comp.setEnabled(false);
-        //                                    }
+        table_grades = new JTable()
+                {
+                        @Override
+                                        // Disable frozen students
+                                        public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
+                                            Component comp = super.prepareRenderer(renderer, row, col);
+                                            //try{
+                                            String BUID = getModel().getValueAt(row, 0).toString(); // get BUID
+                                            Student student = BUID_Student_map.get(BUID);
+                                            if (student.getStatus() == Config.FREEZE) {
+                                                comp.setEnabled(false);
+                                            }else{comp.setEnabled(true);}
 
-                                            // set highLight for those grades who have comments
-        //                                    if(col >= 2){
-        //                                                String ruleName = table_grades.getColumnName(col); // get GradingRule name
-        //                                                GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(ruleName,course);
-        //                                                if(gr == null) return comp;
-        //                                                String ruleID = gr.getName();
-        //                                                try {
-        //                                                    if (student.getGrades().get(ruleID).getComment() != null && !student.getGrades().get(ruleID).getComment().isEmpty()) {
-        //                                                        comp.setBackground(Color.ORANGE);
-        //                                                    }
-        //                                                }catch (Exception e){
-        //                                                    return comp;
-        //                                                }
-        //                                            }
-        //                                    return comp;
-        //                                }
-        //                };
+
+                                             // set highLight for those grades who have comments
+                                            if(col >= 2){
+                                                        String ruleName = table_grades.getColumnName(col); // get GradingRule name
+                                                        GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(ruleName,course);
+                                                        if(gr == null) return comp;
+                                                        String ruleID = gr.getName();
+                                                        try {
+                                                            if (student.getGrades().get(ruleID).getComment() != null && !student.getGrades().get(ruleID).getComment().isEmpty()) {
+                                                                comp.setBackground(Color.ORANGE);
+                                                            }
+                                                        }catch (Exception e){
+                                                            return comp;
+                                                        }
+                                                    }
+                                            return comp;
+                                        }
+                        };
         button_addStudent = new JButton();
         button_saveGrades = new JButton();
         button_calculate = new JButton();

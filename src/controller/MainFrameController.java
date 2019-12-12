@@ -65,7 +65,7 @@ public class MainFrameController {
     }
 
     public static GradingRule getGradingRuleByNameAndCourse(String name, Course course) {
-        Breakdown breakdown = CourseService.getInstance().getCourse(course.getCourseID()).getBreakdown();
+        Breakdown breakdown = course.getBreakdown();
         List<GradingRule> gradingRuleList = new ArrayList<>(breakdown.getGradingRules().values());
         return findGradingRule(name,gradingRuleList);
     }
