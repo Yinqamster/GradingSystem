@@ -1,5 +1,6 @@
 package service;
 
+import db.GradeDAO;
 import model.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -143,6 +144,22 @@ public class StudentService {
         student.setName(name);
         student.setComment(comment);
         // update student in DB
+        return StudentDAO.getInstance().updateStudent(student);
+    }
+
+    public int updateFinalGrade(String courseId, String buid, double finalGrade) {
+        Student student = getStudent(buid, courseId);
+        return GradeDAO.getInstance().updateFinalGrade(buid, courseId, 0, finalGrade, 0, student.getFinalGrade().getLetterGrade());
+    }
+
+    public int updateFinalGradeLetter(String courseId, String buid, String letterGrade) {
+        Student student = getStudent(buid, courseId);
+        return GradeDAO.getInstance().updateFinalGrade(buid, courseId, 0, student.getFinalGrade().getPercentage(), 0, letterGrade);
+    }
+
+    public int updateBonus(String courseId, String buid, double bonus) {
+        Student student = getStudent(buid, courseId);
+        student.setBonus(bonus);
         return StudentDAO.getInstance().updateStudent(student);
     }
 
