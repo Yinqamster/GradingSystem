@@ -39,5 +39,5 @@ out
 # JFormDesigner files
 # *.jfd
 
-*.db
+# db file
 *.db
