@@ -255,4 +255,23 @@ public class StudentDAO {
             return null;
         }
     }
+    public List<String> getStudentIdByCourseId(String courseId) {
+        List<String> result = new ArrayList<>();
+        String selectSql = "SELECT student_id FROM course_student_relationship WHERE course_id = ?";
+        try {
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
+            preparedStatement.setObject(1, courseId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                result.add((resultSet.getString(1)));
+            }
+            resultSet.close();
+            preparedStatement.close();
+            conn.close();
+            return result;
+        } catch(SQLException sqle) {
+            return result;
+        }
+    }
 }
