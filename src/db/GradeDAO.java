@@ -63,14 +63,15 @@ public class GradeDAO {
                 double deduction_score = resultSet.getDouble("deduction_score");
                 String comment = resultSet.getString("comment");
                 String gradeName = resultSet.getString("name");
+                String gradingRuleId = resultSet.getString("fk_grading_rule");
                 if (gradeName.equalsIgnoreCase("Final")) {
                     String letter = resultSet.getString("letter_grade");
                     Grade finalGrade = new FinalGrade(gradeName, absolute_score, percentage_score,
                             deduction_score, comment, letter);
-                    result.put(gradeName, finalGrade);
+                    result.put(gradingRuleId, finalGrade);
                 } else {
                     Grade grade = new Grade(gradeName, absolute_score, percentage_score, deduction_score, comment);
-                    result.put(gradeName, grade);
+                    result.put(gradingRuleId, grade);
                 }
             }
             resultSet.close();
@@ -160,7 +161,7 @@ public class GradeDAO {
         return flag;
     }
 
-    public int addGrade(String courseId, String gradingRuldId, String name) {
+    public int addGrade(String courseId, String gradingId, String name) {
         List<String> studentId = StudentDAO.getInstance().getStudentIdByCourseId(courseId);
         int updateFlag = 1;
         String updateSql = "REPLACE INTO grade (fk_student, fk_grading_rule, fk_course, name) values (?, ?, ?, ?)";
@@ -169,7 +170,7 @@ public class GradeDAO {
                 Connection conn = DBUtil.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(updateSql);
                 preparedStatement.setObject(1, id);
-                preparedStatement.setObject(2, gradingRuldId);
+                preparedStatement.setObject(2, gradingId);
                 preparedStatement.setObject(3, courseId);
                 preparedStatement.setObject(4, name);
                 updateFlag *= preparedStatement.executeUpdate();

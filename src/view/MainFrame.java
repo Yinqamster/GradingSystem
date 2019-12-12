@@ -498,10 +498,11 @@ public class MainFrame extends JFrame {
 
                             // set highLight for those grades who have comments
                             if(col >= 2){
+                                System.out.println("here");
                                 String ruleName = table_grades.getColumnName(col); // get GradingRule name
                                 GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(ruleName,course);
                                 if(gr == null) return comp;
-                                String ruleID = gr.getName();
+                                String ruleID = gr.getId();
                                 if(student.getGrades().get(ruleID).getComment() != null && !student.getGrades().get(ruleID).getComment().isEmpty()){
                                     comp.setBackground(Color.ORANGE);
                                 }
