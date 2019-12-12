@@ -415,7 +415,6 @@ public class MainFrame extends JFrame {
             }
 
             // update scores
-            System.out.println("size" + scores.size());
             MainFrameController.updateRowScore(course.getCourseID(),BUID,scores);
         }
 
