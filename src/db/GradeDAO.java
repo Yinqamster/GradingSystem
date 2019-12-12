@@ -179,4 +179,28 @@ public class GradeDAO {
             return ErrCode.UPDATEERROR.getCode();
         }
     }
+
+    public List<List<Object>> getGradeFromGradingRule(String courseId) {
+        String selectSql = "SELECT * FROM grading_rule WHERE fk_breakdown = ?";
+        List<List<Object>> result = new ArrayList<>();
+        try {
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
+            preparedStatement.setObject(1, courseId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                List<Object> temp = new ArrayList<>();
+                temp.add(resultSet.getString("name"));
+                temp.add(resultSet.getString("grading_rule_id"));
+                temp.add(resultSet.getDouble("full_score"));
+                result.add(temp);
+            }
+            resultSet.close();
+            preparedStatement.close();
+            conn.close();
+            return result;
+        } catch(SQLException sqle) {
+            return result;
+        }
+    }
 }
