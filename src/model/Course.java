@@ -5,9 +5,9 @@ import java.util.Map;
 
 public class Course {
     private String name;
-    private String section = "";
+    private String section;
     private String semester;
-    private String description = "";
+    private String description;
     private Breakdown breakdown;
     //buid, student
     private Map<String, Student> students;
@@ -22,8 +22,13 @@ public class Course {
     }
 
     public Course() {
+        name = "";
+        section = "";
+        semester = "";
+        description = "";
         breakdown = new Breakdown();
         students = new HashMap<>();
+        courseID = "";
     }
 
     public Course(String name, String section, String semester, String description) {

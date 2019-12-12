@@ -7,6 +7,7 @@ public class Template extends Breakdown {
 
     public Template() {
         super();
+        name = "";
     }
 
     public Template(String name) {
