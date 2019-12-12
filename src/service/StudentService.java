@@ -146,6 +146,13 @@ public class StudentService {
         return StudentDAO.getInstance().updateStudent(student);
     }
 
+    public int updateBonus(String buid, String courseId, double bonus) {
+        Student student = getStudent(buid, courseId);
+        if(student != null) return ErrCode.STUDENTNOTEXIST.getCode();
+        student.setBonus(bonus);
+        return StudentDAO.getInstance().updateStudent(student);
+    }
+
     public int freezeStudent(String buid, String courseId) {
         Course course = CourseService.getInstance().getCourse(courseId);
         Map<String, Student> students = course.getStudents();
