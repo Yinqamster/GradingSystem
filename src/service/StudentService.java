@@ -146,6 +146,15 @@ public class StudentService {
         return StudentDAO.getInstance().updateStudent(student);
     }
 
+    public int updateFinalGrade(String courseId, String buid, double finalGrade, String letterGrade) {
+        Student student = getStudent(buid, courseId);
+        FinalGrade fg = new FinalGrade();
+        fg.setPercentage(finalGrade);
+        fg.setLetterGrade(letterGrade);
+        student.setFinalGrade(fg);
+        return StudentDAO.getInstance().updateStudent(student);
+    }
+
     public int freezeStudent(String buid, String courseId) {
         Course course = CourseService.getInstance().getCourse(courseId);
         Map<String, Student> students = course.getStudents();
