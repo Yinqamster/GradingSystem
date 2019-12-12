@@ -32,8 +32,8 @@ public class DBtest {
 
     public static void main(String[] args) {
         DBtest dBtest = new DBtest();
-//        dBtest.courseDAOTest();
-        dBtest.studentDAOTest();
+        dBtest.courseDAOTest();
+//        dBtest.studentDAOTest();
 //        dBtest.gradingRuleDAOTest();
 //        GradingRule gradingRule = new GradingRule("EXAM", 2, "Bonus Exam", 100, 0.0);
 //        GradingRuleDAO.getInstance().updateBreakdownGradingRule(gradingRule, "CS591P1");

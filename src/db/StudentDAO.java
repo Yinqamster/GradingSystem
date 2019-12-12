@@ -3,6 +3,7 @@ package db;
 import model.*;
 import utils.ErrCode;
 
+import javax.xml.transform.Result;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -56,10 +57,10 @@ public class StudentDAO {
                 return new UndergraduateStudent(name, buid, status, bonus, comment, gradeList);
             } else {
                 System.err.println("The student does not have any category");
-                return null;
+                return new GraduateStudent();
             }
         } catch (SQLException sqle) {
-            return null;
+            return new GraduateStudent();
         }
     }
 
@@ -158,6 +159,8 @@ public class StudentDAO {
         updateFlag = updateStudent(student);
         String updateSql = "INSERT OR REPLACE INTO course_student_relationship (course_id, student_id) " +
                 "values (?, ?)";
+        String updateGradeSql = "REPLACE INTO grade (fk_student, fk_grading_rule, absolute_score, percentage_score," +
+                " comment, fk_course, name) values (?, ?, ?, ?, ?, ?, ?)";
         try {
             Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(updateSql);
@@ -165,9 +168,24 @@ public class StudentDAO {
             preparedStatement.setObject(2, student.getBuid());
             updateFlag *= preparedStatement.executeUpdate();
             preparedStatement.close();
-            conn.close();
             List<Grade> gradeList = getGradeList(courseId);
             GradeDAO.getInstance().updateGradeList(student.getBuid(), courseId, gradeList);
+            List<List<Object>> gradingRuleList = GradeDAO.getInstance().getGradeFromGradingRule(courseId);
+            for(List<Object> tempList : gradingRuleList) {
+                String name = tempList.get(0).toString();
+                String gradingRuleId = tempList.get(1).toString();
+                double fullScore = Double.parseDouble(tempList.get(2).toString());
+                preparedStatement = conn.prepareStatement(updateGradeSql);
+                preparedStatement.setObject(1, student.getBuid());
+                preparedStatement.setObject(2, gradingRuleId);
+                preparedStatement.setObject(3, fullScore);
+                preparedStatement.setObject(4, 1);
+                preparedStatement.setObject(5, "");
+                preparedStatement.setObject(6, courseId);
+                preparedStatement.setObject(7, name);
+                updateFlag *= preparedStatement.executeUpdate();
+            }
+            conn.close();
             return updateFlag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch(SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
@@ -204,7 +222,7 @@ public class StudentDAO {
             DBUtil.getConnection().close();
             return this.getStudent(buid, courseId);
         } catch (SQLException sqle) {
-            return null;
+            return new GraduateStudent();
         }
     }
 
@@ -252,7 +270,27 @@ public class StudentDAO {
             conn.close();
             return result;
         } catch(SQLException sqle) {
-            return null;
+            return result;
+        }
+    }
+
+    public List<String> getStudentIdByCourseId(String courseId) {
+        List<String> result = new ArrayList<>();
+        String selectSql = "SELECT student_id FROM course_student_relationship WHERE course_id = ?";
+        try {
+            Connection conn = DBUtil.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(selectSql);
+            preparedStatement.setObject(1, courseId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                result.add((resultSet.getString(1)));
+            }
+            resultSet.close();
+            preparedStatement.close();
+            conn.close();
+            return result;
+        } catch(SQLException sqle) {
+            return result;
         }
     }
 }

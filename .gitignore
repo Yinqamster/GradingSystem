@@ -38,3 +38,6 @@ out
 
 # JFormDesigner files
 # *.jfd
+
+# db file
+*.db

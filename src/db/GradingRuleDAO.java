@@ -73,7 +73,7 @@ public class GradingRuleDAO {
             conn.close();
             return new GradingRule(currentId, parentId, name, fullScore, proportion, gradingRuleList);
         } catch (SQLException sqle) {
-            return null;
+            return new GradingRule();
         }
     }
 
@@ -96,6 +96,12 @@ public class GradingRuleDAO {
                 updateFlag *= preparedStatement.executeUpdate();
                 preparedStatement.close();
                 conn.close();
+                String name = temp.get(0).toString();
+                String gradingRuleId = temp.get(5).toString();
+                System.out.println("name: " + name);
+                System.out.println("gradingruleid: " + gradingRuleId);
+                System.out.println("courseid: " + breakdownId);
+                GradeDAO.getInstance().addGrade(breakdownId, gradingRuleId, name);
             }
             Connection conn = DBUtil.getConnection();
             String updateBreakdownSql = "REPLACE INTO breakdown (break_down_id, fk_course) values (?, ?)";
