@@ -2,6 +2,7 @@ package model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class Course {
     private String name;
@@ -28,7 +29,7 @@ public class Course {
         description = "";
         breakdown = new Breakdown();
         students = new HashMap<>();
-        courseID = "";
+        courseID = UUID.randomUUID().toString();
     }
 
     public Course(String name, String section, String semester, String description) {
@@ -37,6 +38,7 @@ public class Course {
         this.section = section;
         this.semester = semester;
         this.description = description;
+        courseID = UUID.randomUUID().toString();
     }
 
     public Course(String name, String semester, String description) {
@@ -44,6 +46,7 @@ public class Course {
         this.name = name;
         this.semester = semester;
         this.description = description;
+        courseID = UUID.randomUUID().toString();
     }
 
     public Course(String name, String section, String semester, String description, Map<String, Student> studentMap) {
@@ -53,11 +56,13 @@ public class Course {
         this.section = section;
         this.semester = semester;
         this.description = description;
+        courseID = UUID.randomUUID().toString();
     }
 
     public Course(String name, String section, String semester, String description, Breakdown breakdown) {
         this(name, section, semester, description);
         this.breakdown = breakdown;
+        courseID = UUID.randomUUID().toString();
     }
 
     public Course(String courseID, String name, String section, String semester, String description, Map<String, Student> studentMap, Breakdown breakdown) {
