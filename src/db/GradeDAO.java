@@ -1,9 +1,6 @@
 package db;
 
-import model.Course;
-import model.FinalGrade;
-import model.Grade;
-import model.GradingRule;
+import model.*;
 import utils.ErrCode;
 
 import java.sql.Connection;
@@ -48,6 +45,28 @@ public class GradeDAO {
             return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch (SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
+        }
+    }
+
+    public int addFinalGrade(String courseId, String buid, FinalGrade finalGrade) {
+        String addSql = "INSERT INTO grade (fk_student, fk_grading_rule, absolute_score, " +
+                "percentage_score, deduction_score, comment, letter_grade, fk_course, name) values " +
+                "(?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(addSql);
+            preparedStatement.setObject(1, buid);
+            preparedStatement.setObject(2, "final");
+            preparedStatement.setObject(3, finalGrade.getAbsolute());
+            preparedStatement.setObject(4, finalGrade.getPercentage());
+            preparedStatement.setObject(5, finalGrade.getDeduction());
+            preparedStatement.setObject(6, finalGrade.getComment());
+            preparedStatement.setObject(7, finalGrade.getLetterGrade());
+            preparedStatement.setObject(8, courseId);
+            preparedStatement.setObject(9, "final");
+            int flag = preparedStatement.executeUpdate();
+            return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
+        } catch (SQLException sqle) {
+            return ErrCode.ADDERROR.getCode();
         }
     }
 
