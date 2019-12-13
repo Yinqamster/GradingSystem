@@ -4,7 +4,7 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
-			name: "frame1"
+			name: "this"
 			"title": "Save as Template"
 			"$locationPolicy": 1
 			"iconImage": new com.jformdesigner.model.SwingIcon( 0, "/images/icon.png" )
@@ -48,7 +48,6 @@ new FormModel {
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 				"x": 200
 				"y": 65
-				"width": 90
 			} )
 			add( new FormComponent( "com.jformdesigner.designer.wrapper.VSpacer" ) {
 				name: "vSpacer1"
