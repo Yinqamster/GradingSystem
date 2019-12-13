@@ -390,6 +390,7 @@ public class MainFrame extends JFrame {
     }
 
     private void button_saveGradesMouseReleased(MouseEvent e) {
+        course = MainFrameController.getCourseByID(course.getCourseID());// get newest course
         for(int row=0; row < table_grades.getRowCount(); row++) {
             Map<String, Double> scores = new HashMap<>();
             String BUID = table_grades.getValueAt(row,0).toString();
