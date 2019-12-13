@@ -320,7 +320,11 @@ public class MainFrame extends JFrame {
                 // depth != 0
                 String parentText = Objects.requireNonNull(tree_breakdown.getSelectionPath().getParentPath()).getLastPathComponent().toString();
                 String parentName = parentText.split(" - ")[0];
-                String parentRuleID = MainFrameController.getGradingRuleByNameAndCourse(parentName, course).getId();
+                String parentRuleID="";
+                if(MainFrameController.getGradingRuleByNameAndCourse(parentName, course)==null){
+                    parentRuleID=null;
+                }
+                else parentRuleID = MainFrameController.getGradingRuleByNameAndCourse(parentName, course).getId();
                 int depth = Objects.requireNonNull(tree_breakdown.getSelectionPath()).getPathCount() - 1;
                 MainFrameController.updateGradingRule(course.getCourseID(), ruleName, fullScore, percentage, parentRuleID, depth);
             }
