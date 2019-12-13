@@ -89,21 +89,6 @@ public class ScoreService {
             return ErrCode.BREAKDOWNNOTEXIST.getCode();
         }
         Map<String, Student> students = course.getStudents();
-    }
-
-
-
-    public int calculateScores1(String courseId) {
-        // get course, breakdown and students
-        Course course = CourseService.getInstance().getCourse(courseId);
-        if (course == null) {
-            return ErrCode.COURSENOTEXIST.getCode();
-        }
-        Breakdown breakdown = course.getBreakdown();
-        if (breakdown == null) {
-            return ErrCode.BREAKDOWNNOTEXIST.getCode();
-        }
-        Map<String, Student> students = course.getStudents();
 
         // calculate score for each student
         for (String buid : students.keySet()) {
