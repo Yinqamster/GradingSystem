@@ -95,7 +95,6 @@ public class StudentDAO {
                 return ErrCode.OK.getCode();
             }
         } catch (SQLException sqle) {
-            System.out.println(sqle.getSQLState());
             return ErrCode.UPDATEERROR.getCode();
         }
     }
