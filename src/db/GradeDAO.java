@@ -87,8 +87,8 @@ public class GradeDAO {
     }
 
     public int upgradeGrade(String ruleId, String buid, Grade grade) {
-        String updateSql = "REPLACE INTO grade (fk_grading_rule, fk_student, absolute_score, percentage_score, deduction_score, comment, name, fk_course)" +
-                "values (?, ?, ?, ?, ?, ?, ?, ?)";
+        String updateSql = "REPLACE INTO grade (fk_grading_rule, fk_student, absolute_score, percentage_score, deduction_score, comment, name, fk_course, grade_id)" +
+                "values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String courseId = CourseDAO.getInstance().getCourseIdByGradingRuleId(ruleId);
         try {
 //            Connection conn = DBUtil.getConnection();
@@ -101,6 +101,7 @@ public class GradeDAO {
             preparedStatement.setObject(6, grade.getComment());
             preparedStatement.setObject(7, grade.getRuleId());
             preparedStatement.setObject(8, courseId);
+            preparedStatement.setObject(9, buid + courseId + ruleId);
             int flag = preparedStatement.executeUpdate();
             preparedStatement.close();
 //            conn.close();
@@ -110,28 +111,28 @@ public class GradeDAO {
         }
     }
 
-    public int upgradeGrade(String courseId, String buid, Grade grade, String gradingRuleId) {
-        String updateSql = "REPLACE INTO grade (fk_grading_rule, fk_student, absolute_score, percentage_score, deduction_score, comment, name, fk_course)" +
-                "values (?, ?, ?, ?, ?, ?, ?, ?)";
-        try {
-//            Connection conn = DBUtil.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
-            preparedStatement.setObject(1, gradingRuleId);
-            preparedStatement.setObject(2, buid);
-            preparedStatement.setObject(3, grade.getAbsolute());
-            preparedStatement.setObject(4, grade.getPercentage());
-            preparedStatement.setObject(5, grade.getDeduction());
-            preparedStatement.setObject(6, grade.getComment());
-            preparedStatement.setObject(7, grade.getRuleId());
-            preparedStatement.setObject(8, courseId);
-            int flag = preparedStatement.executeUpdate();
-            preparedStatement.close();
-//            conn.close();
-            return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
-        } catch(SQLException sqle) {
-            return ErrCode.UPDATEERROR.getCode();
-        }
-    }
+//    public int upgradeGrade(String courseId, String buid, Grade grade, String gradingRuleId) {
+//        String updateSql = "REPLACE INTO grade (fk_grading_rule, fk_student, absolute_score, percentage_score, deduction_score, comment, name, fk_course)" +
+//                "values (?, ?, ?, ?, ?, ?, ?, ?)";
+//        try {
+////            Connection conn = DBUtil.getConnection();
+//            PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
+//            preparedStatement.setObject(1, gradingRuleId);
+//            preparedStatement.setObject(2, buid);
+//            preparedStatement.setObject(3, grade.getAbsolute());
+//            preparedStatement.setObject(4, grade.getPercentage());
+//            preparedStatement.setObject(5, grade.getDeduction());
+//            preparedStatement.setObject(6, grade.getComment());
+//            preparedStatement.setObject(7, grade.getRuleId());
+//            preparedStatement.setObject(8, courseId);
+//            int flag = preparedStatement.executeUpdate();
+//            preparedStatement.close();
+////            conn.close();
+//            return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
+//        } catch(SQLException sqle) {
+//            return ErrCode.UPDATEERROR.getCode();
+//        }
+//    }
 
     public int updateGrade(String ruleId, String buid, String comment) {
         String updateSql = "UPDATE grade SET comment = ? WHERE fk_grading_rule = ? AND fk_student = ?";
@@ -185,7 +186,7 @@ public class GradeDAO {
                         finalGrade.getPercentage(), finalGrade.getDeduction(), finalGrade.getLetterGrade());
             }
             else {
-                flag *= upgradeGrade(courseid, buid, entry.getValue(), entry.getKey());
+                flag *= upgradeGrade(entry.getKey(), buid, entry.getValue());
             }
         }
 //        for(int i = 0; i < grades.size(); i++) {
