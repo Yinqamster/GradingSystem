@@ -428,6 +428,8 @@ public class MainFrame extends JFrame {
                             }
                         } else if (item.contains("%")) {
                             // percentage
+                            double percentage = Double.parseDouble(item.replace("%",""))/100;
+                            absolute = fullScore*percentage;
                             continue;
                         } else {
                             // absolute scores
