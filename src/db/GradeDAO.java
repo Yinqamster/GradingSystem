@@ -1,5 +1,6 @@
 package db;
 
+import model.Course;
 import model.FinalGrade;
 import model.Grade;
 import model.GradingRule;
@@ -86,8 +87,9 @@ public class GradeDAO {
     }
 
     public int upgradeGrade(String ruleId, String buid, Grade grade) {
-        String updateSql = "REPLACE INTO grade (fk_grading_rule, fk_student, absolute_score, percentage_score, deduction_score, comment, name)" +
-                "values (?, ?, ?, ?, ?, ?, ?)";
+        String updateSql = "REPLACE INTO grade (fk_grading_rule, fk_student, absolute_score, percentage_score, deduction_score, comment, name, fk_course)" +
+                "values (?, ?, ?, ?, ?, ?, ?, ?)";
+        String courseId = CourseDAO.getInstance().getCourseIdByGradingRuleId(ruleId);
         try {
 //            Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
@@ -98,6 +100,7 @@ public class GradeDAO {
             preparedStatement.setObject(5, grade.getDeduction());
             preparedStatement.setObject(6, grade.getComment());
             preparedStatement.setObject(7, grade.getRuleId());
+            preparedStatement.setObject(8, courseId);
             int flag = preparedStatement.executeUpdate();
             preparedStatement.close();
 //            conn.close();
@@ -131,14 +134,13 @@ public class GradeDAO {
     }
 
     public int updateGrade(String ruleId, String buid, String comment) {
-        String updateSql = "REPLACE INTO grade(fk_grading_rule, fk_student, comment) values " +
-                "(?, ?, ?)";
+        String updateSql = "UPDATE grade SET comment = ? WHERE fk_grading_rule = ? AND fk_student = ?";
         try {
 //            Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
-            preparedStatement.setObject(1, ruleId);
-            preparedStatement.setObject(2, buid);
-            preparedStatement.setObject(3, comment);
+            preparedStatement.setObject(1, comment);
+            preparedStatement.setObject(2, ruleId);
+            preparedStatement.setObject(3, buid);
             int flag = preparedStatement.executeUpdate();
             preparedStatement.close();
 //            conn.close();
@@ -174,18 +176,28 @@ public class GradeDAO {
         }
     }
 
-    public int updateGradeList(String buid, String courseid, List<Grade> grades, String gradingRuleId) {
+    public int updateGradeList(String buid, String courseid, Map<String, Grade> gradeMap) {
         int flag = 1;
-        for(int i = 0; i < grades.size(); i++) {
-            if(grades.get(i) instanceof FinalGrade) {
-                FinalGrade finalGrade = (FinalGrade)grades.get(i);
+        for(Map.Entry<String, Grade> entry : gradeMap.entrySet()) {
+            if(entry.getValue() instanceof FinalGrade) {
+                FinalGrade finalGrade = (FinalGrade)entry.getValue();
                 flag *= updateFinalGrade(buid, courseid, finalGrade.getAbsolute(),
                         finalGrade.getPercentage(), finalGrade.getDeduction(), finalGrade.getLetterGrade());
             }
             else {
-                flag *= upgradeGrade(courseid, buid, grades.get(i), gradingRuleId);
+                flag *= upgradeGrade(courseid, buid, entry.getValue(), entry.getKey());
             }
         }
+//        for(int i = 0; i < grades.size(); i++) {
+//            if(grades.get(i) instanceof FinalGrade) {
+//                FinalGrade finalGrade = (FinalGrade)grades.get(i);
+//                flag *= updateFinalGrade(buid, courseid, finalGrade.getAbsolute(),
+//                        finalGrade.getPercentage(), finalGrade.getDeduction(), finalGrade.getLetterGrade());
+//            }
+//            else {
+//                flag *= upgradeGrade(courseid, buid, grades.get(i), gradingRuleId);
+//            }
+//        }
         return flag;
     }
 
