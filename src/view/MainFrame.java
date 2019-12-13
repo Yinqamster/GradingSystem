@@ -34,6 +34,7 @@ public class MainFrame extends JFrame {
     private CourseList parent;
     private Course course;
     private Map<String, Student> BUID_Student_map = new HashMap<>();
+    private int rightClickCol = 0;
 
     public MainFrame(CourseList courseList, String courseID) {
         initComponents();
@@ -63,6 +64,7 @@ public class MainFrame extends JFrame {
                     if (pick > 1 && pick<table_grades.getColumnCount()-3) {
                         popupMenu_ScoreExpression.show(table_grades.getTableHeader(), e.getX(), e.getY());
                     }
+                    rightClickCol = pick;
                 }
             }
         });
@@ -322,12 +324,11 @@ public class MainFrame extends JFrame {
                 int depth = Objects.requireNonNull(tree_breakdown.getSelectionPath()).getPathCount() - 1;
                 MainFrameController.updateGradingRule(course.getCourseID(), ruleName, fullScore, percentage, parentRuleID, depth);
             }
-            // refresh tree
-            loadBreakdownTree();
             JOptionPane.showMessageDialog(this, "Breakdown updated");
         }else{
             JOptionPane.showMessageDialog(this, ErrCode.TEXTFIELDEMPTY.getDescription());
         }
+        refreshAll();
     }
 
     public boolean isGradingRuleValid(){
@@ -362,11 +363,10 @@ public class MainFrame extends JFrame {
             // update letterRule
             MainFrameController.editLetterRule(course.getCourseID(), letterName, lowerBound, upperBound);
             JOptionPane.showMessageDialog(this, "Letter Rule updated");
-            // refresh JList
-            loadLetterRuleTree();
         } else {
             JOptionPane.showMessageDialog(this, "Some grading range overlapped\nPlease check.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+        refreshAll();
     }
 
     private void button_refreshMouseReleased(MouseEvent e) {
@@ -382,7 +382,7 @@ public class MainFrame extends JFrame {
 
     private void button_calculateMouseReleased(MouseEvent e) {
         MainFrameController.calculateScores(course.getCourseID());
-        refreshTable();
+        refreshAll();
     }
 
     private void button_saveGradesMouseReleased(MouseEvent e) {
@@ -391,14 +391,6 @@ public class MainFrame extends JFrame {
             String BUID = table_grades.getValueAt(row,0).toString();
             for(int col=2; col < table_grades.getColumnCount(); col++) {
                 String ruleName = table_grades.getColumnName(col);
-                GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(ruleName, course);
-                if(gr == null) continue;
-                String ruleID = gr.getId();
-
-                // if not leaf, continue
-                if(gr.getChildren()!=null && gr.getChildren().size()!=0){
-                    continue;
-                }
 
                 if(ruleName.equals(Config.BONUS)){
                     double bonus = Double.parseDouble(table_grades.getValueAt(row, col).toString());
@@ -409,6 +401,15 @@ public class MainFrame extends JFrame {
                     continue;
                 }else if(ruleName.equals(Config.FINALGRADELETTER)){
                     //TODO update final grade letter
+                    continue;
+                }
+
+                GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(ruleName, course);
+                if(gr == null) continue;
+                String ruleID = gr.getId();
+
+                // if not leaf, continue
+                if(gr.getChildren()!=null && gr.getChildren().size()!=0){
                     continue;
                 }
 
@@ -460,7 +461,7 @@ public class MainFrame extends JFrame {
 
     private void menuItem_percentageMouseReleased(MouseEvent e) {
         // get column
-        int col  = table_grades.columnAtPoint(e.getPoint());
+        int col  = rightClickCol;
         String gradeName = table_grades.getColumnName(col);
         GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(gradeName,course);
         String ruleID = gr.getId();
@@ -475,7 +476,7 @@ public class MainFrame extends JFrame {
     }
 
     private void menuItem_absScoreMouseReleased(MouseEvent e) {
-        int col = table_grades.getTableHeader().columnAtPoint(e.getPoint());
+        int col = rightClickCol;
         String gradeName = table_grades.getColumnName(col);
         GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(gradeName,course);
         String ruleID = gr.getId();
@@ -491,7 +492,7 @@ public class MainFrame extends JFrame {
 
     private void menuItem_lostScoreMouseReleased(MouseEvent e) {
         // get column
-        int col  = table_grades.columnAtPoint(e.getPoint());
+        int col  = rightClickCol;
         String gradeName = table_grades.getColumnName(col);
         GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(gradeName,course);
         String ruleID = gr.getId();
@@ -499,7 +500,7 @@ public class MainFrame extends JFrame {
             String BUID = table_grades.getValueAt(row,0).toString();
             Student student = MainFrameController.getStudent(BUID,course.getCourseID());
             double lost = student.getGrades().get(ruleID).getDeduction();
-            int item = (int) lost;
+            int item = -(int) lost;
             // set value for (row,col)
             table_grades.setValueAt(item,row,col);
         }

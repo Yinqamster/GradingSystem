@@ -148,7 +148,7 @@ public class StudentService {
 
     public int updateBonus(String buid, String courseId, double bonus) {
         Student student = getStudent(buid, courseId);
-        if(student != null) return ErrCode.STUDENTNOTEXIST.getCode();
+        if(student == null) return ErrCode.STUDENTNOTEXIST.getCode();
         student.setBonus(bonus);
         return StudentDAO.getInstance().updateStudent(student);
     }
