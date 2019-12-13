@@ -34,22 +34,22 @@ public class ScoreService {
         if (breakdown == null) {
             return ErrCode.BREAKDOWNNOTEXIST.getCode();
         }
-        Student student = course.getStudents().get(buid);
+        // Student student = course.getStudents().get(buid);
+        Student student = StudentService.getInstance().getStudent(buid, courseId);
         if (student == null) {
             return ErrCode.STUDENTNOTEXIST.getCode();
         }
 
         // update score
         for (String ruleId : scores.keySet()) {
-            //GradingRule rule = breakdown.getGradingRules().get(ruleId);
-
             // added by Jun Li -----------------------------------
             GradingRule rule = GradingRuleService.getInstance().getGradingRuleByID(courseId,ruleId);
             //----------------------------------------------------
 
             // only update scores that is not composite
             if (rule.getChildren() == null || rule.getChildren().size() == 0) {
-                Grade grade = student.getGrades().get(ruleId);
+                // Grade grade = student.getGrades().get(ruleId);
+                Grade grade = GradeDAO.getInstance().getGrade(buid, ruleId);
                 double absolute = scores.get(ruleId);
                 grade.setAbsolute(absolute);
                 grade.setPercentage(absolute / rule.getFullScore());
@@ -79,6 +79,21 @@ public class ScoreService {
 
     // calculate and update any composite score, i.e. grade that is made up of sub-grades
     public int calculateScores(String courseId) {
+        // get course, breakdown and students
+        Course course = CourseService.getInstance().getCourse(courseId);
+        if (course == null) {
+            return ErrCode.COURSENOTEXIST.getCode();
+        }
+        Breakdown breakdown = course.getBreakdown();
+        if (breakdown == null) {
+            return ErrCode.BREAKDOWNNOTEXIST.getCode();
+        }
+        Map<String, Student> students = course.getStudents();
+    }
+
+
+
+    public int calculateScores1(String courseId) {
         // get course, breakdown and students
         Course course = CourseService.getInstance().getCourse(courseId);
         if (course == null) {
