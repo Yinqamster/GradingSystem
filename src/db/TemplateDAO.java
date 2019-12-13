@@ -32,7 +32,6 @@ public class TemplateDAO extends BreakdownDAO{
         try {
             String selectSql = "SELECT grading_rule_id FROM grading_rule WHERE fk_template = ? AND" +
                     " parent_id = ?";
-//            Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
             preparedStatement.setObject(1, templateId);
             preparedStatement.setObject(2, "");
@@ -52,7 +51,6 @@ public class TemplateDAO extends BreakdownDAO{
             }
             resultSet.close();
             preparedStatement.close();
-//            conn.close();
         } catch (SQLException sqle) {
             return null;
         }
@@ -64,13 +62,11 @@ public class TemplateDAO extends BreakdownDAO{
         int gradingRuleUpdateFlag = 1;
         String updateSql = "REPLACE INTO template (template_id, name) values (?, ?)";
         try {
-//            Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
             preparedStatement.setObject(1, template.getBreakdownID());
             preparedStatement.setObject(2, template.getName());
             gradingRuleUpdateFlag *= preparedStatement.executeUpdate();
             preparedStatement.close();
-//            conn.close();
         } catch (SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
         }
@@ -87,12 +83,10 @@ public class TemplateDAO extends BreakdownDAO{
         Map<String, GradingRule> gradingRuleMap = new HashMap<>();
         int deleteFlag = 1;
         try {
-//            Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(deleteSql);
             preparedStatement.setObject(1, template.getBreakdownID());
             deleteFlag *= preparedStatement.executeUpdate();
             preparedStatement.close();
-//            conn.close();
         } catch (SQLException sqle) {
             return ErrCode.DELETEERROR.getCode();
         }
@@ -108,7 +102,6 @@ public class TemplateDAO extends BreakdownDAO{
         Map<String, GradingRule> temp = new HashMap<>();
         Map<String, Template> result = new HashMap<>();
         try {
-//            Connection conn = DBUtil.getConnection();
             String selectSql = "SELECT grading_rule_id FROM grading_rule WHERE" +
                     " parent_id = ? and fk_template <> ?";
             PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
@@ -139,7 +132,6 @@ public class TemplateDAO extends BreakdownDAO{
             }
             resultSet.close();
             preparedStatement.close();
-//            conn.close();
         } catch (SQLException sqle) {
             return null;
         }

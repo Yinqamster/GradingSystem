@@ -39,7 +39,6 @@ public class GradingRuleDAO {
         // If get the leaf node, add it to the gradingRuleList;
         // Else recursively go into getGradingRuleHelper method
         try {
-//            Connection conn = DBUtil.getConnection();
             List<GradingRule> gradingRuleList = new ArrayList<>();
             String selectSql = "SELECT * FROM grading_rule WHERE parent_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
@@ -72,7 +71,6 @@ public class GradingRuleDAO {
             }
             resultSet.close();
             preparedStatement.close();
-//            conn.close();
             return new GradingRule(currentId, parentId, name, fullScore, proportion, gradingRuleList);
         } catch (SQLException sqle) {
             return null;
@@ -85,7 +83,6 @@ public class GradingRuleDAO {
         getUpdateList(gradingRule, infoList, breakdownId);
         try {
             for(int i = 0; i < infoList.size(); i++) {
-//                Connection conn = DBUtil.getConnection();
                 String preSql = "REPLACE INTO grading_rule (name, full_score, proportion, " +
                         "parent_id, placeholder, grading_rule_id) values (?, ?, " +
                         "?, ?, ?, ?)";
@@ -97,12 +94,10 @@ public class GradingRuleDAO {
                 }
                 updateFlag *= preparedStatement.executeUpdate();
                 preparedStatement.close();
-//                conn.close();
                 String name = temp.get(0).toString();
                 String gradingRuleId = temp.get(5).toString();
                 GradeDAO.getInstance().addGrade(breakdownId, gradingRule);
             }
-//            Connection conn = DBUtil.getConnection();
             String updateBreakdownSql = "REPLACE INTO breakdown (break_down_id, fk_course) values (?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(updateBreakdownSql);
             preparedStatement.setObject(1, breakdownId);
@@ -141,13 +136,11 @@ public class GradingRuleDAO {
         getDeleteRuleList(gradingRuleID, deleteList);
         try {
             for(int i = 0; i < deleteList.size(); i++) {
-//                Connection conn = DBUtil.getConnection();
                 String deleteSql = "DELETE FROM grading_rule WHERE grading_rule_id = ?";
                 PreparedStatement preparedStatement = connection.prepareStatement(deleteSql);
                 preparedStatement.setObject(1, deleteList.get(i));
                 returnValue *= preparedStatement.executeUpdate();
                 preparedStatement.close();
-//                conn.close();
             }
         } catch (SQLException sqle) {
             return ErrCode.DELETEERROR.getCode();
@@ -163,7 +156,6 @@ public class GradingRuleDAO {
     private void getDeleteRuleList(String gradingRuleID, List<String> deleteRuleList){
         String selectSql = "SELECT * FROM grading_rule WHERE parent_id = ?";
         try {
-//            Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
             preparedStatement.setObject(1, gradingRuleID);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -174,7 +166,6 @@ public class GradingRuleDAO {
             }
             resultSet.close();
             preparedStatement.close();
-//            conn.close();
         } catch (SQLException sqle) {
             System.err.println(sqle);
         }
@@ -182,7 +173,6 @@ public class GradingRuleDAO {
 
     public List<String> getGradingRuleList(String courseId) {
         String selectSql = "SELECT * FROM grading_rule WHERE fk_breakdown = ?";
-//        Connection conn = DBUtil.getConnection();
         List<String> result = new ArrayList<>();
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
