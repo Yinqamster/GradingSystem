@@ -50,8 +50,8 @@ public class GradeDAO {
 
     public int addFinalGrade(String courseId, String buid, FinalGrade finalGrade) {
         String addSql = "INSERT INTO grade (fk_student, fk_grading_rule, absolute_score, " +
-                "percentage_score, deduction_score, comment, letter_grade, fk_course, name) values " +
-                "(?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+                "percentage_score, deduction_score, comment, letter_grade, fk_course, name, grade_id) values " +
+                "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(addSql);
             preparedStatement.setObject(1, buid);
@@ -63,6 +63,7 @@ public class GradeDAO {
             preparedStatement.setObject(7, finalGrade.getLetterGrade());
             preparedStatement.setObject(8, courseId);
             preparedStatement.setObject(9, "final");
+            preparedStatement.setObject(10, buid + courseId + "final");
             int flag = preparedStatement.executeUpdate();
             return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch (SQLException sqle) {
@@ -129,29 +130,6 @@ public class GradeDAO {
             return ErrCode.UPDATEERROR.getCode();
         }
     }
-
-//    public int upgradeGrade(String courseId, String buid, Grade grade, String gradingRuleId) {
-//        String updateSql = "REPLACE INTO grade (fk_grading_rule, fk_student, absolute_score, percentage_score, deduction_score, comment, name, fk_course)" +
-//                "values (?, ?, ?, ?, ?, ?, ?, ?)";
-//        try {
-////            Connection conn = DBUtil.getConnection();
-//            PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
-//            preparedStatement.setObject(1, gradingRuleId);
-//            preparedStatement.setObject(2, buid);
-//            preparedStatement.setObject(3, grade.getAbsolute());
-//            preparedStatement.setObject(4, grade.getPercentage());
-//            preparedStatement.setObject(5, grade.getDeduction());
-//            preparedStatement.setObject(6, grade.getComment());
-//            preparedStatement.setObject(7, grade.getRuleId());
-//            preparedStatement.setObject(8, courseId);
-//            int flag = preparedStatement.executeUpdate();
-//            preparedStatement.close();
-////            conn.close();
-//            return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
-//        } catch(SQLException sqle) {
-//            return ErrCode.UPDATEERROR.getCode();
-//        }
-//    }
 
     public int updateGrade(String ruleId, String buid, String comment) {
         String updateSql = "UPDATE grade SET comment = ? WHERE fk_grading_rule = ? AND fk_student = ?";
@@ -230,18 +208,23 @@ public class GradeDAO {
         return flag;
     }
 
-    public int addGrade(String courseId, String gradingId, String name) {
+    public int addGrade(String courseId, GradingRule gradingRule) {
         List<String> studentId = StudentDAO.getInstance().getStudentIdByCourseId(courseId);
         int updateFlag = 1;
-        String updateSql = "REPLACE INTO grade (fk_student, fk_grading_rule, fk_course, name) values (?, ?, ?, ?)";
+        String updateSql = "REPLACE INTO grade (fk_student, fk_grading_rule, fk_course, name, grade_id, absolute_score, percentage_score" +
+                ", deduction_score) values (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             for (String id : studentId) {
 //                Connection conn = DBUtil.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
                 preparedStatement.setObject(1, id);
-                preparedStatement.setObject(2, gradingId);
+                preparedStatement.setObject(2, gradingRule.getId());
                 preparedStatement.setObject(3, courseId);
-                preparedStatement.setObject(4, name);
+                preparedStatement.setObject(4, gradingRule.getName());
+                preparedStatement.setObject(5, id + courseId + gradingRule.getId());
+                preparedStatement.setObject(6, gradingRule.getFullScore());
+                preparedStatement.setObject(7, 1);
+                preparedStatement.setObject(8, 0);
                 updateFlag *= preparedStatement.executeUpdate();
             }
             return updateFlag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();

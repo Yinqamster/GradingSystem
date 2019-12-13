@@ -211,19 +211,19 @@ public class StudentDAO {
 
     public int deleteStudent(String buid, String courseId) {
         try {
-            String deleteStudentSql = "DELETE FROM student WHERE buid = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(deleteStudentSql);
-            preparedStatement.setObject(1, buid);
-            int deleteReturnValue = preparedStatement.executeUpdate();
-            if (deleteReturnValue == 0) {
-                return ErrCode.STUDENTNOTEXIST.getCode();
-            }
-            preparedStatement.close();
+//            String deleteStudentSql = "DELETE FROM student WHERE buid = ?";
+//            PreparedStatement preparedStatement = connection.prepareStatement(deleteStudentSql);
+//            preparedStatement.setObject(1, buid);
+//            int deleteReturnValue = preparedStatement.executeUpdate();
+//            if (deleteReturnValue == 0) {
+//                return ErrCode.STUDENTNOTEXIST.getCode();
+//            }
+//            preparedStatement.close();
             String deleteCourseSql = "DELETE FROM course_student_relationship WHERE course_id = ? AND student_id = ?";
-            preparedStatement = connection.prepareStatement(deleteCourseSql);
+            PreparedStatement preparedStatement = connection.prepareStatement(deleteCourseSql);
             preparedStatement.setObject(1, courseId);
             preparedStatement.setObject(2, buid);
-            deleteReturnValue = preparedStatement.executeUpdate();
+            int deleteReturnValue = preparedStatement.executeUpdate();
             deleteReturnValue *= GradeDAO.getInstance().deleteGradeList(buid, courseId);
             if (deleteReturnValue == 0) {
                 return ErrCode.COURSENOTEXIST.getCode();

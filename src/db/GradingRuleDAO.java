@@ -100,10 +100,7 @@ public class GradingRuleDAO {
 //                conn.close();
                 String name = temp.get(0).toString();
                 String gradingRuleId = temp.get(5).toString();
-                System.out.println("name: " + name);
-                System.out.println("gradingruleid: " + gradingRuleId);
-                System.out.println("courseid: " + breakdownId);
-                GradeDAO.getInstance().addGrade(breakdownId, gradingRuleId, name);
+                GradeDAO.getInstance().addGrade(breakdownId, gradingRule);
             }
 //            Connection conn = DBUtil.getConnection();
             String updateBreakdownSql = "REPLACE INTO breakdown (break_down_id, fk_course) values (?, ?)";
