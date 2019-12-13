@@ -41,4 +41,4 @@ out
 
 # db file
 *.db
-src/db/GradingSystem.db
+.db
