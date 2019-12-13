@@ -197,6 +197,7 @@ public class MainFrame extends JFrame {
 
     private void list_letterGradeRuleValueChanged(ListSelectionEvent e) {
         String item = list_letterGradeRule.getSelectedValue();
+        if(item==null) return;
         String[] ss = item.split("  ");
         String letterName = ss[0];
         String Bound = ss[1].replace(" ", "").replace("%", "");
@@ -400,7 +401,6 @@ public class MainFrame extends JFrame {
                 }
 
                 if(ruleName.equals(Config.BONUS)){
-                    //TODO update bonus
                     double bonus = Double.parseDouble(table_grades.getValueAt(row, col).toString());
                     StudentService.getInstance().updateBonus(BUID,course.getCourseID(),bonus);
                     continue;
