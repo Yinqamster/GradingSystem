@@ -230,6 +230,31 @@ public class GradeDAO {
         }
     }
 
+    public Grade getGrade(String buid, String ruleId) {
+        String selectSql = "SELECT * FROM grade WHERE fk_student = ? AND fk_grading_rule = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
+            preparedStatement.setObject(1, buid);
+            preparedStatement.setObject(2, ruleId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            double absoluteScore = 0;
+            double percentageScore = 0;
+            double deductionScore = 0;
+            String comment = "";
+            if(resultSet.next()) {
+                absoluteScore = resultSet.getDouble("absolute_score");
+                percentageScore = resultSet.getDouble("percentage_score");
+                deductionScore = resultSet.getDouble("deduction_score");
+                comment = resultSet.getString("comment");
+            }
+            resultSet.close();
+            preparedStatement.close();
+            return new Grade(ruleId, absoluteScore, percentageScore, deductionScore, comment);
+        } catch (SQLException sqle) {
+            return new Grade();
+        }
+    }
+
     public List<List<Object>> getGradeFromGradingRule(String courseId) {
         String selectSql = "SELECT * FROM grading_rule WHERE fk_breakdown = ?";
         List<List<Object>> result = new ArrayList<>();
