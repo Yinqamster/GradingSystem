@@ -7,10 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CourseDAO {
 
@@ -106,27 +103,29 @@ public class CourseDAO {
         String section = course.getSection();
         String semester = course.getSemester();
         String description = course.getDescription();
-//        String courseid = semester + name + section;
-        String updateSql = "REPLACE INTO course (name, section, semester, description)" +
-                "values (?, ?, ?, ?)";
-        String selectSql = "SELECT * FROM course WHERE name = ? AND section = ? AND semester = ?";
+        String courseid = course.getCourseID();
+        String updateSql = "REPLACE INTO course (name, section, semester, description, course_id)" +
+                "values (?, ?, ?, ?, ?)";
+//        String selectSql = "SELECT * FROM course WHERE name = ? AND section = ? AND semester = ?";
         try {
 //            Connection conn = DBUtil.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
-            preparedStatement.setObject(1, name);
-            preparedStatement.setObject(2, section);
-            preparedStatement.setObject(3,semester);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) {
-                return ErrCode.ADDERROR.getCode();
-            }
-            resultSet.close();
-            preparedStatement.close();
-            preparedStatement = connection.prepareStatement(updateSql);
+//            PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
+//            preparedStatement.setObject(1, name);
+//            preparedStatement.setObject(2, section);
+//            preparedStatement.setObject(3,semester);
+//            preparedStatement.setObject(4, courseid);
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//            if(resultSet.next()) {
+//                return ErrCode.ADDERROR.getCode();
+//            }
+//            resultSet.close();
+//            preparedStatement.close();
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
             preparedStatement.setObject(1, name);
             preparedStatement.setObject(2, section);
             preparedStatement.setObject(3, semester);
             preparedStatement.setObject(4, description);
+            preparedStatement.setObject(5, courseid);
             int flag = preparedStatement.executeUpdate();
 //            conn.close();
             return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
