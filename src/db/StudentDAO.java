@@ -95,7 +95,6 @@ public class StudentDAO {
                 return ErrCode.OK.getCode();
             }
         } catch (SQLException sqle) {
-            System.out.println(sqle.getSQLState());
             return ErrCode.UPDATEERROR.getCode();
         }
     }
@@ -162,20 +161,14 @@ public class StudentDAO {
         String updateSql = "INSERT OR REPLACE INTO course_student_relationship (course_id, student_id) " +
                 "values (?, ?)";
         try {
-//            Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
             preparedStatement.setObject(1, courseId);
             preparedStatement.setObject(2, student.getBuid());
             updateFlag *= preparedStatement.executeUpdate();
             preparedStatement.close();
-//            conn.close();
             Map<String, Grade> gradeMap = getGradeList(courseId);
             GradeDAO.getInstance().updateGradeList(student.getBuid(), courseId, gradeMap);
-            // need grading_rule_id via course_id
-//            List<String> gradingRuleList = GradingRuleDAO.getInstance().getGradingRuleList(courseId);
-//            for(String str : gradingRuleList) {
-//                GradeDAO.getInstance().updateGradeList(student.getBuid(), courseId, gradeList, str);
-//            }
+            updateFlag *= GradeDAO.getInstance().addFinalGrade(courseId, student.getBuid(), student.getFinalGrade());
             return updateFlag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch(SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
