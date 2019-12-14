@@ -91,6 +91,13 @@ public class ScoreService {
         if (isBreakdownValid != ErrCode.OK.getCode()) {
             return isBreakdownValid;
         }
+        // validate letter rules
+        // TODO: uncomment to add letter rule checking
+//        Map<String, double[]> letterRule = breakdown.getLetterRule();
+//        if (!BreakdownService.getInstance().checkLetterRule(letterRule)) {
+//            return ErrCode.LETTERWRONG.getCode();
+//        }
+
         Map<String, Student> students = course.getStudents();
 
         // for each student: calculate scores and final grade
@@ -175,6 +182,7 @@ public class ScoreService {
 
         // update final grade for student
         GradeDAO.getInstance().updateFinalGrade(buid, courseId, absolute, percentage, deduction, letterGrade);
+        System.out.println("Final calculated is: " + GradeDAO.getInstance().getFinalGrade(buid, courseId).getPercentage());
     }
 
     // get mean, median, standard deviation for the selected grade
@@ -240,8 +248,9 @@ public class ScoreService {
         double totalPercentage = 0;
         List<Double> scores = new ArrayList<>();
         for (String buid : students) {
-            double percentageScore = StudentService.getInstance().getStudent(buid, courseId).getFinalGrade().getPercentage();
-            System.out.println("This score is: " + percentageScore);
+            // double percentageScore = StudentService.getInstance().getStudent(buid, courseId).getFinalGrade().getPercentage();
+            double percentageScore = GradeDAO.getInstance().getFinalGrade(buid, courseId).getPercentage();
+            System.out.println("This score in percentage is: " + percentageScore);
             totalPercentage += percentageScore;
             scores.add(percentageScore);
         }

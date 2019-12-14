@@ -28,7 +28,8 @@ public enum ErrCode {
 
     // breakdown
     BREAKDOWNNOTEXIST("Breakdown doesn't exist.", 601),
-    SUMWRONG("The total proportion of grading rules is not 100%", 602);
+    SUMWRONG("The total proportion of grading rules is not 100%", 602),
+    LETTERWRONG("The letter rules are not valid", 603);
 
     private final String description;
     private final int code;
