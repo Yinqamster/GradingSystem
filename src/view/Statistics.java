@@ -70,15 +70,16 @@ public class Statistics extends JFrame {
         String itemText = Objects.requireNonNull(tree_breakdown.getSelectionPath()).getLastPathComponent().toString();
         if(tree_breakdown.getSelectionPath().getParentPath() == null){
             // show overall grade stats
+            String ruleID = Config.FINALGRADESTATS;
             if(Objects.requireNonNull(comboBox_chooseStudent.getSelectedItem()).toString().equals("All Students")){
                 // calculate for all students
-                stats = ScoreService.getInstance().calculateStats(course.getCourseID(),"final", "All");
+                stats = ScoreService.getInstance().calculateStats(course.getCourseID(),ruleID, "All");
             }else if(Objects.requireNonNull(comboBox_chooseStudent.getSelectedItem()).toString().equals("Graduate Student")){
                 // calculate for Graduate Students
-                stats = ScoreService.getInstance().calculateStats(course.getCourseID(),"final", Config.GRADUATE);
+                stats = ScoreService.getInstance().calculateStats(course.getCourseID(),ruleID, Config.GRADUATE);
             }else if(Objects.requireNonNull(comboBox_chooseStudent.getSelectedItem()).toString().equals("Undergraduate Student")){
                 // calculate for Undergraduate Students
-                stats = ScoreService.getInstance().calculateStats(course.getCourseID(),"final", Config.UNDERGRADUATE);
+                stats = ScoreService.getInstance().calculateStats(course.getCourseID(),ruleID, Config.UNDERGRADUATE);
             }
             // set labels
             label_mean.setText(stats[0]);
