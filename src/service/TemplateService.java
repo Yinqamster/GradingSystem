@@ -49,6 +49,7 @@ public class TemplateService {
     public int saveTemplate(String courseId, String templateName) {
         Breakdown breakdown = BreakdownDAO.getInstance().getBreakdown(courseId);
         Template template = new Template(breakdown.getBreakdownID(), templateName, breakdown.getGradingRules(), breakdown.getLetterRule());
-        return TemplateDAO.getInstance().addTemplate(courseId, template);
+//        return TemplateDAO.getInstance().addTemplate(courseId, template);
+        return TemplateDAO.getInstance().updateTemplate(template);
     }
 }

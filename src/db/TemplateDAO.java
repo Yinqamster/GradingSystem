@@ -128,12 +128,13 @@ public class TemplateDAO extends BreakdownDAO{
                 else {
                     Template template = new Template(templateId, name, letterMap);
                     template.getGradingRules().put(name, temp.get(gradingRuleId));
+                    result.put(name, template);
                 }
             }
             resultSet.close();
             preparedStatement.close();
         } catch (SQLException sqle) {
-            return null;
+            return new HashMap<>();
         }
         return result;
     }
