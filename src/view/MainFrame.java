@@ -392,6 +392,8 @@ public class MainFrame extends JFrame {
             JOptionPane.showMessageDialog(this,ErrCode.BREAKDOWNNOTEXIST);
         }else if(res == ErrCode.SUMWRONG.getCode()){
             JOptionPane.showMessageDialog(this,ErrCode.SUMWRONG);
+        }else if(res == ErrCode.LETTERWRONG.getCode()){
+            JOptionPane.showMessageDialog(this,ErrCode.LETTERWRONG);
         }
         refreshAll();
     }
