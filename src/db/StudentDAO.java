@@ -30,7 +30,6 @@ public class StudentDAO {
     public Student getStudent(String buid, String courseId) {
         try {
             String selectSql = "SELECT * FROM student WHERE buid = ?";
-//            Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
             Name name = NameDAO.getInstance().getName(buid);
             preparedStatement.setObject(1, buid);
@@ -51,7 +50,6 @@ public class StudentDAO {
             }
             resultSet.close();
             preparedStatement.close();
-//            conn.close();
             if (category == 1) {
                 return new GraduateStudent(name, buid, status, bonus, gradeList, comment);
             } else if (category == 0) {
@@ -67,7 +65,6 @@ public class StudentDAO {
 
     public int updateStudent(Student student) {
         try {
-//            Connection conn = DBUtil.getConnection();
             String updateSql = "REPLACE INTO student (buid, first_name, middle_name, " +
                     "last_name, status, comment, bonus, category) values (?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
@@ -88,7 +85,6 @@ public class StudentDAO {
             System.out.println(preparedStatement.isClosed());
             int returnValue = preparedStatement.executeUpdate();
             preparedStatement.close();
-//            conn.close();
             if (returnValue == 0) {
                 return ErrCode.STUDENTNOTEXIST.getCode();
             } else {
@@ -104,7 +100,6 @@ public class StudentDAO {
         try {
             String updateSql = "REPLACE INTO student (buid, first_name, middle_name, last_name, comment) " +
                     "values (?, ?, ?, ?, ?)";
-//            Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
             preparedStatement.setObject(1, buid);
             preparedStatement.setObject(2, firstname);
@@ -120,7 +115,6 @@ public class StudentDAO {
             preparedStatement.setObject(2, buid);
             int returnValue = preparedStatement.executeUpdate();
             preparedStatement.close();
-//            conn.close();
             if (returnValue == 0) {
                 return ErrCode.STUDENTNOTEXIST.getCode();
             }
@@ -135,7 +129,6 @@ public class StudentDAO {
         this.updateStudent(firstname, midname, lastname, buid, comment, courseId);
         try {
             String updateSql = "UPDATE student SET category  = ? WHERE buid = ?";
-//            Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
             if (year.equalsIgnoreCase("undergraduate")) {
                 preparedStatement.setObject(1, 0);
@@ -146,8 +139,6 @@ public class StudentDAO {
             }
             preparedStatement.setObject(2, buid);
             preparedStatement.close();
-//            String update
-//            conn.close();
             return ErrCode.OK.getCode();
         } catch(SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
@@ -180,13 +171,11 @@ public class StudentDAO {
         String updateSql = "REPLACE INTO course_student_relationship (course_id, student_id) " +
                 "values (?, ?)";
         try {
-//            Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
             preparedStatement.setObject(1, courseId);
             preparedStatement.setObject(2, studentId);
             updateFlag *= preparedStatement.executeUpdate();
             preparedStatement.close();
-//            conn.close();
             return updateFlag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch(SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
@@ -202,7 +191,6 @@ public class StudentDAO {
             preparedStatement.setObject(2, buid);
             preparedStatement.executeUpdate();
             preparedStatement.close();
-//            DBUtil.getConnection().close();
             return this.getStudent(buid, courseId);
         } catch (SQLException sqle) {
             return null;
@@ -211,19 +199,11 @@ public class StudentDAO {
 
     public int deleteStudent(String buid, String courseId) {
         try {
-            String deleteStudentSql = "DELETE FROM student WHERE buid = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(deleteStudentSql);
-            preparedStatement.setObject(1, buid);
-            int deleteReturnValue = preparedStatement.executeUpdate();
-            if (deleteReturnValue == 0) {
-                return ErrCode.STUDENTNOTEXIST.getCode();
-            }
-            preparedStatement.close();
             String deleteCourseSql = "DELETE FROM course_student_relationship WHERE course_id = ? AND student_id = ?";
-            preparedStatement = connection.prepareStatement(deleteCourseSql);
+            PreparedStatement preparedStatement = connection.prepareStatement(deleteCourseSql);
             preparedStatement.setObject(1, courseId);
             preparedStatement.setObject(2, buid);
-            deleteReturnValue = preparedStatement.executeUpdate();
+            int deleteReturnValue = preparedStatement.executeUpdate();
             deleteReturnValue *= GradeDAO.getInstance().deleteGradeList(buid, courseId);
             if (deleteReturnValue == 0) {
                 return ErrCode.COURSENOTEXIST.getCode();
@@ -238,7 +218,6 @@ public class StudentDAO {
         String selectSql = "SELECT * FROM grading_rule WHERE fk_breakdown = ?";
         Map<String, Grade> result = new HashMap<>();
         try {
-//            Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
             preparedStatement.setObject(1, courseId);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -250,7 +229,6 @@ public class StudentDAO {
             }
             resultSet.close();
             preparedStatement.close();
-//            conn.close();
             return result;
         } catch(SQLException sqle) {
             return result;
@@ -260,7 +238,6 @@ public class StudentDAO {
         List<String> result = new ArrayList<>();
         String selectSql = "SELECT student_id FROM course_student_relationship WHERE course_id = ?";
         try {
-//            Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
             preparedStatement.setObject(1, courseId);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -269,7 +246,6 @@ public class StudentDAO {
             }
             resultSet.close();
             preparedStatement.close();
-//            conn.close();
             return result;
         } catch(SQLException sqle) {
             return result;

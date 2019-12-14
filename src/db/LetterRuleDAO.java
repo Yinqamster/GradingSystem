@@ -46,7 +46,6 @@ public class LetterRuleDAO {
     private Map<String, double[]> getLetterMap(String ID, String category) {
         Map<String, double[]> letterResult = new HashMap<>();
         try {
-//            Connection conn = DBUtil.getConnection();
             String preSql = "SELECT * FROM letter_rule WHERE placeholder = ?";
             String selectSql = assambleSql(preSql, category);
             PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
@@ -62,7 +61,6 @@ public class LetterRuleDAO {
             }
             resultSet.close();
             preparedStatement.close();
-//            conn.close();
         } catch (SQLException sqle) {
             return letterResult;
         }
@@ -76,7 +74,6 @@ public class LetterRuleDAO {
                 "fk_breakdown) values (?, ?, ?, ?)";
         String updateBreakdownSql = "REPLACE INTO breakdown (break_down_id, fk_course) values (?, ?)";
         try {
-//            Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(updateLetterSql);
             preparedStatement.setObject(1, letter);
             preparedStatement.setObject(2, lower);
@@ -88,7 +85,6 @@ public class LetterRuleDAO {
             preparedStatement.setObject(1, courseId);
             preparedStatement.setObject(2, courseId);
             updateFlag *= preparedStatement.executeUpdate();
-//            conn.close();
             return updateFlag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch (SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
@@ -110,7 +106,6 @@ public class LetterRuleDAO {
                 "values (?, ?, ?, ?)";
         String updateSql = assambleSql(preSql, category);
         try {
-//            Connection conn = DBUtil.getConnection();
             for(Map.Entry<String, double[]> entrySet : mapLetter.entrySet()) {
                 String letter = entrySet.getKey();
                 double[] segment = entrySet.getValue();
@@ -123,7 +118,6 @@ public class LetterRuleDAO {
                 preparedStatement.setObject(4, ID);
                 updateFlag *= preparedStatement.executeUpdate();
                 preparedStatement.close();
-//                conn.close();
             }
         } catch (SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
@@ -140,12 +134,10 @@ public class LetterRuleDAO {
         String preSql = "DELETE FROM letter_rule WHERE placeholder = ?";
         String deleteSql = assambleSql(preSql, category);
         try {
-//            Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(deleteSql);
             preparedStatement.setObject(1, ID);
             int flag = preparedStatement.executeUpdate();
             preparedStatement.close();
-//            conn.close();
             return flag == 0 ? ErrCode.DELETEERROR.getCode() : ErrCode.OK.getCode();
         } catch (SQLException sqle) {
             return ErrCode.DELETEERROR.getCode();

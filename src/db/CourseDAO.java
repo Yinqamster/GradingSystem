@@ -106,20 +106,7 @@ public class CourseDAO {
         String courseid = course.getCourseID();
         String updateSql = "REPLACE INTO course (name, section, semester, description, course_id)" +
                 "values (?, ?, ?, ?, ?)";
-//        String selectSql = "SELECT * FROM course WHERE name = ? AND section = ? AND semester = ?";
         try {
-//            Connection conn = DBUtil.getConnection();
-//            PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
-//            preparedStatement.setObject(1, name);
-//            preparedStatement.setObject(2, section);
-//            preparedStatement.setObject(3,semester);
-//            preparedStatement.setObject(4, courseid);
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//            if(resultSet.next()) {
-//                return ErrCode.ADDERROR.getCode();
-//            }
-//            resultSet.close();
-//            preparedStatement.close();
             PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
             preparedStatement.setObject(1, name);
             preparedStatement.setObject(2, section);
@@ -127,7 +114,6 @@ public class CourseDAO {
             preparedStatement.setObject(4, description);
             preparedStatement.setObject(5, courseid);
             int flag = preparedStatement.executeUpdate();
-//            conn.close();
             return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch (SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();
@@ -142,14 +128,12 @@ public class CourseDAO {
         List<String> deleteBreakIdList = new ArrayList<>();
         List<String> deleteStudentIdList = new ArrayList<>();
         try {
-//            Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(selectBreakdownSql);
             preparedStatement.setObject(1, courseId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 String breakdownID = resultSet.getString("break_down_id");
                 deleteBreakIdList.add(breakdownID);
-//                deleteFlag *= BreakdownDAO.getInstance().deleteBreakdown(breakdownID);
             }
             resultSet.close();
             preparedStatement.close();
@@ -166,7 +150,6 @@ public class CourseDAO {
             preparedStatement.setObject(1, courseId);
             deleteFlag *= preparedStatement.executeUpdate();
             preparedStatement.close();
-//            conn.close();
             for(String str : deleteBreakIdList) {
                 deleteFlag *= BreakdownDAO.getInstance().deleteBreakdown(str);
             }
@@ -188,7 +171,6 @@ public class CourseDAO {
         List<Course> result = new ArrayList<>();
         String selectSql = "SELECT semester, name, section FROM course";
         try {
-//            Connection conn = DBUtil.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
@@ -199,7 +181,6 @@ public class CourseDAO {
             }
             resultSet.close();
             preparedStatement.close();
-//            conn.close();
             return result;
         } catch (SQLException sqle) {
             return result;
