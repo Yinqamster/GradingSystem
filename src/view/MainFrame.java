@@ -313,22 +313,14 @@ public class MainFrame extends JFrame {
             double percentage = Double.parseDouble(spinner_percentage.getValue().toString())/100;
             double fullScore = Double.parseDouble(spinner_fullScore.getValue().toString());
 
-            if (Objects.requireNonNull(tree_breakdown.getSelectionPath()).getPathCount() == 1) {
-                // depth == 0, set parentID as null
-                MainFrameController.updateGradingRule(course.getCourseID(), ruleName, fullScore, percentage, null, 0);
-            } else {
-                // depth != 0
-                String parentText = Objects.requireNonNull(tree_breakdown.getSelectionPath().getParentPath()).getLastPathComponent().toString();
-                String parentName = parentText.split(" - ")[0];
-                String parentRuleID="";
-                if(MainFrameController.getGradingRuleByNameAndCourse(parentName, course)==null){
-                    parentRuleID=null;
-                }
-                else parentRuleID = MainFrameController.getGradingRuleByNameAndCourse(parentName, course).getId();
-                int depth = Objects.requireNonNull(tree_breakdown.getSelectionPath()).getPathCount() - 1;
-                MainFrameController.updateGradingRule(course.getCourseID(), ruleName, fullScore, percentage, parentRuleID, depth);
-            }
-            JOptionPane.showMessageDialog(this, "Breakdown updated");
+            GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(ruleName,course);
+            String ruleID = gr.getId();
+
+            // update GradingRule
+            int res = MainFrameController.updateGradingRule(course.getCourseID(),ruleID, ruleName, fullScore, percentage);
+            if(res == ErrCode.UPDATEERROR.getCode()){
+                JOptionPane.showMessageDialog(this, ErrCode.UPDATEERROR.getDescription());
+            }else JOptionPane.showMessageDialog(this, "Breakdown updated");
         }else{
             JOptionPane.showMessageDialog(this, ErrCode.TEXTFIELDEMPTY.getDescription());
         }
