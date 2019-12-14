@@ -1,12 +1,10 @@
 package service;
 
 import controller.MainFrameController;
-import db.StudentDAO;
 import model.*;
+import db.GradeDAO;
 import utils.Config;
 import utils.ErrCode;
-import db.GradeDAO;
-
 import java.util.*;
 import java.text.DecimalFormat;
 
@@ -88,6 +86,11 @@ public class ScoreService {
         if (breakdown == null) {
             return ErrCode.BREAKDOWNNOTEXIST.getCode();
         }
+        // validate breakdown
+        int isBreakdownValid = BreakdownService.getInstance().checkBreakdown(breakdown.getBreakdownID());
+        if (isBreakdownValid != ErrCode.OK.getCode()) {
+            return isBreakdownValid;
+        }
         Map<String, Student> students = course.getStudents();
 
         // for each student: calculate scores and final grade
@@ -162,7 +165,6 @@ public class ScoreService {
         Map<String, double[]> letterRule = breakdown.getLetterRule();
         String letterGrade = "";
         double numberGrade = percentage * 100;
-        System.out.println("final score in number: " + numberGrade);
         for (String letter : letterRule.keySet()) {
             double[] bounds = letterRule.get(letter);
             if (numberGrade >= bounds[0] && numberGrade <= bounds[1]) {
@@ -175,27 +177,21 @@ public class ScoreService {
         GradeDAO.getInstance().updateFinalGrade(buid, courseId, absolute, percentage, deduction, letterGrade);
     }
 
+    // get mean, median, standard deviation for the selected grade
     public String[] calculateStats(String courseId, String ruleId, String studentType) {
         calculateScores(courseId);
         double[] results;
 
-        if (studentType.equalsIgnoreCase("undergraduate")) {
-            results = calcUnderStats(courseId, ruleId);
-        }
-        else if (studentType.equalsIgnoreCase("graduate")) {
-            results = calcGradStats(courseId, ruleId);
+        if (ruleId.equalsIgnoreCase(Config.FINALGRADESTATS)) {
+            results = calculateFinalGradeStats(courseId, studentType);
         }
         else {
-            results = calcAllStats(courseId, ruleId);
+            results = calculateRuleStats(courseId, ruleId, studentType);
         }
 
         String[] stats = new String[3];
-        DecimalFormat num = new DecimalFormat("##.##");
+        // DecimalFormat num = new DecimalFormat("##.##");
         DecimalFormat percentage = new DecimalFormat("##.##%");
-//        stats[0] = num.format(results[0]) + " " + percentage.format(results[0] / results[3]);
-//        stats[1] = num.format(results[1]) + " " + percentage.format(results[1] / results[3]);
-//        stats[2] = num.format(results[2]) + " " + percentage.format(results[2] / results[3]);
-
         stats[0] = percentage.format(results[0]);
         stats[1] = percentage.format(results[1]);
         stats[2] = percentage.format(results[2]);
@@ -203,98 +199,88 @@ public class ScoreService {
         return stats;
     }
 
-    private double[] calcAllStats(String courseId, String ruleId) {
-        Course course = CourseService.getInstance().getCourse(courseId);
-        Map<String, Student> students = course.getStudents();
+    // get mean, median, standard deviation for a grade except for the final grade
+    private double[] calculateRuleStats(String courseId, String ruleId, String studentType) {
+        // get students of selected type
+        List<String> students = getStudentsOfType(courseId, studentType);
+
+        double[] results = new double[3];
         int count = students.size();
-//        Map<String, GradingRule> rules = course.getBreakdown().getGradingRules();
-//        GradingRule rule = rules.get(ruleId);
-//        double fullScore = 1.0;
-//        System.out.println(ruleId);
-//        System.out.println(rule.getName());
-//        if(!rule.getName().equals(Config.FINALRULENAME)){
-//            fullScore = rule.getFullScore();
-//        }
-        double total = 0;
-        List<Double> scores = new ArrayList<>();
-
-        for (String buid : students.keySet()) {
-            Student student = students.get(buid);
-            if(ruleId.equals(Config.FINALRULENAME)) {
-                total += student.getFinalGrade().getPercentage();
-                scores.add(student.getFinalGrade().getPercentage());
-            }
-            else {
-                Grade grade = student.getGrades().get(ruleId);
-//            total += grade.getAbsolute();
-                total += grade.getPercentage();
-                scores.add(grade.getPercentage());
-            }
-
+        if (count == 0) {
+            return new double[]{0, 0, 0};
         }
 
-//        double mean = total / (fullScore * count);
-        double mean = total / count;
-        double median = calcMedian(scores);
-        double sd = calcSD(scores, mean);
-        double[] results = {mean, median, sd};
+        // calculate stats
+        double totalPercentage = 0;
+        List<Double> scores = new ArrayList<>();
+        for (String buid : students) {
+            double percentageScore = GradeDAO.getInstance().getGrade(buid, ruleId).getPercentage();
+            totalPercentage += percentageScore;
+            scores.add(percentageScore);
+        }
+        results[0] = totalPercentage / count;
+        results[1] = calcMedian(scores);
+        results[2] = calcSD(scores, results[0]);
 
         return results;
     }
 
-    private double[] calcUnderStats(String courseId, String ruleId) {
+    // get mean, median, standard deviation for final grade
+    private double[] calculateFinalGradeStats(String courseId, String studentType) {
+        // get students of selected type
+        List<String> students = getStudentsOfType(courseId, studentType);
+
+        double[] results = new double[3];
+        int count = students.size();
+        if (count == 0) {
+            return new double[]{0, 0, 0};
+        }
+
+        // calculate stats
+        double totalPercentage = 0;
+        List<Double> scores = new ArrayList<>();
+        for (String buid : students) {
+            double percentageScore = StudentService.getInstance().getStudent(buid, courseId).getFinalGrade().getPercentage();
+            System.out.println("This score is: " + percentageScore);
+            totalPercentage += percentageScore;
+            scores.add(percentageScore);
+        }
+        System.out.println(totalPercentage);
+        results[0] = totalPercentage / count;
+        results[1] = calcMedian(scores);
+        results[2] = calcSD(scores, results[0]);
+
+        return results;
+    }
+
+    // get selected type of students; return their buid
+    private List<String> getStudentsOfType(String courseId, String studentType) {
         Course course = CourseService.getInstance().getCourse(courseId);
-        Map<String, Student> students = course.getStudents();
-        int count = 0;
-        Map<String, GradingRule> rules = course.getBreakdown().getGradingRules();
-        double fullScore = rules.get(ruleId).getFullScore();
-        double totalScore = 0;
-        List<Double> scores = new ArrayList<>();
 
-        for (String buid : students.keySet()) {
-            Student student = students.get(buid);
-            if (student instanceof UndergraduateStudent) {
-                double score = student.getGrades().get(ruleId).getAbsolute();
-                totalScore += score;
-                count += 1;
-                scores.add(score);
+        List<String> students = new ArrayList<>();
+        if (studentType.equalsIgnoreCase("undergraduate")) {
+            for (String buid : course.getStudents().keySet()) {
+                Student student = StudentService.getInstance().getStudent(buid, courseId);
+                if (student instanceof UndergraduateStudent) {
+                    students.add(buid);
+                }
             }
         }
-
-        double mean = totalScore / (fullScore * count);
-        double median = calcMedian(scores);
-        double sd = calcSD(scores, mean);
-        double[] results = {mean, median, sd, fullScore};
-
-        return results;
-    }
-
-    private double[] calcGradStats(String courseId, String ruleId) {
-        Course course = CourseService.getInstance().getCourse(courseId);
-        Map<String, Student> students = course.getStudents();
-        int count = 0;
-        Map<String, GradingRule> rules = course.getBreakdown().getGradingRules();
-        double fullScore = rules.get(ruleId).getFullScore();
-        double totalScore = 0;
-        List<Double> scores = new ArrayList<>();
-
-        for (String buid : students.keySet()) {
-            Student student = students.get(buid);
-            if (student instanceof GraduateStudent) {
-                double score = student.getGrades().get(ruleId).getAbsolute();
-                totalScore += score;
-                count += 1;
-                scores.add(score);
+        else if (studentType.equalsIgnoreCase("graduate")) {
+            for (String buid : course.getStudents().keySet()) {
+                Student student = StudentService.getInstance().getStudent(buid, courseId);
+                if (student instanceof GraduateStudent) {
+                    students.add(buid);
+                }
             }
         }
+        else {
+            students.addAll(course.getStudents().keySet());
+        }
 
-        double mean = totalScore / (fullScore * count);
-        double median = calcMedian(scores);
-        double sd = calcSD(scores, mean);
-        double[] results = {mean, median, sd, fullScore};
-
-        return results;
+        return students;
     }
+
 
     private double calcMedian(List<Double> scores) {
         Collections.sort(scores);
