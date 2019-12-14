@@ -79,7 +79,6 @@ public class BreakdownService {
         return true;
     }
 
-    // TODO for test-----------------
     public int editLetterRule(String courseId, String letter, double lower, double upper) {
 
         return LetterRuleDAO.getInstance().editBreakdownLetterRule(courseId, letter, lower, upper);
@@ -89,7 +88,6 @@ public class BreakdownService {
 //        return 0;
         return LetterRuleDAO.getInstance().addBreakdownLetterRule(courseId, letter, lower, upper);
     }
-    // TODO --------------------------------------------------
 
     public Breakdown getBreakdownByID(String breakdownID) {
         return BreakdownDAO.getInstance().getBreakdown(breakdownID);
