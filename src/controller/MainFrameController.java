@@ -155,8 +155,8 @@ public class MainFrameController {
         return BreakdownService.getInstance().editLetterRule(courseId, letter, lower, upper);
     }
 
-    public static int updateGradingRule(String courseID, String name, double fullScore, double proportion, String parentId, int depth) {
-        return GradingRuleService.getInstance().addGradingRule(courseID, name, fullScore, proportion, parentId, depth);
+    public static int updateGradingRule(String courseID, String gradingRuleId, String name, double fullScore, double proportion) {
+        return GradingRuleService.getInstance().editGradingRule(courseID, gradingRuleId, name, fullScore, proportion);
     }
 
     public static DefaultTableModel initTableData(DefaultTableModel dtm, Course course){

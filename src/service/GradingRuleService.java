@@ -27,6 +27,14 @@ public class GradingRuleService {
         return GradingRuleDAO.getInstance().updateBreakdownGradingRule(gradingRule, courseID);
     }
 
+    public int editGradingRule(String courseID, String gradingRuleID, String name, double fullScore, double proportion) {
+        GradingRule gradingRule = GradingRuleDAO.getInstance().getGradingRule(gradingRuleID);
+        gradingRule.setName(name);
+        gradingRule.setFullScore(fullScore);
+        gradingRule.setProportion(proportion);
+        return GradingRuleDAO.getInstance().updateBreakdownGradingRule(gradingRule, courseID);
+    }
+
     public GradingRule getGradingRuleByID(String courseID, String gradingRuleID){
         // TODO given GradingRuleID and courseID, return GradingRule
         return GradingRuleDAO.getInstance().getGradingRule(gradingRuleID);
