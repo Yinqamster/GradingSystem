@@ -40,4 +40,4 @@ out
 # *.jfd
 
 # db file
-#.db
+.db
