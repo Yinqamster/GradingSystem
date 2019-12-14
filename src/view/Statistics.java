@@ -36,11 +36,6 @@ public class Statistics extends JFrame {
         loadBreakdownTree();
 
     }
-    // test
-    public Statistics(){
-        initComponents();
-
-    }
 
     private void loadBreakdownTree(){
         // test
@@ -49,21 +44,9 @@ public class Statistics extends JFrame {
         List<GradingRule> grs= new ArrayList<>(gradingRules.values());
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(course.getName() + " 100%");
 
-        // test
-//        List<GradingRule> grs= new ArrayList<>();
-//        for(int i=0; i<5; i++){
-//            List<GradingRule> gs= new ArrayList<>();
-//            List<GradingRule> gs0= new ArrayList<>();
-//            gs0.add(new GradingRule("Homework3", 100, 0.33));
-//            gs.add(new GradingRule("Homework1",0.21, gs0));
-//            GradingRule gradingRule = new GradingRule("Homework2",0.55,gs);
-//            grs.add(gradingRule);
-//        }
-//        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode( "CS 591 P1 100%");
-        // -----------------------------
-
         DefaultTreeModel treeModel = new DefaultTreeModel(StatisticsController.initBreakdownTree(rootNode, StatisticsController.getGradeRuleOfDepth0(grs)));
         this.tree_breakdown.setModel(treeModel);
+        refreshStats();
     }
 
     private void button_backMouseReleased(MouseEvent e) {
@@ -77,9 +60,6 @@ public class Statistics extends JFrame {
         }
     }
 
-    private void comboBox_chooseStudentItemStateChanged(ItemEvent e) {
-        refreshStats();
-    }
 
     private void refreshStats(){
         String[] stats = new String[0]; //{mean, median, sd};
@@ -90,15 +70,16 @@ public class Statistics extends JFrame {
         String itemText = Objects.requireNonNull(tree_breakdown.getSelectionPath()).getLastPathComponent().toString();
         if(tree_breakdown.getSelectionPath().getParentPath() == null){
             // show overall grade stats
+            String ruleID = Config.FINALGRADESTATS;
             if(Objects.requireNonNull(comboBox_chooseStudent.getSelectedItem()).toString().equals("All Students")){
                 // calculate for all students
-                stats = ScoreService.getInstance().calculateStats(course.getCourseID(),"final", "All");
+                stats = ScoreService.getInstance().calculateStats(course.getCourseID(),ruleID, "All");
             }else if(Objects.requireNonNull(comboBox_chooseStudent.getSelectedItem()).toString().equals("Graduate Student")){
                 // calculate for Graduate Students
-                stats = ScoreService.getInstance().calculateStats(course.getCourseID(),"final", Config.GRADUATE);
+                stats = ScoreService.getInstance().calculateStats(course.getCourseID(),ruleID, Config.GRADUATE);
             }else if(Objects.requireNonNull(comboBox_chooseStudent.getSelectedItem()).toString().equals("Undergraduate Student")){
                 // calculate for Undergraduate Students
-                stats = ScoreService.getInstance().calculateStats(course.getCourseID(),"final", Config.UNDERGRADUATE);
+                stats = ScoreService.getInstance().calculateStats(course.getCourseID(),ruleID, Config.UNDERGRADUATE);
             }
             // set labels
             label_mean.setText(stats[0]);
@@ -106,18 +87,14 @@ public class Statistics extends JFrame {
             label_stddev.setText(stats[2]);
             return;
         }
-        String parentItemText = tree_breakdown.getSelectionPath().getParentPath().getLastPathComponent().toString();
         String[] items = itemText.split(" - ");
-        String[] parentItems = parentItemText.split(" - ");
         String name = items[0];
-        String parentName = parentItems[0];
 
         Breakdown breakdown = this.course.getBreakdown();
         Map<String, GradingRule> gradingRules = breakdown.getGradingRules(); // GradingRuleID, GradingRule
-        List<GradingRule> grs= new ArrayList<>(gradingRules.values());
 
         String courseID = this.course.getCourseID();
-        String gradingRuleID = StatisticsController.findGradingRuleID(grs,name,parentName,courseID);
+        String gradingRuleID = MainFrameController.getGradingRuleByNameAndCourse(name,course).getId();
 
         // calculate stats
         if(Objects.requireNonNull(comboBox_chooseStudent.getSelectedItem()).toString().equals("All Students")){
@@ -135,6 +112,10 @@ public class Statistics extends JFrame {
         label_mean.setText(stats[0]);
         label_median.setText(stats[1]);
         label_stddev.setText(stats[2]);
+    }
+
+    private void comboBox_chooseStudentActionPerformed(ActionEvent e) {
+        refreshStats();
     }
 
     private void initComponents() {
@@ -235,7 +216,7 @@ public class Statistics extends JFrame {
             "Graduate Student",
             "Undergraduate Student"
         }));
-        comboBox_chooseStudent.addItemListener(e -> comboBox_chooseStudentItemStateChanged(e));
+        comboBox_chooseStudent.addActionListener(e -> comboBox_chooseStudentActionPerformed(e));
         contentPane.add(comboBox_chooseStudent);
         comboBox_chooseStudent.setBounds(180, 310, 175, comboBox_chooseStudent.getPreferredSize().height);
 

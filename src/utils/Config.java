@@ -27,4 +27,7 @@ public class Config {
     public static final String BONUS = "Bonus";
     public static final String FINALGRADEPERCENTAGE = "Final Grade(%)";
     public static final String FINALGRADELETTER = "Final Grade(Letter)";
+
+    // FINAL GRADE 'RULEID'
+    public static final String FINALGRADESTATS = "FinalGradeStats";
 }
