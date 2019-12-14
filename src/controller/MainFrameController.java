@@ -195,7 +195,7 @@ public class MainFrameController {
                 Grade grade = gradeMap.get(gradingRuleList.get(i-2).getId());
                 if(grade == null) continue;
                 double percentage = grade.getPercentage();
-                percentage = (double) Math.round(percentage * 100) / 100;
+                percentage = (double) Math.round(percentage * 10000)/100;
                 String item = percentage+"%";
                 row[i] = item;
             }
