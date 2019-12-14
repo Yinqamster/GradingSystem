@@ -4,7 +4,7 @@ public enum ErrCode {
     OK("OK", 10),
     //course service
     COURSEEXIST("Course exists.", 101),
-    COURSENOTEXIST("Course exists.", 102),
+    COURSENOTEXIST("Course not exist.", 102),
 
     // Student service
     STUDENTEXIST("Student already exists.", 201),

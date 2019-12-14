@@ -385,7 +385,14 @@ public class MainFrame extends JFrame {
     }
 
     private void button_calculateMouseReleased(MouseEvent e) {
-        MainFrameController.calculateScores(course.getCourseID());
+        int res = MainFrameController.calculateScores(course.getCourseID());
+        if(res == ErrCode.COURSENOTEXIST.getCode()){
+            JOptionPane.showMessageDialog(this,ErrCode.COURSENOTEXIST);
+        }else if(res == ErrCode.BREAKDOWNNOTEXIST.getCode()){
+            JOptionPane.showMessageDialog(this,ErrCode.BREAKDOWNNOTEXIST);
+        }else if(res == ErrCode.SUMWRONG.getCode()){
+            JOptionPane.showMessageDialog(this,ErrCode.SUMWRONG);
+        }
         refreshAll();
     }
 
