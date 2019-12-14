@@ -387,13 +387,13 @@ public class MainFrame extends JFrame {
     private void button_calculateMouseReleased(MouseEvent e) {
         int res = MainFrameController.calculateScores(course.getCourseID());
         if(res == ErrCode.COURSENOTEXIST.getCode()){
-            JOptionPane.showMessageDialog(this,ErrCode.COURSENOTEXIST);
+            JOptionPane.showMessageDialog(this,ErrCode.COURSENOTEXIST.getDescription());
         }else if(res == ErrCode.BREAKDOWNNOTEXIST.getCode()){
-            JOptionPane.showMessageDialog(this,ErrCode.BREAKDOWNNOTEXIST);
+            JOptionPane.showMessageDialog(this,ErrCode.BREAKDOWNNOTEXIST.getDescription());
         }else if(res == ErrCode.SUMWRONG.getCode()){
-            JOptionPane.showMessageDialog(this,ErrCode.SUMWRONG);
+            JOptionPane.showMessageDialog(this,ErrCode.SUMWRONG.getDescription());
         }else if(res == ErrCode.LETTERWRONG.getCode()){
-            JOptionPane.showMessageDialog(this,ErrCode.LETTERWRONG);
+            JOptionPane.showMessageDialog(this,ErrCode.LETTERWRONG.getDescription());
         }
         refreshAll();
     }
@@ -537,39 +537,42 @@ public class MainFrame extends JFrame {
         panel_GradesTab = new JPanel();
         scrollPane_table = new JScrollPane();
         table_grades = new JTable()
-                        {
-                                @Override
-                                                // Disable frozen students
-                                                public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
-                                                    Component comp = super.prepareRenderer(renderer, row, col);
-                                                    //try{
-                                                    String BUID = getModel().getValueAt(row, 0).toString(); // get BUID
-                                                    Student student = BUID_Student_map.get(BUID);
-                                                    if (student.getStatus() == Config.FREEZE) {
-                                                        comp.setEnabled(false);
-                                                    }else{comp.setEnabled(true);}
+                                {
+                                        @Override
+                                                        // Disable frozen students
+                                                        public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
+                                                            Component comp = super.prepareRenderer(renderer, row, col);
+                                                            //try{
+                                                            String BUID = getModel().getValueAt(row, 0).toString(); // get BUID
+                                                            Student student = BUID_Student_map.get(BUID);
+                                                            if (student.getStatus() == Config.FREEZE) {
+                                                                comp.setEnabled(false);
+                                                            }else{comp.setEnabled(true);}
 
-
-                                                     // set highLight for those grades who have comments
-                                                    if(col >= 2){
-                                                                String ruleName = table_grades.getColumnName(col); // get GradingRule name
-                                                                GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(ruleName,course);
-                                                                if(gr == null) return comp;
-                                                                String ruleID = gr.getId();
-                                                                try {
-                                                                    if(student.getGrades().get(ruleID)==null) return comp;
-                                                                    else if (!student.getGrades().get(ruleID).getComment().isEmpty()) {
-                                                                        comp.setBackground(Color.ORANGE);
-                                                                    }else{
-                                                                        comp.setBackground(Color.white);
+                                                            comp.setBackground(Color.white);
+                                                             // set highLight for those grades who have comments
+                                                            if(col >= 2){
+                                                                        String ruleName = table_grades.getColumnName(col); // get GradingRule name
+                                                                        GradingRule gr = MainFrameController.getGradingRuleByNameAndCourse(ruleName,course);
+                                                                        if(gr == null) return comp;
+                                                                        String ruleID = gr.getId();
+                                                                        try {
+                                                                            if(student.getGrades().get(ruleID)==null){
+                                                                                comp.setBackground(Color.white);
+                                                                                return comp;
+                                                                            }
+                                                                            else if (!student.getGrades().get(ruleID).getComment().isEmpty()) {
+                                                                                comp.setBackground(Color.ORANGE);
+                                                                            }else{
+                                                                                comp.setBackground(Color.white);
+                                                                            }
+                                                                        }catch (Exception e){
+                                                                            return comp;
+                                                                        }
                                                                     }
-                                                                }catch (Exception e){
-                                                                    return comp;
-                                                                }
-                                                            }
-                                                    return comp;
-                                                }
-                                };
+                                                            return comp;
+                                                        }
+                                        };
         button_addStudent = new JButton();
         button_saveGrades = new JButton();
         button_calculate = new JButton();
@@ -660,13 +663,11 @@ public class MainFrame extends JFrame {
 
             //======== panel_GradesTab ========
             {
-                panel_GradesTab.setBorder (new javax. swing. border. CompoundBorder( new javax .swing .border .TitledBorder (new
-                javax. swing. border. EmptyBorder( 0, 0, 0, 0) , "JF\u006frmDesi\u0067ner Ev\u0061luatio\u006e", javax
-                . swing. border. TitledBorder. CENTER, javax. swing. border. TitledBorder. BOTTOM, new java
-                .awt .Font ("Dialo\u0067" ,java .awt .Font .BOLD ,12 ), java. awt
-                . Color. red) ,panel_GradesTab. getBorder( )) ); panel_GradesTab. addPropertyChangeListener (new java. beans.
-                PropertyChangeListener( ){ @Override public void propertyChange (java .beans .PropertyChangeEvent e) {if ("borde\u0072" .
-                equals (e .getPropertyName () )) throw new RuntimeException( ); }} );
+                panel_GradesTab.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0
+                ,0,0,0), "JFor\u006dDesi\u0067ner \u0045valu\u0061tion",javax.swing.border.TitledBorder.CENTER,javax.swing.border.TitledBorder.BOTTOM
+                ,new java.awt.Font("Dia\u006cog",java.awt.Font.BOLD,12),java.awt.Color.red),
+                panel_GradesTab. getBorder()));panel_GradesTab. addPropertyChangeListener(new java.beans.PropertyChangeListener(){@Override public void propertyChange(java.beans.PropertyChangeEvent e
+                ){if("bord\u0065r".equals(e.getPropertyName()))throw new RuntimeException();}});
                 panel_GradesTab.setLayout(null);
 
                 //======== scrollPane_table ========
@@ -804,9 +805,7 @@ public class MainFrame extends JFrame {
                             "C+  77% - 79%",
                             "C   73% - 76%",
                             "C-  70% - 72%",
-                            "D+  67% - 69%",
                             "D   63% - 66%",
-                            "D-  60% - 62%",
                             "F   0% - 69%"
                         };
                         @Override
