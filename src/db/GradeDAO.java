@@ -239,10 +239,13 @@ public class GradeDAO {
     }
 
     public FinalGrade getFinalGrade(String buid, String courseId) {
-        String selectSql = "SELECT * FROM grade WHERE fk_student = ? AND fk_course AND name = ?";
+        String selectSql = "SELECT * FROM grade WHERE fk_student = ? AND fk_course = ? AND name = ?";
         FinalGrade finalGrade = new FinalGrade();
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
+            preparedStatement.setObject(1, buid);
+            preparedStatement.setObject(2, courseId);
+            preparedStatement.setObject(3, "final");
             ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.next()) {
                 finalGrade.setComment(resultSet.getString("comment"));
