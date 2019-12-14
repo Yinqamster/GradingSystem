@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class GradingRuleDAO {
 
@@ -91,6 +92,9 @@ public class GradingRuleDAO {
                 List<Object> temp = infoList.get(i);
                 for(int j = 0; j < temp.size(); j++) {
                     preparedStatement.setObject(j + 1, temp.get(j));
+                }
+                if(category  == "template") {
+                    preparedStatement.setObject(6, UUID.randomUUID().toString());
                 }
                 updateFlag *= preparedStatement.executeUpdate();
                 preparedStatement.close();
