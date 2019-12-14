@@ -59,19 +59,19 @@ public class BreakdownService {
 
         for(int i = 0; i < list.size(); i++) {
             if(i == 0) {
-                if(list.get(i).getValue()[0] != 1.0) {
+                if(list.get(i).getValue()[1] != 100.0) {
                     return false;
                 }
             }
             else {
-                if(list.get(i).getValue()[0] != list.get(i-1).getValue()[1]) {
+                if(list.get(i).getValue()[1] != list.get(i-1).getValue()[0]) {
                     return false;
                 }
 
 
             }
             if(i == list.size() - 1) {
-                if(list.get(i).getValue()[1] != 0.0) {
+                if(list.get(i).getValue()[0] != 0.0) {
                     return false;
                 }
             }
