@@ -92,11 +92,10 @@ public class ScoreService {
             return isBreakdownValid;
         }
         // validate letter rules
-        // TODO: uncomment to add letter rule checking
-//        Map<String, double[]> letterRule = breakdown.getLetterRule();
-//        if (!BreakdownService.getInstance().checkLetterRule(letterRule)) {
-//            return ErrCode.LETTERWRONG.getCode();
-//        }
+        Map<String, double[]> letterRule = breakdown.getLetterRule();
+        if (!BreakdownService.getInstance().checkLetterRule(letterRule)) {
+            return ErrCode.LETTERWRONG.getCode();
+        }
 
         Map<String, Student> students = course.getStudents();
 
