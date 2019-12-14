@@ -10,6 +10,7 @@ import model.Grade;
 import model.GradingRule;
 import model.Student;
 import service.ScoreService;
+import sun.applet.Main;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -19,11 +20,13 @@ import javax.swing.*;
  * @author Jun Li
  */
 public class AddComment extends JFrame {
+    private MainFrame mainFrame;
     private Course course;
     private GradingRule gr;
     private String BUID;
-    public AddComment(Course course, GradingRule gr, String BUID) {
+    public AddComment(MainFrame mainFrame, Course course, GradingRule gr, String BUID) {
         initComponents();
+        this.mainFrame = mainFrame;
         this.course = course;
         this.gr = gr;
         this.BUID = BUID;
@@ -45,6 +48,7 @@ public class AddComment extends JFrame {
         String comment = textArea_comment.getText();
         ScoreService.getInstance().updateGradeComment(course.getCourseID(),BUID,gr.getId(),comment);
         JOptionPane.showMessageDialog(this,"Comment updated");
+        mainFrame.refreshAll();
         this.dispose();
     }
 
