@@ -60,9 +60,6 @@ public class Statistics extends JFrame {
         }
     }
 
-    private void comboBox_chooseStudentItemStateChanged(ItemEvent e) {
-        refreshStats();
-    }
 
     private void refreshStats(){
         String[] stats = new String[0]; //{mean, median, sd};
@@ -89,18 +86,14 @@ public class Statistics extends JFrame {
             label_stddev.setText(stats[2]);
             return;
         }
-        String parentItemText = tree_breakdown.getSelectionPath().getParentPath().getLastPathComponent().toString();
         String[] items = itemText.split(" - ");
-        String[] parentItems = parentItemText.split(" - ");
         String name = items[0];
-        String parentName = parentItems[0];
 
         Breakdown breakdown = this.course.getBreakdown();
         Map<String, GradingRule> gradingRules = breakdown.getGradingRules(); // GradingRuleID, GradingRule
-        List<GradingRule> grs= new ArrayList<>(gradingRules.values());
 
         String courseID = this.course.getCourseID();
-        String gradingRuleID = StatisticsController.findGradingRuleID(grs,name,parentName,courseID);
+        String gradingRuleID = MainFrameController.getGradingRuleByNameAndCourse(name,course).getId();
 
         // calculate stats
         if(Objects.requireNonNull(comboBox_chooseStudent.getSelectedItem()).toString().equals("All Students")){
@@ -118,6 +111,10 @@ public class Statistics extends JFrame {
         label_mean.setText(stats[0]);
         label_median.setText(stats[1]);
         label_stddev.setText(stats[2]);
+    }
+
+    private void comboBox_chooseStudentActionPerformed(ActionEvent e) {
+        refreshStats();
     }
 
     private void initComponents() {
@@ -218,7 +215,7 @@ public class Statistics extends JFrame {
             "Graduate Student",
             "Undergraduate Student"
         }));
-        comboBox_chooseStudent.addItemListener(e -> comboBox_chooseStudentItemStateChanged(e));
+        comboBox_chooseStudent.addActionListener(e -> comboBox_chooseStudentActionPerformed(e));
         contentPane.add(comboBox_chooseStudent);
         comboBox_chooseStudent.setBounds(180, 310, 175, comboBox_chooseStudent.getPreferredSize().height);
 
