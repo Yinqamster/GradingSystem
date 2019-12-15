@@ -212,6 +212,8 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "textField_name"
+						"enabled": false
+						"editable": false
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 						"x": 225
 						"y": 355
