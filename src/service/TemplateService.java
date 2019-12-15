@@ -66,7 +66,7 @@ public class TemplateService {
         breakdown.setGradingRules(newGradingRuleMap);
 
 
-        Template template = new Template(breakdown.getBreakdownID(), templateName, breakdown.getGradingRules(), breakdown.getLetterRule());
+        Template template = new Template(UUID.randomUUID().toString(), templateName, breakdown.getGradingRules(), breakdown.getLetterRule());
         return TemplateDAO.getInstance().updateTemplate(template);
     }
 }
