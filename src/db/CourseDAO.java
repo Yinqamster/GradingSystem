@@ -106,6 +106,11 @@ public class CourseDAO {
         String courseid = course.getCourseID();
         String updateSql = "REPLACE INTO course (name, section, semester, description, course_id)" +
                 "values (?, ?, ?, ?, ?)";
+        String updateBreakdownSql = "REPLACE INTO breakdown (fk_course, break_down_id) values (?, ?)";
+        if(!course.getBreakdown().getBreakdownID().equals("")) {
+            Breakdown breakdown = course.getBreakdown();
+            BreakdownDAO.getInstance().updateBreakdown(breakdown);
+        }
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
             preparedStatement.setObject(1, name);
@@ -114,6 +119,11 @@ public class CourseDAO {
             preparedStatement.setObject(4, description);
             preparedStatement.setObject(5, courseid);
             int flag = preparedStatement.executeUpdate();
+            preparedStatement.close();
+            preparedStatement = connection.prepareStatement(updateBreakdownSql);
+            preparedStatement.setObject(1, courseid);
+            preparedStatement.setObject(2, courseid);
+            flag *= preparedStatement.executeUpdate();
             return flag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
         } catch (SQLException sqle) {
             return ErrCode.UPDATEERROR.getCode();

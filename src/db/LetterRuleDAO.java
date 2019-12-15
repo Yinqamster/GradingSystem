@@ -68,66 +68,154 @@ public class LetterRuleDAO {
     }
 
     //TODO
-    public int updateBreakdownLetterRule(String courseId, String letter, double lower, double upper) {
+    public int updateBreakdownLetterRule(String courseId, String letter, double lower, double upper, String category) {
+//        int updateFlag = 1;
+//        String updateLetterSql = "REPLACE INTO letter_rule (letter, min_score, max_score, " +
+//                "fk_breakdown) values (?, ?, ?, ?)";
+//        String updateBreakdownSql = "REPLACE INTO breakdown (break_down_id, fk_course) values (?, ?)";
+//        try {
+//            PreparedStatement preparedStatement = connection.prepareStatement(updateLetterSql);
+//            preparedStatement.setObject(1, letter);
+//            preparedStatement.setObject(2, lower);
+//            preparedStatement.setObject(3, upper);
+//            preparedStatement.setObject(4, courseId);
+//            updateFlag *= preparedStatement.executeUpdate();
+//            preparedStatement.close();
+//            preparedStatement = connection.prepareStatement(updateBreakdownSql);
+//            preparedStatement.setObject(1, courseId);
+//            preparedStatement.setObject(2, courseId);
+//            updateFlag *= preparedStatement.executeUpdate();
+//            return updateFlag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
+//        } catch (SQLException sqle) {
+//            return ErrCode.UPDATEERROR.getCode();
+//        }
         int updateFlag = 1;
-        String updateLetterSql = "REPLACE INTO letter_rule (letter, min_score, max_score, " +
-                "fk_breakdown) values (?, ?, ?, ?)";
-        String updateBreakdownSql = "REPLACE INTO breakdown (break_down_id, fk_course) values (?, ?)";
+        boolean existFlag = false;
+        String preUpdateSql = "UPDATE letter_rule SET min_score = ?, max_score = ? WHERE placeholder = ? AND letter = ?";
+        String preSelectSql = "SELECT * FROM letter_rule WHERE placeholder = ? AND letter = ?";
+        String preInsertSql = "INSERT INTO letter_rule (min_score, max_score, placeholder, letter) values (?, ?, ?, ?)";
+        String selectSql = assambleSql(preSelectSql, category);
+        String updateSql = assambleSql(preUpdateSql, category);
+        String insertSql = assambleSql(preInsertSql, category);
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(updateLetterSql);
-            preparedStatement.setObject(1, letter);
-            preparedStatement.setObject(2, lower);
-            preparedStatement.setObject(3, upper);
-            preparedStatement.setObject(4, courseId);
+            PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
+            preparedStatement.setObject(1, courseId);
+            preparedStatement.setObject(2, letter);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                existFlag = true;
+            }
+            resultSet.close();
+            preparedStatement.close();
+            if (existFlag) {
+                preparedStatement = connection.prepareStatement(updateSql);
+            } else {
+                preparedStatement = connection.prepareStatement(insertSql);
+            }
+            preparedStatement.setObject(1, lower);
+            preparedStatement.setObject(2, upper);
+            preparedStatement.setObject(3, courseId);
+            preparedStatement.setObject(4, letter);
             updateFlag *= preparedStatement.executeUpdate();
             preparedStatement.close();
-            preparedStatement = connection.prepareStatement(updateBreakdownSql);
-            preparedStatement.setObject(1, courseId);
-            preparedStatement.setObject(2, courseId);
-            updateFlag *= preparedStatement.executeUpdate();
-            return updateFlag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
-        } catch (SQLException sqle) {
-            return ErrCode.UPDATEERROR.getCode();
+        } catch(SQLException sqle){
+                return ErrCode.UPDATEERROR.getCode();
         }
+        return updateFlag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
     }
 
     public int addBreakdownLetterRule(String courseId, String letter, double lower, double upper) {
-        return updateBreakdownLetterRule(courseId, letter, lower, upper);
+        return updateBreakdownLetterRule(courseId, letter, lower, upper, "breakdown");
     }
 
     //TODO
     public int editBreakdownLetterRule(String courseId, String letter, double lower, double upper) {
-        return updateBreakdownLetterRule(courseId, letter, lower, upper);
+        return updateBreakdownLetterRule(courseId, letter, lower, upper, "breakdown");
     }
 
     private int updateLetterMap(Map<String, double[]> mapLetter, String ID, String category) {
         int updateFlag = 1;
-        String preSql = "REPLACE INTO letter_rule (letter, min_score, max_score, placeholder)" +
-                "values (?, ?, ?, ?)";
-        String updateSql = assambleSql(preSql, category);
-        try {
-            for(Map.Entry<String, double[]> entrySet : mapLetter.entrySet()) {
-                String letter = entrySet.getKey();
-                double[] segment = entrySet.getValue();
-                double minScore = Math.min(segment[0], segment[1]);
-                double maxScore = Math.max(segment[0], segment[1]);
-                PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
-                preparedStatement.setObject(1, letter);
-                preparedStatement.setObject(2, minScore);
-                preparedStatement.setObject(3, maxScore);
-                preparedStatement.setObject(4, ID);
-                updateFlag *= preparedStatement.executeUpdate();
-                preparedStatement.close();
-            }
-        } catch (SQLException sqle) {
-            return ErrCode.UPDATEERROR.getCode();
+        for(Map.Entry<String, double[]> entrySet : mapLetter.entrySet()) {
+            String letter = entrySet.getKey();
+            double[] segment = entrySet.getValue();
+            double minScore = Math.min(segment[0], segment[1]);
+            double maxScore = Math.max(segment[0], segment[1]);
+            updateFlag *= updateBreakdownLetterRule(ID, letter, minScore, maxScore, category);
         }
-        if(updateFlag == 0) {
-            return ErrCode.UPDATEERROR.getCode();
-        }
-        else {
-            return ErrCode.OK.getCode();
-        }
+        return updateFlag == 0 ? ErrCode.UPDATEERROR.getCode() : ErrCode.OK.getCode();
+//        boolean existFlag = false;
+//        String preUpdateSql = "UPDATE letter_rule SET letter = ?, min_score = ?, max_score = ? WHERE placeholder = ?";
+//        String preSelectSql = "SELECT * FROM letter_rule WHERE placeholder = ?";
+//        String preInsertSql = "INSERT INTO letter_rule (letter, min_score, max_score, placeholder) values (?, ?, ?, ?)";
+//        String selectSql = assambleSql(preSelectSql, category);
+//        String updateSql = assambleSql(preUpdateSql, category);
+//        String insertSql = assambleSql(preInsertSql, category);
+//        try {
+//            PreparedStatement preparedStatement = connection.prepareStatement(selectSql);
+//            preparedStatement.setObject(1, ID);
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//            if(resultSet.next()) {
+//                existFlag = true;
+//            }
+//            resultSet.close();
+//            preparedStatement.close();
+//            for(Map.Entry<String, double[]> entrySet : mapLetter.entrySet()) {
+//                String letter = entrySet.getKey();
+//                double[] segment = entrySet.getValue();
+//                double minScore = Math.min(segment[0], segment[1]);
+//                double maxScore = Math.max(segment[0], segment[1]);
+//                if(existFlag) {
+//                    preparedStatement = connection.prepareStatement(updateSql);
+//                }
+//                else {
+//                    preparedStatement = connection.prepareStatement(insertSql);
+//                }
+//                preparedStatement.setObject(1, letter);
+//                preparedStatement.setObject(2, minScore);
+//                preparedStatement.setObject(3, maxScore);
+//                preparedStatement.setObject(4, ID);
+//                updateFlag *= preparedStatement.executeUpdate();
+//                preparedStatement.close();
+//            }
+//            if(existFlag) {
+//                for(Map.Entry<String, double[]> entrySet : mapLetter.entrySet()) {
+//                    String letter = entrySet.getKey();
+//                    double[] segment = entrySet.getValue();
+//                    double minScore = Math.min(segment[0], segment[1]);
+//                    double maxScore = Math.max(segment[0], segment[1]);
+//                    preparedStatement = connection.prepareStatement(updateSql);
+//                    preparedStatement.setObject(1, letter);
+//                    preparedStatement.setObject(2, minScore);
+//                    preparedStatement.setObject(3, maxScore);
+//                    preparedStatement.setObject(4, ID);
+//                    updateFlag *= preparedStatement.executeUpdate();
+//                    preparedStatement.close();
+//                }
+//            }
+//            else {
+//                for(Map.Entry<String, double[]> entrySet : mapLetter.entrySet()) {
+//                    String letter = entrySet.getKey();
+//                    double[] segment = entrySet.getValue();
+//                    double minScore = Math.min(segment[0], segment[1]);
+//                    double maxScore = Math.max(segment[0], segment[1]);
+//                    preparedStatement = connection.prepareStatement(insertSql);
+//                    preparedStatement.setObject(1, letter);
+//                    preparedStatement.setObject(2, minScore);
+//                    preparedStatement.setObject(3, maxScore);
+//                    preparedStatement.setObject(4, ID);
+//                    updateFlag *= preparedStatement.executeUpdate();
+//                    preparedStatement.close();
+//                }
+//            }
+//        } catch (SQLException sqle) {
+//            return ErrCode.UPDATEERROR.getCode();
+//        }
+//        if(updateFlag == 0) {
+//            return ErrCode.UPDATEERROR.getCode();
+//        }
+//        else {
+//            return ErrCode.OK.getCode();
+//        }
     }
 
     private int deleteLetterMap(String ID, String category) {
