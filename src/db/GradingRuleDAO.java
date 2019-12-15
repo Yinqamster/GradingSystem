@@ -93,7 +93,7 @@ public class GradingRuleDAO {
                 for(int j = 0; j < temp.size(); j++) {
                     preparedStatement.setObject(j + 1, temp.get(j));
                 }
-                if(category  == "template") {
+                if(category.equalsIgnoreCase("template")) {
                     preparedStatement.setObject(6, UUID.randomUUID().toString());
                 }
                 updateFlag *= preparedStatement.executeUpdate();

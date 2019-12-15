@@ -34,8 +34,10 @@ public class CourseService {
             Breakdown breakdown = new Breakdown();
             if (type == Config.TEMPLATE) {
                 breakdown = TemplateService.getInstance().getTemplateMap().get(templateName);
+                breakdown.setBreakdownID(course.getCourseID());
             } else if (type == Config.BREAKDOWN) {
                 breakdown = BreakdownService.getInstance().getBreakdownByID(templateName);
+                breakdown.setBreakdownID(course.getCourseID());
             }
             course.setBreakdown(breakdown);
         }
