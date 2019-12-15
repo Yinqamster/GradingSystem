@@ -3,17 +3,11 @@ package service;
 import db.CourseDAO;
 import db.LetterRuleDAO;
 import db.StudentDAO;
-import model.Breakdown;
-import model.Course;
-import model.Student;
-import model.Template;
+import model.*;
 import utils.Config;
 import utils.ErrCode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CourseService {
 
@@ -28,6 +22,16 @@ public class CourseService {
         return instance;
     }
 
+    public void generateGradingRuleID(GradingRule gradingRule, String parentId){
+        gradingRule.setId(UUID.randomUUID().toString());
+        gradingRule.setParentID(parentId);
+        if(gradingRule.getChildren() != null && gradingRule.getChildren().size() != 0) {
+            for(GradingRule g : gradingRule.getChildren()) {
+                generateGradingRuleID(g, gradingRule.getId());
+            }
+        }
+    }
+
     public int addCourse(String name, String section, String semester, String description, String templateName, String filename, int type) {
         Course course = new Course(name, section, semester, description);
         if (templateName != null && !templateName.isEmpty()) {
@@ -39,6 +43,19 @@ public class CourseService {
                 breakdown = BreakdownService.getInstance().getBreakdownByID(templateName);
                 breakdown.setBreakdownID(course.getCourseID());
             }
+
+            Map<String, GradingRule> gradingRuleMap = breakdown.getGradingRules();
+            Map<String, GradingRule> newGradingRuleMap = new HashMap<>();
+            for(GradingRule gradingRule : gradingRuleMap.values()) {
+                generateGradingRuleID(gradingRule, "");
+//                gradingRule.setId(UUID.randomUUID().toString());
+//                while(gradingRule.getChildren() != null || gradingRule.getChildren().size() != 0) {
+//
+//                }
+                newGradingRuleMap.put(gradingRule.getId(), gradingRule);
+            }
+            breakdown.setGradingRules(newGradingRuleMap);
+
             course.setBreakdown(breakdown);
         }
 
