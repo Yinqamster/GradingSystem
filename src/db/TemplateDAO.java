@@ -114,8 +114,9 @@ public class TemplateDAO extends BreakdownDAO{
             }
             resultSet.close();
             preparedStatement.close();
-            selectSql = "SELECT grading_rule_id, template.name, template_id FROM grading_rule inner join template ON grading_rule.fk_template = template.template_id";
+            selectSql = "SELECT grading_rule_id, template.name, template_id FROM grading_rule inner join template ON grading_rule.fk_template = template.template_id AND grading_rule.parent_id = ?";
             preparedStatement = connection.prepareStatement(selectSql);
+            preparedStatement.setObject(1, "");
             resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 String gradingRuleId = resultSet.getString("grading_rule_id");
@@ -127,7 +128,7 @@ public class TemplateDAO extends BreakdownDAO{
                 }
                 else {
                     Template template = new Template(templateId, name, letterMap);
-                    template.getGradingRules().put(name, temp.get(gradingRuleId));
+                    template.getGradingRules().put(gradingRuleId, temp.get(gradingRuleId));
                     result.put(name, template);
                 }
             }
