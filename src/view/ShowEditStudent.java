@@ -101,8 +101,8 @@ public class ShowEditStudent extends JFrame {
                 ShowEditStudentController.addStudent(firstName,middleName,lastName,BUID,year,comment,course.getCourseID());
             }else if(type == Config.EDITSTUDENT){
                 ShowEditStudentController.updateStudent(firstName,middleName,lastName,BUID,comment,course.getCourseID());
-            }else if(type == Config.ADDEDITCOMMENT){
-                ShowEditStudentController.updateGradeComment(course.getCourseID(),BUID,GradingRuleID,comment);
+            }else if(type == Config.EDITSTUDENTCOMMENT){
+                ShowEditStudentController.updateStudent(firstName,middleName,lastName,BUID,comment,course.getCourseID());
             }
             JOptionPane.showMessageDialog(this, "Student updated");
             // refresh table
