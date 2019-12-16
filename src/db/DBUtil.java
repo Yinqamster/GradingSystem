@@ -2,6 +2,11 @@ package db;
 
 import java.sql.*;
 
+/**
+ *@author Jiaqian Sun
+ */
+
+
 public class DBUtil {
     public static final String url = "jdbc:sqlite:src/db/GradingSystem.db";
     public static final String JDBCName = "org.sqlite.JDBC";

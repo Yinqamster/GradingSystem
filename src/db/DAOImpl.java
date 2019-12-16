@@ -4,6 +4,11 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *@author Jiaqian Sun
+ */
+
+
 public class DAOImpl implements DAO {
 
     @Override

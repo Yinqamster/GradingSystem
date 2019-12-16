@@ -9,6 +9,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *@author Jiaqian Sun
+ */
+
+
 public class GradingRuleDAO {
 
     private static GradingRuleDAO gradingRuleDAO = new GradingRuleDAO();
@@ -92,13 +97,8 @@ public class GradingRuleDAO {
                 for(int j = 0; j < temp.size(); j++) {
                     preparedStatement.setObject(j + 1, temp.get(j));
                 }
-//                if(category.equalsIgnoreCase("template")) {
-//                    preparedStatement.setObject(6, UUID.randomUUID().toString());
-//                }
                 updateFlag *= preparedStatement.executeUpdate();
                 preparedStatement.close();
-                String name = temp.get(0).toString();
-                String gradingRuleId = temp.get(5).toString();
                 GradeDAO.getInstance().addGrade(breakdownId, gradingRule);
             }
             String updateBreakdownSql = "REPLACE INTO breakdown (break_down_id, fk_course) values (?, ?)";
@@ -117,6 +117,7 @@ public class GradingRuleDAO {
         }
     }
 
+    // get all grading rule list recursively
     private void getUpdateList(GradingRule gradingRule, List<List<Object>> infoList, String breakdownId) {
         List<Object> temp = new ArrayList<>();
         // name, fullscore, proportion, parentid, breakdownid, currentid
@@ -156,6 +157,7 @@ public class GradingRuleDAO {
         }
     }
 
+    // get all grading rule recursively
     private void getDeleteRuleList(String gradingRuleID, List<String> deleteRuleList){
         String selectSql = "SELECT * FROM grading_rule WHERE parent_id = ?";
         try {

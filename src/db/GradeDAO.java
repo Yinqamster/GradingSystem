@@ -12,6 +12,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *@author Jiaqian Sun
+ */
+
+
 public class GradeDAO {
 
     public static GradeDAO gradeDAO = new GradeDAO();
@@ -25,6 +30,7 @@ public class GradeDAO {
 
     private static Connection connection = DBUtil.getInstance();
 
+    // update final grade by using bu id, course id
     public int updateFinalGrade(String buid, String courseid, double absoluate_score, double percentage_score,
                                 double deduction_score, String letterGrade) {
         String updateSql = "UPDATE grade SET absolute_score = ?, percentage_score = ?, deduction_score = ?, letter_grade" +
@@ -46,6 +52,7 @@ public class GradeDAO {
         }
     }
 
+    // add a new final grade
     public int addFinalGrade(String courseId, String buid, FinalGrade finalGrade) {
         String addSql = "INSERT INTO grade (fk_student, fk_grading_rule, absolute_score, " +
                 "percentage_score, deduction_score, comment, letter_grade, fk_course, name, grade_id) values " +
@@ -69,6 +76,7 @@ public class GradeDAO {
         }
     }
 
+    // get the whole grade of one student in one course
     public Map<String, Grade> getGradeList(String BUID, String courseId) {
         Map<String, Grade> result = new HashMap<>();
         String selectSql = "SELECT * FROM grade WHERE fk_student = ? and fk_course = ?";
@@ -165,6 +173,7 @@ public class GradeDAO {
         }
     }
 
+    // update the whole grade of a student in one course
     public int updateGradeList(String buid, String courseid, Map<String, Grade> gradeMap) {
         int flag = 1;
         for(Map.Entry<String, Grade> entry : gradeMap.entrySet()) {
