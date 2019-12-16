@@ -9,6 +9,9 @@ import utils.ErrCode;
 
 import java.util.*;
 
+/**
+ *@author Qi Yin
+ */
 public class TemplateService {
 
     //template name, template
@@ -54,6 +57,7 @@ public class TemplateService {
         }
     }
 
+    //save a template from a existing breakdown
     public int saveTemplate(String courseId, String templateName) {
         Breakdown breakdown = BreakdownDAO.getInstance().getBreakdown(courseId);
 

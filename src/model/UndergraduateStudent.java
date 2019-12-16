@@ -1,8 +1,10 @@
 package model;
 
-import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Qi Yin
+ */
 public class UndergraduateStudent extends Student {
 
     public UndergraduateStudent(){

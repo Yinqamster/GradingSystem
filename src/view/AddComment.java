@@ -10,7 +10,6 @@ import model.Grade;
 import model.GradingRule;
 import model.Student;
 import service.ScoreService;
-import sun.applet.Main;
 
 import java.awt.*;
 import java.awt.event.*;

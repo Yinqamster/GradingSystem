@@ -1,5 +1,8 @@
 package model;
 
+/**
+ * @author Qi Yin
+ */
 public class Grade {
     private String ruleId;
     private double absolute;

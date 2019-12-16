@@ -15,7 +15,6 @@ import controller.CourseListController;
 import service.CourseService;
 
 import model.Course;
-import net.miginfocom.swing.*;
 import utils.Config;
 
 /**

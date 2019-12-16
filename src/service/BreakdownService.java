@@ -8,6 +8,9 @@ import utils.ErrCode;
 
 import java.util.*;
 
+/**
+ *@author Qi Yin
+ */
 public class BreakdownService {
     private static BreakdownService instance = new BreakdownService();
 
@@ -26,6 +29,7 @@ public class BreakdownService {
 //        return LetterRuleDAO.getInstance().updateLetterMap(letterRule, courseId);
 //    }
 
+    //validate the rule of letters. It should be contiguous and should not be overlapped.
     public boolean checkLetterRule(Map<String, double[]> letterRule) {
         Map<String, double[]> validLetterRule = new HashMap<>();
         for(Map.Entry<String, double[]> lr : letterRule.entrySet()) {
@@ -95,6 +99,7 @@ public class BreakdownService {
 
     //only for test
 //    public int checkBreakdown(Breakdown breakdown) {
+    //validate breakdown. In each level of the breakdown, the sum of the percentage should be 100
     public int checkBreakdown(String breakdownID) {
         Breakdown breakdown = getBreakdownByID(breakdownID);
         if(breakdown == null) {
@@ -138,6 +143,8 @@ public class BreakdownService {
         return true;
     }
 
+
+    //only for test
     public static void main(String args[]) {
 //        Map<String, GradingRule> gradingRules = new HashMap<>();
 //        GradingRule homework = new GradingRule("1", "", "Homework", 0.0, 0.3);

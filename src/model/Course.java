@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * @author Qi Yin
+ */
 public class Course {
     private String name;
     private String section;

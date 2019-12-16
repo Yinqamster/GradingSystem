@@ -3,15 +3,19 @@ package model;
 import utils.Config;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Qi Yin
+ */
 public abstract class Student {
     private Name name;
     private String buid;
+    //active / freeze
     private int status;
     private double bonus;
     private String comment;
+    //GradingRuleId, Grade
     private Map<String, Grade> grades;
     private FinalGrade finalGrade;
 

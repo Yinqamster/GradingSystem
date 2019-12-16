@@ -1,10 +1,13 @@
 package utils;
 
 import java.util.Calendar;
-import java.util.Date;
 
+/**
+ * @author Qi Yin
+ */
 public class UtilFunctions {
 
+    //get semester by current time
     public static String getSemester() {
         Calendar date = Calendar.getInstance();
         String season = "";

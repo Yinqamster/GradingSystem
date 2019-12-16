@@ -4,7 +4,6 @@
 
 package view;
 
-import controller.ShowEditCourseController;
 import controller.ShowEditStudentController;
 import model.Course;
 import model.Student;

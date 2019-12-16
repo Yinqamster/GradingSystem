@@ -1,5 +1,8 @@
 package model;
 
+/**
+ * @author Qi Yin
+ */
 public class Name {
     private String firstName;
     private String middleName;

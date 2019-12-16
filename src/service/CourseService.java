@@ -9,6 +9,9 @@ import utils.ErrCode;
 
 import java.util.*;
 
+/**
+ *@author Qi Yin
+ */
 public class CourseService {
 
     private static CourseService instance = new CourseService();
@@ -22,6 +25,7 @@ public class CourseService {
         return instance;
     }
 
+    //used in copy breakdown and template
     public void generateGradingRuleID(GradingRule gradingRule, String parentId){
         gradingRule.setId(UUID.randomUUID().toString());
         gradingRule.setParentID(parentId);
@@ -32,6 +36,7 @@ public class CourseService {
         }
     }
 
+    //create a new course
     public int addCourse(String name, String section, String semester, String description, String templateName, String filename, int type) {
         Course course = new Course(name, section, semester, description);
         if (templateName != null && !templateName.isEmpty()) {
@@ -132,6 +137,7 @@ public class CourseService {
         return coursesNames;
     }
 
+    //get courseID by some conditions
     public String getCourseID(String courseName, String section, List<Course> courseList) {
         //get courseID by courseName and section from given courseList
         String courseID = "";

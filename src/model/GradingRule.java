@@ -4,10 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * @author Qi Yin
+ */
 public class GradingRule {
     private String id;
     private String parentID;
+    //the highest level of GradingRule (eg: HW, Exam)
     private List<GradingRule> children;
+    //not used
     private int depth; // example: 0 - Homework, 1 - Midterm, 2 - Written
     private String name;
     private double fullScore;

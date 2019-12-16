@@ -1,7 +1,8 @@
 package model;
 
-import utils.Config;
-
+/**
+ * @author Qi Yin
+ */
 public class FinalGrade extends Grade {
     private String letterGrade;
 

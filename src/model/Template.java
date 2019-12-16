@@ -2,7 +2,11 @@ package model;
 
 import java.util.Map;
 
+/**
+ * @author Qi Yin
+ */
 public class Template extends Breakdown {
+    //template name
     private String name;
 
     public Template() {

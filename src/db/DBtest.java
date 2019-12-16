@@ -1,9 +1,6 @@
 package db;
 
 import model.*;
-import service.StudentService;
-
-import java.sql.SQLException;
 import java.util.*;
 
 public class DBtest {

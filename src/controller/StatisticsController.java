@@ -1,13 +1,11 @@
 package controller;
 
 import model.GradingRule;
-import service.BreakdownService;
 import service.GradingRuleService;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class StatisticsController {
     public static DefaultMutableTreeNode initBreakdownTree(DefaultMutableTreeNode rootNode, List<GradingRule> gradingRules){

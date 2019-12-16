@@ -1,9 +1,7 @@
 package db;
 
-import model.Breakdown;
 import model.GradingRule;
 import model.Template;
-import sun.nio.cs.ext.GB18030;
 import utils.ErrCode;
 
 import java.sql.Connection;
@@ -11,7 +9,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class TemplateDAO extends BreakdownDAO{

@@ -5,7 +5,6 @@
 package view;
 
 import controller.AddChildController;
-import controller.AddCourseController;
 import model.Course;
 import model.GradingRule;
 import utils.ErrCode;

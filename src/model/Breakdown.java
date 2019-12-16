@@ -1,12 +1,15 @@
 package model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Qi Yin
+ */
 public class Breakdown {
+    //gradingRule id, gradingRule
     private Map<String, GradingRule> gradingRules;
+    //letter, [lower, upper]
     private Map<String, double[]> letterRule;
     private String breakdownID;
 

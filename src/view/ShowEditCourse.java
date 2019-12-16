@@ -6,7 +6,6 @@ package view;
 
 import controller.ShowEditCourseController;
 import model.Course;
-import service.CourseService;
 import utils.ErrCode;
 
 import java.awt.*;
